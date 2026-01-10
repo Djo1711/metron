@@ -33,27 +33,54 @@ async def get_stock_quote(ticker: str):
     """Get current stock quote and basic info"""
     try:
         stock = yf.Ticker(ticker)
-        info = stock.info
         
-        # Get current price
-        current_price = info.get('currentPrice') or info.get('regularMarketPrice')
-        if not current_price:
-            raise HTTPException(status_code=404, detail=f"Ticker {ticker} not found")
+        # Get recent history to calculate current price
+        hist = stock.history(period="5d")
         
-        # Calculate change percent
-        previous_close = info.get('previousClose', current_price)
-        change_percent = ((current_price - previous_close) / previous_close) * 100
+        if hist.empty:
+            raise HTTPException(
+                status_code=404, 
+                detail=f"No data found for ticker {ticker}. Check if the ticker is valid."
+            )
+        
+        # Get most recent data
+        current_price = float(hist['Close'].iloc[-1])
+        
+        # Calculate change (compare to previous close if available)
+        if len(hist) > 1:
+            previous_close = float(hist['Close'].iloc[-2])
+        else:
+            previous_close = current_price
+        
+        change_percent = ((current_price - previous_close) / previous_close) * 100 if previous_close != 0 else 0
+        
+        volume = int(hist['Volume'].iloc[-1])
+        
+        # Try to get additional info (may fail for some tickers)
+        try:
+            info = stock.info
+            name = info.get('longName') or info.get('shortName') or ticker.upper()
+            market_cap = info.get('marketCap')
+        except:
+            name = ticker.upper()
+            market_cap = None
         
         return StockInfo(
             ticker=ticker.upper(),
-            name=info.get('longName', ticker),
+            name=name,
             current_price=round(current_price, 2),
             change_percent=round(change_percent, 2),
-            volume=info.get('volume', 0),
-            market_cap=info.get('marketCap')
+            volume=volume,
+            market_cap=market_cap
         )
+        
+    except HTTPException:
+        raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error fetching {ticker}: {str(e)}")
+        raise HTTPException(
+            status_code=500, 
+            detail=f"Error fetching {ticker}: {str(e)}"
+        )
 
 @router.get("/history/{ticker}")
 async def get_historical_data(
@@ -67,13 +94,19 @@ async def get_historical_data(
         hist = stock.history(period=period, interval=interval)
         
         if hist.empty:
-            raise HTTPException(status_code=404, detail=f"No data for {ticker}")
+            raise HTTPException(
+                status_code=404, 
+                detail=f"No historical data for {ticker}"
+            )
         
         return HistoricalData(
             dates=[d.strftime('%Y-%m-%d') for d in hist.index],
-            prices=[round(p, 2) for p in hist['Close'].tolist()],
+            prices=[round(float(p), 2) for p in hist['Close'].tolist()],
             volumes=[int(v) for v in hist['Volume'].tolist()]
         )
+        
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -94,7 +127,7 @@ async def calculate_volatility(ticker: str, period_days: int = 252):
         if len(hist) < period_days:
             raise HTTPException(
                 status_code=400,
-                detail=f"Not enough data. Only {len(hist)} days available"
+                detail=f"Not enough data. Only {len(hist)} days available, need {period_days}"
             )
         
         # Calculate daily returns
@@ -106,9 +139,12 @@ async def calculate_volatility(ticker: str, period_days: int = 252):
         
         return VolatilityData(
             ticker=ticker.upper(),
-            historical_volatility=round(annualized_volatility, 4),
+            historical_volatility=round(float(annualized_volatility), 4),
             period_days=len(hist)
         )
+        
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -124,15 +160,22 @@ async def get_trending_stocks():
     for ticker in popular_tickers:
         try:
             stock = yf.Ticker(ticker)
-            info = stock.info
-            current_price = info.get('currentPrice') or info.get('regularMarketPrice')
-            previous_close = info.get('previousClose', current_price)
+            hist = stock.history(period="5d")
             
-            if current_price:
+            if not hist.empty and len(hist) >= 2:
+                current_price = float(hist['Close'].iloc[-1])
+                previous_close = float(hist['Close'].iloc[-2])
                 change_percent = ((current_price - previous_close) / previous_close) * 100
+                
+                try:
+                    info = stock.info
+                    name = info.get('shortName') or ticker
+                except:
+                    name = ticker
+                
                 results.append({
                     "ticker": ticker,
-                    "name": info.get('shortName', ticker),
+                    "name": name,
                     "price": round(current_price, 2),
                     "change": round(change_percent, 2)
                 })
@@ -150,5 +193,9 @@ async def market_data_info():
             "/volatility/{ticker}",
             "/trending"
         ],
-        "supported_tickers": "All Yahoo Finance tickers (US, EU, etc.)"
+        "supported_tickers": "All Yahoo Finance tickers (US, EU, etc.)",
+        "example": {
+            "ticker": "AAPL",
+            "usage": "GET /api/market/quote/AAPL"
+        }
     }

@@ -5,7 +5,7 @@ pydantic==2.5.3
 pydantic-settings==2.1.0
 
 # Database & Auth
-supabase==2.3.4
+supabase==2.9.0
 python-dotenv==1.0.0
 
 # Financial calculations
@@ -13,9 +13,6 @@ numpy==1.26.3
 scipy==1.11.4
 pandas==2.1.4
 yfinance==0.2.35
-
-# Optional: Advanced pricing (uncomment if needed)
-# QuantLib-Python==1.32
 
 # CORS & Security
 python-multipart==0.0.6
