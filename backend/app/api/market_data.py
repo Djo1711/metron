@@ -1,201 +1,104 @@
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
-from typing import List, Optional
 import yfinance as yf
-import pandas as pd
-import numpy as np
-from datetime import datetime, timedelta
 
 router = APIRouter()
 
-# ===== Models =====
-class StockInfo(BaseModel):
-    ticker: str
-    name: str
-    current_price: float
-    change_percent: float
-    volume: int
-    market_cap: Optional[float] = None
-
-class HistoricalData(BaseModel):
-    dates: List[str]
-    prices: List[float]
-    volumes: List[int]
-
-class VolatilityData(BaseModel):
-    ticker: str
-    historical_volatility: float  # Annualized
-    period_days: int
-
-# ===== Endpoints =====
 @router.get("/quote/{ticker}")
 async def get_stock_quote(ticker: str):
-    """Get current stock quote and basic info"""
+    """Get real-time stock quote"""
     try:
         stock = yf.Ticker(ticker)
+        info = stock.info
         
-        # Get recent history to calculate current price
-        hist = stock.history(period="5d")
+        current_price = info.get('currentPrice') or info.get('regularMarketPrice')
+        previous_close = info.get('previousClose')
         
-        if hist.empty:
-            raise HTTPException(
-                status_code=404, 
-                detail=f"No data found for ticker {ticker}. Check if the ticker is valid."
-            )
+        if not current_price or not previous_close:
+            raise HTTPException(status_code=404, detail="Stock not found")
         
-        # Get most recent data
-        current_price = float(hist['Close'].iloc[-1])
+        change = current_price - previous_close
+        change_percent = (change / previous_close) * 100
         
-        # Calculate change (compare to previous close if available)
-        if len(hist) > 1:
-            previous_close = float(hist['Close'].iloc[-2])
-        else:
-            previous_close = current_price
-        
-        change_percent = ((current_price - previous_close) / previous_close) * 100 if previous_close != 0 else 0
-        
-        volume = int(hist['Volume'].iloc[-1])
-        
-        # Try to get additional info (may fail for some tickers)
-        try:
-            info = stock.info
-            name = info.get('longName') or info.get('shortName') or ticker.upper()
-            market_cap = info.get('marketCap')
-        except:
-            name = ticker.upper()
-            market_cap = None
-        
-        return StockInfo(
-            ticker=ticker.upper(),
-            name=name,
-            current_price=round(current_price, 2),
-            change_percent=round(change_percent, 2),
-            volume=volume,
-            market_cap=market_cap
-        )
-        
-    except HTTPException:
-        raise
+        return {
+            "ticker": ticker.upper(),
+            "name": info.get('longName', 'N/A'),
+            "current_price": current_price,
+            "previous_close": previous_close,
+            "change": change,
+            "change_percent": change_percent,
+            "volume": info.get('volume'),
+            "market_cap": info.get('marketCap'),
+            "day_high": info.get('dayHigh'),
+            "day_low": info.get('dayLow'),
+            "open": info.get('open'),
+            "fifty_two_week_high": info.get('fiftyTwoWeekHigh'),
+            "fifty_two_week_low": info.get('fiftyTwoWeekLow'),
+            "sector": info.get('sector'),
+            "industry": info.get('industry'),
+            "currency": info.get('currency', 'USD'),
+            "exchange": info.get('exchange'),
+        }
     except Exception as e:
-        raise HTTPException(
-            status_code=500, 
-            detail=f"Error fetching {ticker}: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/history/{ticker}")
-async def get_historical_data(
-    ticker: str,
-    period: str = "1y",  # 1d, 5d, 1mo, 3mo, 6mo, 1y, 2y, 5y, 10y, ytd, max
-    interval: str = "1d"  # 1m, 2m, 5m, 15m, 30m, 60m, 90m, 1h, 1d, 5d, 1wk, 1mo, 3mo
-):
-    """Get historical price data"""
+async def get_stock_history(ticker: str, period: str = "1mo"):
+    """Get historical stock data"""
     try:
         stock = yf.Ticker(ticker)
-        hist = stock.history(period=period, interval=interval)
+        hist = stock.history(period=period)
         
-        if hist.empty:
-            raise HTTPException(
-                status_code=404, 
-                detail=f"No historical data for {ticker}"
-            )
-        
-        return HistoricalData(
-            dates=[d.strftime('%Y-%m-%d') for d in hist.index],
-            prices=[round(float(p), 2) for p in hist['Close'].tolist()],
-            volumes=[int(v) for v in hist['Volume'].tolist()]
-        )
-        
-    except HTTPException:
-        raise
+        return {
+            "ticker": ticker,
+            "data": hist.to_dict('records')
+        }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/volatility/{ticker}")
-async def calculate_volatility(ticker: str, period_days: int = 252):
-    """
-    Calculate historical volatility (annualized)
-    period_days: number of days to look back (default 252 = 1 year)
-    """
+async def get_volatility(ticker: str, period: str = "1y"):
+    """Calculate historical volatility"""
     try:
         stock = yf.Ticker(ticker)
+        hist = stock.history(period=period)
+        returns = hist['Close'].pct_change().dropna()
+        volatility = returns.std() * (252 ** 0.5)
         
-        # Get historical data
-        end_date = datetime.now()
-        start_date = end_date - timedelta(days=period_days + 30)  # Extra buffer
-        hist = stock.history(start=start_date, end=end_date)
-        
-        if len(hist) < period_days:
-            raise HTTPException(
-                status_code=400,
-                detail=f"Not enough data. Only {len(hist)} days available, need {period_days}"
-            )
-        
-        # Calculate daily returns
-        hist['Returns'] = hist['Close'].pct_change()
-        
-        # Calculate volatility (annualized)
-        daily_volatility = hist['Returns'].std()
-        annualized_volatility = daily_volatility * np.sqrt(252)  # 252 trading days
-        
-        return VolatilityData(
-            ticker=ticker.upper(),
-            historical_volatility=round(float(annualized_volatility), 4),
-            period_days=len(hist)
-        )
-        
-    except HTTPException:
-        raise
+        return {
+            "ticker": ticker,
+            "annualized_volatility": volatility,
+            "period": period
+        }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/trending")
 async def get_trending_stocks():
-    """Get list of popular stocks (hardcoded for now)"""
-    popular_tickers = [
-        "AAPL", "MSFT", "GOOGL", "AMZN", "TSLA",
-        "META", "NVDA", "JPM", "V", "JNJ"
-    ]
-    
-    results = []
-    for ticker in popular_tickers:
-        try:
-            stock = yf.Ticker(ticker)
-            hist = stock.history(period="5d")
-            
-            if not hist.empty and len(hist) >= 2:
-                current_price = float(hist['Close'].iloc[-1])
-                previous_close = float(hist['Close'].iloc[-2])
-                change_percent = ((current_price - previous_close) / previous_close) * 100
+    """Get trending stocks"""
+    try:
+        tickers = ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'TSLA', 'NVDA', 'META', 'NFLX', 'AMD', 'INTC']
+        stocks_data = []
+        
+        for ticker in tickers:
+            try:
+                stock = yf.Ticker(ticker)
+                info = stock.info
+                current_price = info.get('currentPrice') or info.get('regularMarketPrice')
+                previous_close = info.get('previousClose')
                 
-                try:
-                    info = stock.info
-                    name = info.get('shortName') or ticker
-                except:
-                    name = ticker
-                
-                results.append({
-                    "ticker": ticker,
-                    "name": name,
-                    "price": round(current_price, 2),
-                    "change": round(change_percent, 2)
-                })
-        except:
-            continue
-    
-    return results
-
-@router.get("/")
-async def market_data_info():
-    return {
-        "endpoints": [
-            "/quote/{ticker}",
-            "/history/{ticker}",
-            "/volatility/{ticker}",
-            "/trending"
-        ],
-        "supported_tickers": "All Yahoo Finance tickers (US, EU, etc.)",
-        "example": {
-            "ticker": "AAPL",
-            "usage": "GET /api/market/quote/AAPL"
-        }
-    }
+                if current_price and previous_close:
+                    change = current_price - previous_close
+                    change_percent = (change / previous_close) * 100
+                    
+                    stocks_data.append({
+                        "ticker": ticker,
+                        "name": info.get('shortName', ticker),
+                        "price": current_price,
+                        "change": change_percent
+                    })
+            except:
+                continue
+        
+        return stocks_data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

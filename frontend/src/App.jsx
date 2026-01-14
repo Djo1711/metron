@@ -12,17 +12,29 @@ import MyAccount from './pages/MyAccount'
 function App() {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [isGuest, setIsGuest] = useState(false)
 
   useEffect(() => {
+    // Check guest mode
+    const guestMode = localStorage.getItem('guestMode')
+    if (guestMode === 'true') {
+      setIsGuest(true)
+      setUser({ email: 'Guest User', id: 'guest' })
+      setLoading(false)
+      return
+    }
+
     // Check active session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null)
+      setIsGuest(false)
       setLoading(false)
     })
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null)
+      setIsGuest(false)
     })
 
     return () => subscription.unsubscribe()
@@ -30,40 +42,42 @@ function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-xl text-gray-600">Loading...</div>
+      <div className="min-h-screen bg-metron-darker flex items-center justify-center">
+        <div className="text-xl text-gray-400">Loading...</div>
       </div>
     )
   }
 
+  const isAuthenticated = user !== null
+
   return (
     <BrowserRouter>
-      {user && <Navbar user={user} />}
+      {isAuthenticated && <Navbar user={user} isGuest={isGuest} />}
       
       <Routes>
         <Route
           path="/login"
-          element={!user ? <Login /> : <Navigate to="/" />}
+          element={!isAuthenticated ? <Login /> : <Navigate to="/" />}
         />
         <Route
           path="/"
-          element={user ? <Home /> : <Navigate to="/login" />}
+          element={isAuthenticated ? <Home /> : <Navigate to="/login" />}
         />
         <Route
           path="/market"
-          element={user ? <MarketData /> : <Navigate to="/login" />}
+          element={isAuthenticated ? <MarketData /> : <Navigate to="/login" />}
         />
         <Route
           path="/simulation"
-          element={user ? <Simulation /> : <Navigate to="/login" />}
+          element={isAuthenticated ? <Simulation isGuest={isGuest} /> : <Navigate to="/login" />}
         />
         <Route
           path="/learning"
-          element={user ? <Learning /> : <Navigate to="/login" />}
+          element={isAuthenticated ? <Learning /> : <Navigate to="/login" />}
         />
         <Route
           path="/account"
-          element={user ? <MyAccount /> : <Navigate to="/login" />}
+          element={isAuthenticated && !isGuest ? <MyAccount /> : <Navigate to="/" />}
         />
       </Routes>
     </BrowserRouter>
