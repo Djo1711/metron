@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { priceReverseConvertible } from '../services/api'
+import { priceReverseConvertible, saveSimulation } from '../services/api'
+import { supabase } from '../services/supabase'
 
 export default function Simulation() {
   const [formData, setFormData] = useState({
@@ -31,6 +32,29 @@ export default function Simulation() {
       alert('Error pricing product: ' + error.message)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleSaveSimulation = async () => {
+    if (!result) {
+      alert('Please price the product first')
+      return
+    }
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      
+      await saveSimulation({
+        user_id: user.id,
+        product_type: 'Reverse Convertible',
+        ticker: formData.ticker,
+        parameters: formData,
+        results: result
+      })
+
+      alert('Simulation saved successfully!')
+    } catch (error) {
+      alert('Error saving simulation: ' + error.message)
     }
   }
 
@@ -199,6 +223,13 @@ export default function Simulation() {
                   </div>
                 </div>
               </div>
+
+              <button
+                onClick={handleSaveSimulation}
+                className="w-full mt-4 bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 font-semibold"
+              >
+                💾 Save Simulation
+              </button>
             </div>
           </div>
         )}

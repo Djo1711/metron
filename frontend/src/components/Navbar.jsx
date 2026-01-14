@@ -32,6 +32,9 @@ export default function Navbar({ user }) {
                 <Link to="/learning" className="hover:bg-blue-700 px-3 py-2 rounded">
                   Learning
                 </Link>
+                <Link to="/account" className="hover:bg-blue-700 px-3 py-2 rounded">
+                  My Account
+                </Link>
               </div>
             )}
           </div>

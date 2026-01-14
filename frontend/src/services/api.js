@@ -21,7 +21,7 @@ export const priceReverseConvertible = (data) =>
 
 // Simulations
 export const saveSimulation = (data) => api.post('/api/simulations/save', data)
-export const getUserSimulations = (userId) => 
-  api.get(`/api/simulations/user/${userId}`)
+export const getUserSimulations = (userId) => api.get(`/api/simulations/user/${userId}`)
+export const deleteSimulation = (simulationId) => api.delete(`/api/simulations/${simulationId}`)
 
 export default api

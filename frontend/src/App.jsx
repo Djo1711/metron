@@ -7,6 +7,7 @@ import Home from './pages/Home'
 import MarketData from './pages/MarketData'
 import Simulation from './pages/Simulation'
 import Learning from './pages/Learning'
+import MyAccount from './pages/MyAccount'
 
 function App() {
   const [user, setUser] = useState(null)
@@ -59,6 +60,10 @@ function App() {
         <Route
           path="/learning"
           element={user ? <Learning /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/account"
+          element={user ? <MyAccount /> : <Navigate to="/login" />}
         />
       </Routes>
     </BrowserRouter>
