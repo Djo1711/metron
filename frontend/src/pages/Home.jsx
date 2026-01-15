@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getTrendingStocks } from '../services/api'
+import SparklineChart from '../components/SparklineChart'
 
 export default function Home() {
   const [stocks, setStocks] = useState([])
@@ -34,7 +35,7 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Feature Cards - CLIQUABLES */}
+        {/* Feature Cards */}
         <div className="grid md:grid-cols-3 gap-6 mb-16">
           <Link to="/market" className="glass-card p-8 hover:shadow-neon-blue card-hover group cursor-pointer">
             <div className="text-4xl mb-4">📊</div>
@@ -67,7 +68,7 @@ export default function Home() {
           </Link>
         </div>
 
-        {/* Trending Stocks */}
+        {/* Trending Stocks with Sparklines */}
         <div className="mb-16">
           <h2 className="text-3xl font-bold text-white mb-6">
             📈 Trending Stocks
@@ -89,12 +90,21 @@ export default function Home() {
                   <p className="text-sm text-gray-400 truncate mb-3">{stock.name}</p>
                   <p className="text-2xl font-bold text-white mb-2">${stock.price}</p>
                   <p
-                    className={`text-sm font-semibold ${
+                    className={`text-sm font-semibold mb-3 ${
                       stock.change >= 0 ? 'text-green-400' : 'text-red-400'
                     }`}
                   >
                     {stock.change >= 0 ? '↑' : '↓'} {Math.abs(stock.change).toFixed(2)}%
                   </p>
+                  {/* SPARKLINE CHART */}
+                  {stock.sparkline && stock.sparkline.length > 0 && (
+                    <div className="mt-2">
+                      <SparklineChart 
+                        data={stock.sparkline} 
+                        color={stock.change >= 0 ? '#4ade80' : '#f87171'} 
+                      />
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -102,97 +112,121 @@ export default function Home() {
         </div>
 
         {/* Team Section */}
-        <div className="glass-card p-12 border border-metron-purple/30">
-          <h2 className="text-4xl font-bold text-center mb-3">
-            <span className="gradient-text">Notre Équipe</span>
-          </h2>
-          <p className="text-center text-gray-400 mb-12 text-lg">
-            Les étudiants passionnés derrière Metron
-          </p>
+<div className="glass-card p-12 border border-metron-purple/30">
+  <h2 className="text-4xl font-bold text-center mb-3">
+    <span className="gradient-text">Notre Équipe</span>
+  </h2>
+  <p className="text-center text-gray-400 mb-12 text-lg">
+    Les étudiants passionnés derrière Metron
+  </p>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {/* Membre 1 */}
-            <div className="glass-card p-6 text-center card-hover border border-metron-purple/20">
-              <div className="w-24 h-24 bg-gradient-to-br from-metron-purple to-metron-blue rounded-full mx-auto mb-4 flex items-center justify-center text-white text-3xl font-bold shadow-neon-purple">
-                GB
-              </div>
-              <h3 className="text-xl font-bold text-white mb-1">Votre Nom</h3>
-              <p className="text-sm text-metron-purple mb-3 font-medium">Tech Lead & Data Science</p>
-              <p className="text-sm text-gray-400">
-                Passionné par l'IA et la finance quantitative. Responsable de l'architecture backend et des modèles de pricing.
-              </p>
-            </div>
+  <div className="grid md:grid-cols-3 gap-8">
+    {/* Geoffroy */}
+    <div className="glass-card p-6 text-center card-hover border border-metron-purple/20">
+      <div className="w-24 h-24 rounded-full mx-auto mb-4 overflow-hidden border-4 border-metron-purple shadow-neon-purple">
+        <img 
+          src="/team/geoffroy.jpg" 
+          alt="Geoffroy Boccon-Liaudet"
+          className="w-full h-full object-cover"
+        />
+      </div>
+      <h3 className="text-xl font-bold text-white mb-1">Geoffroy Boccon-Liaudet</h3>
+      <p className="text-sm text-metron-purple mb-3 font-medium">Tech Lead & Fullstack Developer</p>
+      <p className="text-sm text-gray-400">
+        Architecte fullstack du projet. Responsable du développement backend (FastAPI), frontend (React) et du design UI/UX. Implémentation des modèles de pricing Black-Scholes.
+      </p>
+    </div>
 
-            {/* Membre 2 */}
-            <div className="glass-card p-6 text-center card-hover border border-metron-blue/20">
-              <div className="w-24 h-24 bg-gradient-to-br from-green-500 to-teal-500 rounded-full mx-auto mb-4 flex items-center justify-center text-white text-3xl font-bold">
-                M2
-              </div>
-              <h3 className="text-xl font-bold text-white mb-1">Membre 2</h3>
-              <p className="text-sm text-metron-blue mb-3 font-medium">Frontend Developer</p>
-              <p className="text-sm text-gray-400">
-                Expert en React et design UI/UX. Crée des interfaces intuitives et élégantes.
-              </p>
-            </div>
+    {/* Danaé */}
+    <div className="glass-card p-6 text-center card-hover border border-metron-blue/20">
+      <div className="w-24 h-24 rounded-full mx-auto mb-4 overflow-hidden border-4 border-green-500">
+        <img 
+          src="/team/danae.jpg" 
+          alt="Danaé Collard"
+          className="w-full h-full object-cover"
+        />
+      </div>
+      <h3 className="text-xl font-bold text-white mb-1">Danaé Collard</h3>
+      <p className="text-sm text-green-400 mb-3 font-medium">Content & Pedagogy Lead</p>
+      <p className="text-sm text-gray-400">
+        Responsable du Learning Center. Création de contenu pédagogique et tutoriels interactifs pour rendre la finance quantitative accessible.
+      </p>
+    </div>
 
-            {/* Membre 3 */}
-            <div className="glass-card p-6 text-center card-hover border border-metron-pink/20">
-              <div className="w-24 h-24 bg-gradient-to-br from-orange-500 to-red-500 rounded-full mx-auto mb-4 flex items-center justify-center text-white text-3xl font-bold">
-                M3
-              </div>
-              <h3 className="text-xl font-bold text-white mb-1">Membre 3</h3>
-              <p className="text-sm text-metron-pink mb-3 font-medium">Financial Engineer</p>
-              <p className="text-sm text-gray-400">
-                Spécialiste des produits structurés. Garantit la précision des modèles financiers.
-              </p>
-            </div>
+    {/* Mael */}
+    <div className="glass-card p-6 text-center card-hover border border-metron-pink/20">
+      <div className="w-24 h-24 rounded-full mx-auto mb-4 overflow-hidden border-4 border-orange-500">
+        <img 
+          src="/team/mael.jpg" 
+          alt="Mael Coredo"
+          className="w-full h-full object-cover"
+        />
+      </div>
+      <h3 className="text-xl font-bold text-white mb-1">Mael Coredo</h3>
+      <p className="text-sm text-orange-400 mb-3 font-medium">Financial Engineer</p>
+      <p className="text-sm text-gray-400">
+        Ingénieur financier. Développement et validation des modèles de pricing pour les produits structurés (Reverse Convertible, Autocall).
+      </p>
+    </div>
 
-            {/* Membre 4 */}
-            <div className="glass-card p-6 text-center card-hover border border-metron-purple/20">
-              <div className="w-24 h-24 bg-gradient-to-br from-pink-500 to-purple-500 rounded-full mx-auto mb-4 flex items-center justify-center text-white text-3xl font-bold">
-                M4
-              </div>
-              <h3 className="text-xl font-bold text-white mb-1">Membre 4</h3>
-              <p className="text-sm text-metron-purple mb-3 font-medium">Content & Pedagogy</p>
-              <p className="text-sm text-gray-400">
-                Créateur de contenu éducatif. Rend la finance accessible à tous.
-              </p>
-            </div>
+    {/* Ethan */}
+    <div className="glass-card p-6 text-center card-hover border border-metron-purple/20">
+      <div className="w-24 h-24 rounded-full mx-auto mb-4 overflow-hidden border-4 border-pink-500">
+        <img 
+          src="/team/ethan.jpg" 
+          alt="Ethan Chetboun"
+          className="w-full h-full object-cover"
+        />
+      </div>
+      <h3 className="text-xl font-bold text-white mb-1">Ethan Chetboun</h3>
+      <p className="text-sm text-pink-400 mb-3 font-medium">Market Analyst</p>
+      <p className="text-sm text-gray-400">
+        Analyste stratégique. Réalisation de l'étude de marché et analyse du public cible. Contribution à l'état de l'art des produits structurés.
+      </p>
+    </div>
 
-            {/* Membre 5 */}
-            <div className="glass-card p-6 text-center card-hover border border-metron-blue/20">
-              <div className="w-24 h-24 bg-gradient-to-br from-indigo-500 to-blue-500 rounded-full mx-auto mb-4 flex items-center justify-center text-white text-3xl font-bold">
-                M5
-              </div>
-              <h3 className="text-xl font-bold text-white mb-1">Membre 5</h3>
-              <p className="text-sm text-metron-blue mb-3 font-medium">DevOps Engineer</p>
-              <p className="text-sm text-gray-400">
-                Expert en déploiement et qualité. Assure la fiabilité de la plateforme.
-              </p>
-            </div>
+    {/* Mathias */}
+    <div className="glass-card p-6 text-center card-hover border border-metron-blue/20">
+      <div className="w-24 h-24 rounded-full mx-auto mb-4 overflow-hidden border-4 border-indigo-500">
+        <img 
+          src="/team/mathias.jpg" 
+          alt="Mathias Rechsteiner"
+          className="w-full h-full object-cover"
+        />
+      </div>
+      <h3 className="text-xl font-bold text-white mb-1">Mathias Rechsteiner</h3>
+      <p className="text-sm text-indigo-400 mb-3 font-medium">DevOps Engineer</p>
+      <p className="text-sm text-gray-400">
+        Expert en déploiement et qualité. Assure la fiabilité de la plateforme.
+      </p>
+    </div>
 
-            {/* Membre 6 */}
-            <div className="glass-card p-6 text-center card-hover border border-metron-pink/20">
-              <div className="w-24 h-24 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-full mx-auto mb-4 flex items-center justify-center text-white text-3xl font-bold">
-                M6
-              </div>
-              <h3 className="text-xl font-bold text-white mb-1">Membre 6</h3>
-              <p className="text-sm text-metron-pink mb-3 font-medium">Finance Specialist</p>
-              <p className="text-sm text-gray-400">
-                Analyste financier. Valide les scénarios et cas d'usage réels.
-              </p>
-            </div>
-          </div>
+    {/* Amine */}
+    <div className="glass-card p-6 text-center card-hover border border-metron-pink/20">
+      <div className="w-24 h-24 rounded-full mx-auto mb-4 overflow-hidden border-4 border-yellow-500">
+        <img 
+          src="/team/amine.jpg" 
+          alt="Amine Gaghighi"
+          className="w-full h-full object-cover"
+        />
+      </div>
+      <h3 className="text-xl font-bold text-white mb-1">Amine Gaghighi</h3>
+      <p className="text-sm text-yellow-400 mb-3 font-medium">Project Manager</p>
+      <p className="text-sm text-gray-400">
+        Étude de faisabilité TELOS et coordination de l'équipe via ClickUp. Gestion des tâches et du planning.
+      </p>
+    </div>
+  </div>
 
-          <div className="text-center mt-10 pt-8 border-t border-white/10">
-            <p className="text-gray-300 font-medium text-lg">
-              🎓 Projet réalisé dans le cadre de [Nom de votre école/formation]
-            </p>
-            <p className="text-gray-500 mt-2">
-              Janvier 2026 - Durée : 4 semaines
-            </p>
-          </div>
-        </div>
+  <div className="text-center mt-10 pt-8 border-t border-white/10">
+    <p className="text-gray-300 font-medium text-lg">
+      🎓 Projet réalisé dans le cadre du PFE de l'ECE
+    </p>
+    <p className="text-gray-500 mt-2">
+      2025 - 2026
+    </p>
+  </div>
+</div>
       </div>
     </div>
   )

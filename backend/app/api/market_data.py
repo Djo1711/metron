@@ -74,7 +74,7 @@ async def get_volatility(ticker: str, period: str = "1y"):
 
 @router.get("/trending")
 async def get_trending_stocks():
-    """Get trending stocks"""
+    """Get trending stocks with mini historical data"""
     try:
         tickers = ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'TSLA', 'NVDA', 'META', 'NFLX', 'AMD', 'INTC']
         stocks_data = []
@@ -90,11 +90,17 @@ async def get_trending_stocks():
                     change = current_price - previous_close
                     change_percent = (change / previous_close) * 100
                     
+                    # Get 1 year historical data (more points for better granularity)
+                    hist = stock.history(period="1y")
+                    # Get last 60 points (approx 1 year with daily data)
+                    sparkline_data = [{"price": float(price)} for price in hist['Close'].tail(60)]
+                    
                     stocks_data.append({
                         "ticker": ticker,
                         "name": info.get('shortName', ticker),
                         "price": current_price,
-                        "change": change_percent
+                        "change": change_percent,
+                        "sparkline": sparkline_data
                     })
             except:
                 continue
