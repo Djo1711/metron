@@ -1,10 +1,14 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Area, AreaChart } from 'recharts'
 import { priceProduct, saveSimulation, getQuickPricingData } from '../services/api'
 import { supabase } from '../services/supabase'
 
 export default function Simulation({ isGuest }) {
-  const [selectedProduct, setSelectedProduct] = useState('autocall')
+  const [searchParams] = useSearchParams()
+  const productFromUrl = searchParams.get('product')
+  
+  const [selectedProduct, setSelectedProduct] = useState(productFromUrl || 'autocall')
   const [formData, setFormData] = useState({
     ticker: 'AAPL',
     spot_price: 150,
@@ -65,6 +69,14 @@ export default function Simulation({ isGuest }) {
     { id: 'bearish', name: '📉 Baissier', multiplier: 0.7 },
     { id: 'volatile', name: '⚡ Volatile', multiplier: 1.0, volMultiplier: 1.5 }
   ]
+
+  // Scroll au top et sélectionner le produit de l'URL
+  useEffect(() => {
+    if (productFromUrl && products[productFromUrl]) {
+      setSelectedProduct(productFromUrl)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }, [productFromUrl])
 
   const handleChange = (e) => {
     const { name, value } = e.target
