@@ -19,18 +19,29 @@ app.add_middleware(
 )
 
 # Include routers
-app.include_router(pricing.router, prefix="/api/pricing", tags=["pricing"])
+app.include_router(pricing.router, prefix="/api/pricing", tags=["Pricing"])
 app.include_router(market_data.router, prefix="/api/market", tags=["market"])
 app.include_router(simulations.router, prefix="/api/simulations", tags=["simulations"])
 
 @app.get("/")
 async def root():
     return {
-        "message": "Metron API is running",
-        "version": "0.1.0",
-        "docs": "/docs"
+        "message": "Metron API - Produits Structurés",
+        "version": "1.0.0",
+        "endpoints": {
+            "autocall": "/api/pricing/autocall",
+            "reverse_convertible": "/api/pricing/reverse-convertible",
+            "capital_protected": "/api/pricing/capital-protected",
+            "warrant": "/api/pricing/warrant",
+            "health": "/api/pricing/health"
     }
-
+}
+    
+    
 @app.get("/health")
 async def health_check():
     return {"status": "healthy"}
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
