@@ -4,10 +4,12 @@ import { useNavigate } from 'react-router-dom'
 export default function Learning() {
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState('tutorials')
+  const [selectedProduct, setSelectedProduct] = useState('reverse_convertible')
   const [searchTerm, setSearchTerm] = useState("")
 
   const tutorials = [
     {
+      id: 'reverse_convertible',
       title: "Reverse Convertible",
       icon: "📉",
       description: "Obligation à haut rendement avec risque de conversion en actions",
@@ -92,6 +94,7 @@ export default function Learning() {
     },
     
     {
+      id: 'autocall',
       title: "Autocall / Phoenix",
       icon: "📈",
       description: "Produit avec remboursement anticipé automatique et coupons conditionnels",
@@ -183,6 +186,7 @@ export default function Learning() {
     },
     
     {
+      id: 'capital_protected',
       title: "Capital Garanti",
       icon: "🛡️",
       description: "Protection totale du capital avec participation à la hausse",
@@ -275,6 +279,7 @@ export default function Learning() {
     },
     
     {
+      id: 'warrant',
       title: "Warrant / Turbo",
       icon: "🚀",
       description: "Produit à effet de levier pour amplifier les gains (et pertes)",
@@ -373,12 +378,39 @@ export default function Learning() {
       objective: "Comprendre sur quoi on investit",
       intro: "Les produits financiers reposent toujours sur un actif sous-jacent. Voici les bases pour comprendre ces actifs.",
       terms: [
-        { term: "Actif", definition: "Instrument financier ou réel ayant une valeur économique et pouvant être détenu ou échangé (action, obligation, devise, matière première)." },
-        { term: "Sous-jacent", definition: "Actif financier sur lequel repose un produit dérivé ou un produit structuré. Sa performance détermine le paiement final." },
-        { term: "Action", definition: "Titre de propriété représentant une part du capital d'une entreprise. Son détenteur peut percevoir des dividendes et réaliser une plus-value ou une perte." },
-        { term: "Obligation", definition: "Titre de créance par lequel l'investisseur prête de l'argent à un émetteur en échange d'intérêts et du remboursement du capital à l'échéance." },
-        { term: "Taux", definition: "Pourcentage représentant le coût de l'argent ou le rendement d'un placement sur une période donnée." },
-        { term: "Taux sans risque", definition: "Taux de rendement théorique d'un investissement sans risque de défaut, souvent approximé par les obligations d'État de haute qualité." }
+        { 
+          term: "Actif", 
+          definition: "Un actif est un instrument financier ou réel possédant une valeur économique et pouvant être détenu, échangé ou négocié sur les marchés. Les actifs financiers incluent les actions (parts de propriété dans une entreprise), les obligations (titres de créance), les devises (monnaies étrangères), et les matières premières (or, pétrole, blé, etc.).",
+          details: "Les actifs sont classés en plusieurs catégories : actifs liquides (facilement convertibles en cash comme les actions cotées), actifs réels (immobilier, or physique), et actifs financiers (produits dérivés, obligations). Chaque classe d'actifs présente un profil risque/rendement différent."
+        },
+        { 
+          term: "Sous-jacent", 
+          definition: "Le sous-jacent est l'actif financier de référence sur lequel repose un produit dérivé ou structuré. La valeur et la performance du produit dérivé dépendent directement des variations de prix du sous-jacent.",
+          details: "Par exemple, dans une option sur Apple (AAPL), l'action Apple est le sous-jacent. Si Apple monte de 10%, l'option peut gagner 50% grâce à l'effet de levier. Le choix du sous-jacent est crucial : volatilité, liquidité, et corrélations doivent être analysés.",
+          formula: "Prix Dérivé = f(Prix Sous-jacent, Volatilité, Temps, Taux)"
+        },
+        { 
+          term: "Action", 
+          definition: "Une action est un titre de propriété représentant une fraction du capital social d'une entreprise. En détenant une action, l'investisseur devient actionnaire et peut percevoir des dividendes (partage des bénéfices) et réaliser des plus-values (ou moins-values) lors de la revente.",
+          details: "Les actions offrent un potentiel de rendement élevé mais avec une volatilité importante. Historiquement, les actions surperforment les obligations sur le long terme (8-10% annualisé pour le S&P 500 depuis 1950). Les droits de vote permettent de participer aux assemblées générales."
+        },
+        { 
+          term: "Obligation", 
+          definition: "Une obligation est un titre de créance par lequel un investisseur prête de l'argent à un émetteur (État, entreprise) en échange du paiement d'intérêts périodiques (coupons) et du remboursement du capital (principal) à l'échéance.",
+          details: "Les obligations sont considérées moins risquées que les actions. Leur prix varie inversement aux taux d'intérêt : si les taux montent, le prix des obligations existantes baisse. Les obligations d'État (Treasury bonds) sont considérées comme sans risque de défaut.",
+          formula: "Prix Obligation = Σ (Coupon / (1+r)ᵗ) + Principal / (1+r)ⁿ"
+        },
+        { 
+          term: "Taux d'intérêt", 
+          definition: "Le taux d'intérêt représente le coût de l'argent ou le rendement d'un placement sur une période donnée, exprimé en pourcentage annuel. Il rémunère le prêteur et reflète le risque et la durée du prêt.",
+          details: "Les taux d'intérêt influencent toute l'économie : ils affectent le coût des crédits immobiliers, les rendements obligataires, la valorisation des actions (via l'actualisation des flux futurs), et les taux de change. Les banques centrales (Fed, BCE) pilotent l'économie via leurs taux directeurs."
+        },
+        { 
+          term: "Taux sans risque", 
+          definition: "Le taux sans risque est le taux de rendement théorique d'un investissement sans risque de défaut. En pratique, on utilise le rendement des obligations d'État de haute qualité (US Treasury à 10 ans, Bund allemand) comme proxy.",
+          details: "Le taux sans risque sert de référence pour évaluer tous les autres actifs. En finance quantitative, il est utilisé dans le modèle de Black-Scholes pour actualiser les flux futurs. Actuellement, les taux sans risque sont autour de 4-5% aux USA (2024-2025).",
+          formula: "Rendement Actif = Taux sans risque + Prime de risque"
+        }
       ]
     },
     {
@@ -386,13 +418,45 @@ export default function Learning() {
       objective: "Comprendre comment les prix sont définis",
       intro: "La valeur d'un produit financier dépend de paramètres de marché observables et de conditions futures.",
       terms: [
-        { term: "Spot", definition: "Prix actuel de marché d'un actif, observable à un instant donné." },
-        { term: "Fair Value", definition: "Valeur théorique d'un instrument financier calculée à partir de modèles et des conditions de marché." },
-        { term: "Rendement", definition: "Gain ou perte généré par un investissement sur une période donnée, exprimé en pourcentage du capital investi." },
-        { term: "Nominal", definition: "Montant de référence servant au calcul des paiements (coupons, remboursements) d'un produit financier." },
-        { term: "Strike", definition: "Prix auquel le détenteur d'une option peut acheter ou vendre le sous-jacent." },
-        { term: "Échéance", definition: "Date à laquelle un produit financier arrive à maturité et où le paiement final est effectué." },
-        { term: "Duration", definition: "Mesure de la sensibilité du prix d'une obligation ou d'un produit aux variations des taux d'intérêt." }
+        { 
+          term: "Prix Spot (S₀)", 
+          definition: "Le prix spot est le prix actuel de marché d'un actif, observable en temps réel à un instant donné. C'est le prix auquel vous pouvez acheter ou vendre immédiatement l'actif.",
+          details: "Le spot est déterminé par l'offre et la demande sur le marché. Pour les actions, c'est le dernier prix de transaction. Pour les devises, c'est le taux de change instantané. Le spot sert de référence pour fixer le prix des produits dérivés."
+        },
+        { 
+          term: "Fair Value (Valeur Théorique)", 
+          definition: "La fair value est la valeur théorique d'un instrument financier, calculée à partir de modèles mathématiques (Black-Scholes, Monte Carlo) et des conditions actuelles de marché (spot, volatilité, taux, temps).",
+          details: "La fair value permet de déterminer si un produit est surévalué ou sous-évalué par rapport au marché. Un écart entre le prix de marché et la fair value représente une opportunité d'arbitrage. Les traders institutionnels utilisent des modèles sophistiqués pour calculer la fair value en continu.",
+          formula: "Fair Value = 𝔼[Payoff actualisé] = e⁻ʳᵀ × 𝔼[Payoff(Sᴛ)]"
+        },
+        { 
+          term: "Rendement", 
+          definition: "Le rendement mesure le gain ou la perte généré par un investissement sur une période, exprimé en pourcentage du capital investi initial. Il inclut les plus-values et les revenus (dividendes, coupons).",
+          details: "Le rendement peut être simple (gain/capital initial) ou composé (réinvestissement des gains). Le rendement annualisé permet de comparer des investissements de durées différentes. Attention : un rendement élevé s'accompagne généralement d'un risque élevé.",
+          formula: "Rendement = (Valeur Finale - Valeur Initiale + Revenus) / Valeur Initiale × 100%"
+        },
+        { 
+          term: "Nominal (Principal)", 
+          definition: "Le nominal, aussi appelé principal ou montant notionnel, est le montant de référence servant de base au calcul des paiements d'un produit financier (coupons d'obligations, payoff de dérivés).",
+          details: "Dans une obligation de nominal 1000€ avec coupon 5%, vous recevez 50€ par an. Pour les produits structurés, le nominal est votre capital investi initial. À ne pas confondre avec la valeur de marché qui peut fluctuer."
+        },
+        { 
+          term: "Strike (Prix d'exercice)", 
+          definition: "Le strike est le prix prédéterminé auquel le détenteur d'une option peut acheter (call) ou vendre (put) l'actif sous-jacent, indépendamment du prix de marché actuel.",
+          details: "Le strike détermine la rentabilité d'une option. Pour un call, si le prix spot > strike, l'option est 'in the money' (ITM) et a une valeur intrinsèque positive. Si spot < strike, elle est 'out of the money' (OTM). Le choix du strike est crucial : plus il est éloigné du spot, moins l'option coûte cher mais moins elle a de chances d'être rentable.",
+          formula: "Valeur intrinsèque Call = Max(0, Spot - Strike)"
+        },
+        { 
+          term: "Échéance (Maturité)", 
+          definition: "L'échéance est la date future à laquelle un produit financier arrive à terme et où le paiement final est effectué. Après cette date, le produit cesse d'exister.",
+          details: "Plus l'échéance est lointaine, plus l'incertitude est grande et plus la valeur temps des options est élevée. Les produits structurés ont généralement des maturités de 1 à 5 ans. À l'échéance, seule la valeur intrinsèque subsiste (valeur temps = 0)."
+        },
+        { 
+          term: "Duration", 
+          definition: "La duration mesure la sensibilité du prix d'une obligation aux variations des taux d'intérêt. Elle représente la durée de vie moyenne pondérée des flux de trésorerie actualisés.",
+          details: "Une duration de 5 ans signifie qu'une hausse de 1% des taux entraîne une baisse d'environ 5% du prix de l'obligation. La duration modifiée ajuste ce concept pour une meilleure précision. C'est un indicateur clé pour gérer le risque de taux.",
+          formula: "Duration = - (1/P) × (dP/dr)"
+        }
       ]
     },
     {
@@ -400,11 +464,35 @@ export default function Learning() {
       objective: "Comprendre les briques de base des produits structurés",
       intro: "Les produits dérivés sont des instruments dont la valeur dépend de celle d'un sous-jacent.",
       terms: [
-        { term: "Option", definition: "Contrat financier donnant le droit, mais non l'obligation, d'acheter ou de vendre un actif à un prix fixé à l'avance." },
-        { term: "Call", definition: "Option donnant le droit d'acheter le sous-jacent à un prix déterminé (strike) jusqu'à ou à une date donnée." },
-        { term: "Put", definition: "Option donnant le droit de vendre le sous-jacent à un prix déterminé (strike) jusqu'à ou à une date donnée." },
-        { term: "Barrière", definition: "Niveau de prix du sous-jacent qui, s'il est atteint ou franchi, modifie les caractéristiques ou le remboursement du produit." },
-        { term: "Digit (Option digitale)", definition: "Option qui verse un montant fixe si une condition prédéfinie est remplie à une date donnée, sinon rien." }
+        { 
+          term: "Option", 
+          definition: "Une option est un contrat financier donnant à son détenteur le droit, mais non l'obligation, d'acheter (call) ou de vendre (put) un actif sous-jacent à un prix fixé à l'avance (strike), jusqu'à ou à une date d'échéance déterminée.",
+          details: "Les options sont les briques fondamentales des produits structurés. Le détenteur de l'option paie une prime pour acquérir ce droit. Les options sont valorisées avec le modèle de Black-Scholes qui intègre 5 paramètres : spot, strike, volatilité, taux, et temps jusqu'à échéance.",
+          formula: "C = S₀N(d₁) - Ke⁻ʳᵀN(d₂) où d₁ = [ln(S₀/K) + (r + σ²/2)T] / (σ√T)"
+        },
+        { 
+          term: "Call (Option d'achat)", 
+          definition: "Un call est une option donnant le droit d'acheter l'actif sous-jacent au prix d'exercice (strike) jusqu'à l'échéance. On achète un call quand on anticipe une hausse du sous-jacent.",
+          details: "Le call a une valeur si le prix spot dépasse le strike à l'échéance. Exemple : call Apple strike 150$, si Apple termine à 170$, la valeur intrinsèque est 20$ par action. Le risque maximum est limité à la prime payée. Les calls sont utilisés pour spéculer ou se couvrir contre une hausse.",
+          formula: "Payoff Call = Max(0, Sᴛ - K) où Sᴛ = prix final et K = strike"
+        },
+        { 
+          term: "Put (Option de vente)", 
+          definition: "Un put est une option donnant le droit de vendre l'actif sous-jacent au prix d'exercice (strike) jusqu'à l'échéance. On achète un put quand on anticipe une baisse du sous-jacent ou pour se protéger.",
+          details: "Le put a une valeur si le prix spot passe sous le strike. C'est une assurance contre la baisse : si vous détenez des actions Apple à 150$ et achetez un put strike 140$, vous êtes protégé contre une baisse en dessous de 140$. Les puts sont essentiels pour les stratégies de hedging.",
+          formula: "Payoff Put = Max(0, K - Sᴛ)"
+        },
+        { 
+          term: "Barrière", 
+          definition: "Une barrière est un niveau de prix prédéfini du sous-jacent qui, s'il est atteint ou franchi pendant la vie du produit, déclenche ou annule certains paiements ou modifie les caractéristiques du produit structuré.",
+          details: "Les options à barrière sont moins chères que les options vanilles car elles comportent une condition supplémentaire. Types courants : knock-in (s'active si la barrière est touchée), knock-out (s'annule si touchée), down-and-in (barrière en dessous du spot), up-and-out (barrière au-dessus). Très utilisées dans les produits structurés pour réduire les coûts."
+        },
+        { 
+          term: "Option Digitale (Binary)", 
+          definition: "Une option digitale verse un montant fixe prédéterminé si une condition est remplie à l'échéance, sinon elle ne verse rien. C'est un pari binaire tout-ou-rien sur la direction du marché.",
+          details: "Exemple : option digitale 'Apple > 150 qui paie 100$ si vrai, 0$ sinon. Les digitales ont un payoff discontinu, ce qui crée un gamma très élevé près de la barrière. Elles sont utilisées dans les produits structurés pour créer des profils de paiement sur mesure.",
+          formula: "Payoff = N × 𝟙(Sᴛ > K) où N = montant fixe, 𝟙 = fonction indicatrice"
+        }
       ]
     },
     {
@@ -412,8 +500,22 @@ export default function Learning() {
       objective: "Comprendre l'incertitude et son impact sur les prix",
       intro: "La volatilité mesure l'ampleur des variations de prix et joue un rôle clé dans la valorisation des options.",
       terms: [
-        { term: "Volatilité historique", definition: "Mesure statistique des variations passées du prix d'un actif sur une période donnée." },
-        { term: "Volatilité implicite", definition: "Volatilité anticipée par le marché, déduite du prix des options et reflétant les attentes futures." }
+        { 
+          term: "Volatilité (σ)", 
+          definition: "La volatilité mesure l'amplitude des fluctuations du prix d'un actif sur une période donnée. Elle quantifie le risque : plus la volatilité est élevée, plus les mouvements de prix sont imprévisibles et importants.",
+          details: "La volatilité s'exprime en pourcentage annualisé. Une volatilité de 25% pour Apple signifie qu'on s'attend à ce que le prix varie d'environ ±25% sur un an (avec 68% de probabilité dans une distribution normale). C'est le paramètre le plus important pour pricer les options.",
+          formula: "σ = √(Σ(rᵢ - r̄)² / (n-1)) × √252 où rᵢ = rendement journalier"
+        },
+        { 
+          term: "Volatilité Historique", 
+          definition: "La volatilité historique est calculée à partir des variations de prix passées observées sur une période donnée (généralement 30, 60, ou 90 jours). Elle mesure ce qui s'est réellement passé.",
+          details: "Méthode de calcul : on prend l'écart-type des rendements journaliers et on l'annualise en multipliant par √252 (nombre de jours de trading par an). La volatilité historique sert de référence mais ne prédit pas nécessairement la volatilité future."
+        },
+        { 
+          term: "Volatilité Implicite", 
+          definition: "La volatilité implicite est la volatilité anticipée par le marché, extraite des prix actuels des options en inversant le modèle de Black-Scholes. Elle reflète les attentes futures des investisseurs.",
+          details: "Si la volatilité implicite est à 30% mais la volatilité historique à 20%, le marché anticipe plus d'incertitude à venir. Le VIX (indice de volatilité du S&P 500) mesure la volatilité implicite et est surnommé 'l'indice de la peur'. Une volatilité implicite élevée rend les options plus chères."
+        }
       ]
     },
     {
@@ -421,13 +523,47 @@ export default function Learning() {
       objective: "Comprendre comment un produit réagit aux marchés",
       intro: "Les Greeks mesurent la sensibilité du prix d'un produit dérivé aux variations des paramètres de marché.",
       terms: [
-        { term: "Greeks", definition: "Indicateurs mesurant la sensibilité du prix d'un produit dérivé aux variations des paramètres de marché." },
-        { term: "Delta", definition: "Sensibilité du prix du produit à une variation du prix du sous-jacent." },
-        { term: "Gamma", definition: "Variation du delta lorsque le prix du sous-jacent évolue." },
-        { term: "Vega", definition: "Sensibilité du prix du produit à une variation de la volatilité." },
-        { term: "Volga", definition: "Sensibilité du vega à une variation de la volatilité, mesurant la convexité par rapport à la volatilité." },
-        { term: "Theta", definition: "Impact de l'écoulement du temps sur la valeur du produit, aussi appelé érosion temporelle." },
-        { term: "Rho", definition: "Sensibilité du prix du produit à une variation des taux d'intérêt." }
+        { 
+          term: "Greeks (Grecs)", 
+          definition: "Les Greeks sont des indicateurs quantifiant la sensibilité du prix d'une option ou d'un produit structuré aux changements des paramètres de marché. Ils permettent de gérer et couvrir les risques.",
+          details: "Les principaux Greeks sont : Delta (sensibilité au spot), Gamma (sensibilité du delta), Vega (sensibilité à la volatilité), Theta (érosion temporelle), Rho (sensibilité aux taux). Les traders professionnels surveillent constamment leurs Greeks pour neutraliser les risques indésirables via le delta-hedging."
+        },
+        { 
+          term: "Delta (Δ)", 
+          definition: "Le delta mesure la variation du prix de l'option pour une variation unitaire du prix du sous-jacent. C'est la dérivée première du prix de l'option par rapport au spot.",
+          details: "Un delta de 0.5 signifie que si l'action monte de 1$, l'option gagne 0.50$. Le delta d'un call varie de 0 (très OTM) à 1 (très ITM). Le delta d'un put varie de -1 à 0. Un portefeuille delta-neutre n'est pas affecté par de petits mouvements du sous-jacent.",
+          formula: "Δ = ∂V/∂S où V = prix option, S = prix spot"
+        },
+        { 
+          term: "Gamma (Γ)", 
+          definition: "Le gamma mesure la variation du delta lorsque le prix du sous-jacent change. C'est la dérivée seconde du prix de l'option par rapport au spot, ou la convexité.",
+          details: "Un gamma élevé signifie que le delta change rapidement. Les options ATM (at-the-money) ont le gamma le plus élevé. Le gamma est positif pour les acheteurs d'options et négatif pour les vendeurs. Gérer le gamma est crucial pour éviter des pertes importantes lors de mouvements brusques.",
+          formula: "Γ = ∂²V/∂S² = ∂Δ/∂S"
+        },
+        { 
+          term: "Vega (ν)", 
+          definition: "Le vega mesure la sensibilité du prix de l'option à une variation de 1% de la volatilité implicite. C'est un paramètre clé pour mesurer le risque de volatilité.",
+          details: "Un vega de 15 signifie que si la volatilité passe de 25% à 26%, l'option gagne 15$. Le vega est toujours positif pour les acheteurs d'options (la hausse de volatilité augmente la valeur). Les options à long terme et ATM ont le vega le plus élevé. Les traders 'vendeurs de volatilité' ont un vega négatif.",
+          formula: "ν = ∂V/∂σ"
+        },
+        { 
+          term: "Volga (Vomma)", 
+          definition: "Le volga est la sensibilité du vega aux changements de volatilité, ou la convexité par rapport à la volatilité. C'est la dérivée seconde du prix par rapport à la volatilité.",
+          details: "Le volga mesure comment le vega change quand la volatilité change. Important pour gérer le risque de volatilité de second ordre, particulièrement dans les produits exotiques et les stratégies de volatilité complexes.",
+          formula: "Volga = ∂²V/∂σ² = ∂ν/∂σ"
+        },
+        { 
+          term: "Theta (Θ)", 
+          definition: "Le theta mesure l'érosion temporelle de la valeur de l'option : combien l'option perd de valeur chaque jour qui passe, toutes choses égales par ailleurs. Le temps est l'ennemi de l'acheteur d'options.",
+          details: "Le theta est généralement négatif pour les acheteurs d'options (perte de valeur avec le temps) et positif pour les vendeurs. Plus on se rapproche de l'échéance, plus le theta s'accélère. Les options ATM ont le theta le plus élevé. Stratégie courante : vendre des options pour capturer le theta.",
+          formula: "Θ = -∂V/∂t"
+        },
+        { 
+          term: "Rho (ρ)", 
+          definition: "Le rho mesure la sensibilité du prix de l'option à une variation de 1% du taux d'intérêt sans risque. C'est généralement le Greek le moins important en pratique.",
+          details: "Un rho de 10 signifie que si les taux passent de 4% à 5%, l'option gagne 10$. Le rho est plus important pour les options à long terme. Les calls ont un rho positif (hausse des taux = hausse de valeur), les puts un rho négatif.",
+          formula: "ρ = ∂V/∂r"
+        }
       ]
     },
     {
@@ -435,7 +571,11 @@ export default function Learning() {
       objective: "Comprendre ce qu'est un produit structuré",
       intro: "Les produits structurés combinent plusieurs instruments financiers pour offrir un profil rendement/risque spécifique.",
       terms: [
-        { term: "Produit structuré", definition: "Instrument financier combinant généralement une obligation et un ou plusieurs produits dérivés afin d'offrir un rendement et un profil de risque spécifiques." }
+        { 
+          term: "Produit Structuré", 
+          definition: "Un produit structuré est un instrument financier combinant généralement une composante obligataire (pour la protection ou le rendement fixe) avec un ou plusieurs produits dérivés (options, barrières) afin de créer un profil rendement/risque sur mesure.",
+          details: "Les produits structurés permettent d'accéder à des stratégies sophistiquées normalement réservées aux institutionnels. Ils peuvent offrir une protection du capital, des coupons élevés, une participation à la hausse, ou des effets de levier. Exemples : autocalls, reverse convertibles, capital protégés, warrants. Le marché mondial représente plusieurs trillions de dollars."
+        }
       ]
     }
   ]
@@ -456,6 +596,8 @@ export default function Learning() {
     navigate(`/simulation?product=${productType}`)
   }
 
+  const selectedTutorial = tutorials.find(t => t.id === selectedProduct)
+
   return (
     <div className="min-h-screen bg-gradient-dark py-12">
       <div className="max-w-6xl mx-auto px-4">
@@ -468,7 +610,7 @@ export default function Learning() {
           </p>
         </div>
 
-        {/* Onglets */}
+        {/* Onglets principaux */}
         <div className="flex justify-center gap-4 mb-8">
           <button
             onClick={() => setActiveTab('tutorials')}
@@ -496,20 +638,42 @@ export default function Learning() {
 
         {/* Tutoriels */}
         {activeTab === 'tutorials' && (
-          <div className="space-y-8">
-            {tutorials.map((tutorial, index) => (
-              <div
-                key={index}
-                className="glass-card p-8 border border-metron-purple/20 card-hover"
-              >
+          <div>
+            {/* Sélection du produit */}
+            <div className="glass-card p-6 mb-8 border border-metron-purple/30">
+              <h2 className="text-2xl font-bold text-white mb-4 text-center">
+                Choisissez un produit structuré
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                {tutorials.map((tutorial) => (
+                  <button
+                    key={tutorial.id}
+                    onClick={() => setSelectedProduct(tutorial.id)}
+                    className={`p-4 rounded-lg border-2 transition-all ${
+                      selectedProduct === tutorial.id
+                        ? 'border-metron-purple bg-metron-purple/20 shadow-neon-purple'
+                        : 'border-white/10 hover:border-metron-purple/50'
+                    }`}
+                  >
+                    <div className="text-4xl mb-2">{tutorial.icon}</div>
+                    <h3 className="font-bold text-white mb-1 text-sm">{tutorial.title}</h3>
+                    <p className="text-xs text-gray-400">{tutorial.description}</p>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Contenu du tutoriel sélectionné */}
+            {selectedTutorial && (
+              <div className="glass-card p-8 border border-metron-purple/20">
                 {/* En-tête */}
                 <div className="flex items-start gap-4 mb-6">
-                  <div className="text-5xl">{tutorial.icon}</div>
+                  <div className="text-5xl">{selectedTutorial.icon}</div>
                   <div className="flex-1">
-                    <h2 className="text-3xl font-bold text-white mb-2">
-                      {tutorial.title}
+                    <h2 className="text-4xl font-bold text-white mb-2">
+                      {selectedTutorial.title}
                     </h2>
-                    <p className="text-gray-400 text-lg">{tutorial.description}</p>
+                    <p className="text-gray-400 text-lg">{selectedTutorial.description}</p>
                   </div>
                 </div>
 
@@ -520,7 +684,7 @@ export default function Learning() {
                   </h3>
                   <div className="bg-white/5 rounded-xl p-5 border border-white/10">
                     <ul className="space-y-2 text-gray-300">
-                      {tutorial.whatIs.map((item, i) => (
+                      {selectedTutorial.whatIs.map((item, i) => (
                         <li key={i} className="flex gap-3">
                           <span className="text-metron-purple mt-1">•</span>
                           <span>{item}</span>
@@ -536,7 +700,7 @@ export default function Learning() {
                     ⚙️ Comment ça fonctionne ?
                   </h3>
                   <div className="space-y-3">
-                    {tutorial.howItWorks.map((step, i) => (
+                    {selectedTutorial.howItWorks.map((step, i) => (
                       <div key={i} className="bg-white/5 rounded-xl p-4 border border-white/10">
                         <div className="flex items-start gap-3">
                           <div className="flex-shrink-0 w-8 h-8 rounded-full bg-metron-purple/30 flex items-center justify-center text-white font-bold">
@@ -558,7 +722,7 @@ export default function Learning() {
                     🎮 Guide de Simulation Pas à Pas
                   </h3>
                   <div className="space-y-4">
-                    {tutorial.simulationSteps.map((stepSection, idx) => (
+                    {selectedTutorial.simulationSteps.map((stepSection, idx) => (
                       <div key={idx} className="bg-gradient-to-r from-metron-purple/10 to-metron-blue/10 rounded-xl p-5 border border-metron-purple/30">
                         <h4 className="font-bold text-white mb-4 text-lg">{stepSection.section}</h4>
                         <div className="space-y-3">
@@ -582,15 +746,15 @@ export default function Learning() {
                 {/* Exemple concret */}
                 <div className="mb-6">
                   <h3 className="text-xl font-bold text-metron-purple mb-3">
-                    💡 {tutorial.example.scenario}
+                    💡 {selectedTutorial.example.scenario}
                   </h3>
                   <div className="bg-white/5 rounded-xl p-5 border border-white/10 mb-4">
                     <p className="text-gray-300 mb-4">
                       <span className="font-semibold text-white">Configuration : </span>
-                      {tutorial.example.setup}
+                      {selectedTutorial.example.setup}
                     </p>
                     <div className="space-y-3">
-                      {tutorial.example.outcomes.map((outcome, i) => (
+                      {selectedTutorial.example.outcomes.map((outcome, i) => (
                         <div key={i} className={`p-4 rounded-lg border ${
                           outcome.profit.startsWith('+') 
                             ? 'bg-green-500/10 border-green-500/30' 
@@ -627,7 +791,7 @@ export default function Learning() {
                   </h3>
                   <div className="bg-green-500/10 rounded-xl p-5 border border-green-500/30">
                     <ul className="space-y-2 text-gray-300">
-                      {tutorial.advantages.map((item, i) => (
+                      {selectedTutorial.advantages.map((item, i) => (
                         <li key={i} className="flex gap-3">
                           <span className="text-green-400 mt-1">✓</span>
                           <span>{item}</span>
@@ -644,7 +808,7 @@ export default function Learning() {
                   </h3>
                   <div className="bg-red-500/10 rounded-xl p-5 border border-red-500/30">
                     <ul className="space-y-2 text-gray-300">
-                      {tutorial.risks.map((item, i) => (
+                      {selectedTutorial.risks.map((item, i) => (
                         <li key={i} className="flex gap-3">
                           <span className="text-red-400 mt-1">⚠</span>
                           <span>{item}</span>
@@ -656,13 +820,13 @@ export default function Learning() {
 
                 {/* Bouton Simulation */}
                 <button
-                  onClick={() => handleGoToSimulation(tutorial.productType)}
+                  onClick={() => handleGoToSimulation(selectedTutorial.productType)}
                   className="mt-4 btn-neon w-full text-lg py-4"
                 >
                   🚀 Essayer dans la Simulation →
                 </button>
               </div>
-            ))}
+            )}
           </div>
         )}
 
@@ -687,16 +851,28 @@ export default function Learning() {
                   </h2>
                   <p className="text-gray-400 mb-6 text-center">{section.intro}</p>
 
-                  <div className="grid md:grid-cols-2 gap-6">
+                  <div className="grid md:grid-cols-1 gap-6">
                     {section.terms.map((item, index) => (
                       <div
                         key={index}
-                        className="bg-white/5 p-5 rounded-xl border border-white/10 hover:border-metron-purple/50 transition-all"
+                        className="bg-white/5 p-6 rounded-xl border border-white/10 hover:border-metron-purple/50 transition-all"
                       >
-                        <h3 className="text-lg font-bold text-metron-purple mb-2">
+                        <h3 className="text-2xl font-bold text-metron-purple mb-3">
                           {item.term}
                         </h3>
-                        <p className="text-gray-300 text-sm">{item.definition}</p>
+                        <p className="text-gray-300 mb-3 leading-relaxed">{item.definition}</p>
+                        
+                        {item.details && (
+                          <div className="bg-white/5 p-4 rounded-lg border border-white/5 mb-3">
+                            <p className="text-gray-400 text-sm leading-relaxed">{item.details}</p>
+                          </div>
+                        )}
+                        
+                        {item.formula && (
+                          <div className="bg-metron-purple/10 p-4 rounded-lg border border-metron-purple/30">
+                            <p className="font-mono text-metron-purple text-sm">{item.formula}</p>
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
