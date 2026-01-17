@@ -48,9 +48,24 @@ async def get_stock_history(ticker: str, period: str = "1mo"):
         stock = yf.Ticker(ticker)
         hist = stock.history(period=period)
         
+        # Reset index to get Date as a column
+        hist_reset = hist.reset_index()
+        
+        # Convert to dict with proper date formatting
+        data = []
+        for _, row in hist_reset.iterrows():
+            data.append({
+                "Date": row['Date'].strftime('%Y-%m-%d'),  # Format ISO
+                "Open": float(row['Open']),
+                "High": float(row['High']),
+                "Low": float(row['Low']),
+                "Close": float(row['Close']),
+                "Volume": int(row['Volume'])
+            })
+
         return {
             "ticker": ticker,
-            "data": hist.to_dict('records')
+            "data": data
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
