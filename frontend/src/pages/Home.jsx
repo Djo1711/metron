@@ -69,47 +69,47 @@ export default function Home() {
         </div>
 
         {/* Trending Stocks with Sparklines */}
-        <div className="mb-16">
-          <h2 className="text-3xl font-bold text-white mb-6">
-            📈 Actions Tendances
-          </h2>
+<div className="mb-16">
+  <h2 className="text-3xl font-bold text-white mb-6">
+    📈 Actions Tendances
+  </h2>
 
-          {loading ? (
-            <div className="text-center py-12">
-              <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-metron-purple"></div>
-              <p className="text-gray-400 mt-4">Chargement des données de marché...</p>
-            </div>
-          ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-4">
-              {stocks.map((stock) => (
-                <div
-                  key={stock.ticker}
-                  className="glass-card p-5 card-hover border border-metron-purple/20 hover:border-metron-purple/50"
-                >
-                  <h3 className="font-bold text-xl text-white mb-1">{stock.ticker}</h3>
-                  <p className="text-sm text-gray-400 truncate mb-3">{stock.name}</p>
-                  <p className="text-2xl font-bold text-white mb-2">${stock.price}</p>
-                  <p
-                    className={`text-sm font-semibold mb-3 ${
-                      stock.change >= 0 ? 'text-green-400' : 'text-red-400'
-                    }`}
-                  >
-                    {stock.change >= 0 ? '↑' : '↓'} {Math.abs(stock.change).toFixed(2)}%
-                  </p>
-                  {/* SPARKLINE CHART */}
-                  {stock.sparkline && stock.sparkline.length > 0 && (
-                    <div className="mt-2">
-                      <SparklineChart 
-                        data={stock.sparkline} 
-                        color={stock.change >= 0 ? '#4ade80' : '#f87171'} 
-                      />
-                    </div>
-                  )}
-                </div>
-              ))}
+  {loading ? (
+    <div className="text-center py-12">
+      <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-metron-purple"></div>
+      <p className="text-gray-400 mt-4">Chargement des données de marché...</p>
+    </div>
+  ) : (
+    <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-4">
+      {stocks.map((stock) => (
+        <Link
+          key={stock.ticker}
+          to={`/market?ticker=${stock.ticker}`}
+          className="glass-card p-5 card-hover border border-metron-purple/20 hover:border-metron-purple/50 cursor-pointer transition-all"
+        >
+          <h3 className="font-bold text-xl text-white mb-1">{stock.ticker}</h3>
+          <p className="text-sm text-gray-400 truncate mb-3">{stock.name}</p>
+          <p className="text-2xl font-bold text-white mb-2">${stock.price}</p>
+          <p
+            className={`text-sm font-semibold mb-3 ${
+              stock.change >= 0 ? 'text-green-400' : 'text-red-400'
+            }`}
+          >
+            {stock.change >= 0 ? '↑' : '↓'} {Math.abs(stock.change).toFixed(2)}%
+          </p>
+          {stock.sparkline && stock.sparkline.length > 0 && (
+            <div className="mt-2">
+              <SparklineChart 
+                data={stock.sparkline} 
+                color={stock.change >= 0 ? '#4ade80' : '#f87171'} 
+              />
             </div>
           )}
-        </div>
+        </Link>
+      ))}
+    </div>
+  )}
+</div>
 
         {/* Team Section */}
         <div className="glass-card p-12 border border-metron-purple/30">

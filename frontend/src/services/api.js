@@ -30,13 +30,6 @@ export const deleteSimulation = (simulationId) => api.delete(`/api/simulations/$
 
 export default api
 /**
- * AJOUTE CES FONCTIONS À TON api.js EXISTANT
- * (Garde toutes tes fonctions actuelles, ajoute juste celles-ci)
- */
-
-// ===== NOUVEAUX ENDPOINTS PRICING (à ajouter) =====
-
-/**
  * Price Autocall / Phoenix
  */
 export const priceAutocall = (data) => 
@@ -139,4 +132,10 @@ export const getQuickPricingData = async (ticker) => {
     console.error('Error fetching quick data:', error)
     throw error
   }
+}
+// Ajoute cette fonction
+export const searchStock = async (query) => {
+  return axios.get(`${API_URL}/api/search/search`, {
+    params: { query }
+  })
 }

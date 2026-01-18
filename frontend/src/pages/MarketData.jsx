@@ -1,14 +1,17 @@
-import { useState } from 'react'
-import { getStockQuote, getStockHistory } from '../services/api'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
+import { getStockQuote, getStockHistory, searchStock } from '../services/api'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 
 export default function MarketData() {
+  const [searchParams] = useSearchParams()
   const [ticker, setTicker] = useState('')
   const [stockData, setStockData] = useState(null)
   const [historyData, setHistoryData] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [period, setPeriod] = useState('1mo')
+  const [searchSuggestion, setSearchSuggestion] = useState('')
 
   const periods = [
     { label: '1J', value: '1d' },
@@ -20,20 +23,61 @@ export default function MarketData() {
     { label: '5A', value: '5y' },
   ]
 
+  const newsLinks = [
+    { name: 'Bloomberg', url: 'https://www.bloomberg.com/markets', emoji: '📰' },
+    { name: 'Financial Times', url: 'https://www.ft.com/markets', emoji: '📊' },
+    { name: 'Reuters Finance', url: 'https://www.reuters.com/finance', emoji: '🌐' },
+    { name: 'Yahoo Finance', url: 'https://finance.yahoo.com/', emoji: '💼' },
+    { name: 'Les Échos', url: 'https://www.lesechos.fr/finance-marches', emoji: '🇫🇷' },
+    { name: 'Investing.com', url: 'https://fr.investing.com/', emoji: '📈' },
+  ]
+
+  // Auto-load ticker from URL params
+  useEffect(() => {
+    const tickerParam = searchParams.get('ticker')
+    if (tickerParam) {
+      setTicker(tickerParam)
+      loadStockData(tickerParam)
+    }
+  }, [searchParams])
+
   const handleSearch = async (e) => {
     e.preventDefault()
     if (!ticker.trim()) return
     
     setLoading(true)
     setError(null)
+    setSearchSuggestion('')
     
     try {
+      // Utilise l'endpoint de recherche intelligent
+      const searchResponse = await searchStock(ticker)
+      const resolvedTicker = searchResponse.data.ticker
+      
+      // Affiche un message si fuzzy match
+      if (searchResponse.data.match_type === 'fuzzy') {
+        setSearchSuggestion(`Résultat pour "${searchResponse.data.matched_name}"`)
+      }
+      
+      await loadStockData(resolvedTicker)
+    } catch (error) {
+      setError(error.response?.data?.detail || 'Action non trouvée ou erreur API')
+      setStockData(null)
+      setHistoryData([])
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const loadStockData = async (tickerSymbol) => {
+    setLoading(true)
+    try {
       // Get quote
-      const quoteResponse = await getStockQuote(ticker.toUpperCase())
+      const quoteResponse = await getStockQuote(tickerSymbol.toUpperCase())
       setStockData(quoteResponse.data)
       
       // Get history
-      await loadHistory(ticker.toUpperCase(), period)
+      await loadHistory(tickerSymbol.toUpperCase(), period)
     } catch (error) {
       setError('Action non trouvée ou erreur API')
       setStockData(null)
@@ -77,12 +121,12 @@ export default function MarketData() {
 
         {/* Search Box */}
         <div className="glass-card p-8 mb-8 border border-metron-purple/30">
-          <form onSubmit={handleSearch} className="flex gap-4">
+          <form onSubmit={handleSearch} className="flex gap-4 mb-4">
             <input
               type="text"
               value={ticker}
               onChange={(e) => setTicker(e.target.value)}
-              placeholder="Entrez un ticker (ex: AAPL, MSFT, GOOGL)"
+              placeholder="Ticker ou nom d'entreprise (ex: AAPL, Apple, Micros...)"
               className="input-futuristic flex-1 text-lg"
             />
             <button
@@ -93,6 +137,30 @@ export default function MarketData() {
               {loading ? 'Recherche...' : '🔍 Rechercher'}
             </button>
           </form>
+          {searchSuggestion && (
+            <p className="text-sm text-metron-purple mb-2">💡 {searchSuggestion}</p>
+          )}
+          <p className="text-xs text-gray-500">
+            💡 Astuce : Recherchez par ticker (AAPL) ou par nom (Apple, Micros, Amazn...)
+          </p>
+        </div>
+
+        {/* News Section */}
+        <div className="glass-card p-6 mb-8 border border-metron-blue/30">
+          <h3 className="text-xl font-bold text-white mb-4">📰 Actualités Financières</h3>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+            {newsLinks.map((link) => (
+              <a
+                key={link.name}
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="glass-card p-4 text-center hover:border-metron-purple/50 border border-white/10 transition-all card-hover">
+                <div className="text-3xl mb-2">{link.emoji}</div>
+                <p className="text-sm text-white font-medium">{link.name}</p>
+              </a>
+            ))}
+          </div>
         </div>
 
         {/* Error Message */}
@@ -291,7 +359,7 @@ export default function MarketData() {
             <div className="text-7xl mb-6">📈</div>
             <p className="text-gray-400 text-xl mb-2">Recherchez une action pour commencer</p>
             <p className="text-gray-500 text-sm">
-              Essayez des tickers populaires comme AAPL, MSFT, TSLA, GOOGL
+              Essayez : Apple, MSFT, Amazn, Tesla, Googl...
             </p>
           </div>
         )}
