@@ -8,23 +8,23 @@ export default function NotFound() {
           <h1 className="text-9xl font-bold mb-4">
             <span className="gradient-text">404</span>
           </h1>
-          <p className="text-3xl font-bold text-white mb-4">Page Not Found</p>
+          <p className="text-3xl font-bold text-white mb-4">Page Introuvable</p>
           <p className="text-gray-400 text-lg mb-8">
-            Oops! The page you're looking for doesn't exist.
+            Oups ! La page que vous recherchez n'existe pas.
           </p>
         </div>
 
         <div className="glass-card p-8 inline-block border border-metron-purple/30">
-          <p className="text-gray-300 mb-6">Here are some helpful links instead:</p>
+          <p className="text-gray-300 mb-6">Voici quelques liens utiles :</p>
           <div className="flex flex-col gap-3">
             <Link to="/" className="btn-neon">
-              🏠 Go Home
+              🏠 Retour à l'accueil
             </Link>
             <Link to="/simulation" className="bg-white/5 hover:bg-white/10 text-white px-6 py-3 rounded-xl border border-white/10 hover:border-metron-purple/50 transition-all">
-              📊 Start Simulation
+              📊 Démarrer une simulation
             </Link>
             <Link to="/learning" className="bg-white/5 hover:bg-white/10 text-white px-6 py-3 rounded-xl border border-white/10 hover:border-metron-blue/50 transition-all">
-              📚 Learning Center
+              📚 Centre d'Apprentissage
             </Link>
           </div>
         </div>

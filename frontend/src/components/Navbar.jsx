@@ -26,20 +26,20 @@ export default function Navbar({ user, isGuest }) {
             {user && (
               <div className="hidden md:flex space-x-2">
                 <Link to="/" className="text-white/80 hover:text-white hover:bg-white/10 px-4 py-2 rounded-lg transition-all">
-                  Dashboard
+                  Tableau de bord
                 </Link>
                 <Link to="/market" className="text-white/80 hover:text-white hover:bg-white/10 px-4 py-2 rounded-lg transition-all">
-                  Market Data
+                  Données de Marché
                 </Link>
                 <Link to="/simulation" className="text-white/80 hover:text-white hover:bg-white/10 px-4 py-2 rounded-lg transition-all">
                   Simulation
                 </Link>
                 <Link to="/learning" className="text-white/80 hover:text-white hover:bg-white/10 px-4 py-2 rounded-lg transition-all">
-                  Learning
+                  Apprentissage
                 </Link>
                 {!isGuest && (
                   <Link to="/account" className="text-white/80 hover:text-white hover:bg-white/10 px-4 py-2 rounded-lg transition-all">
-                    My Account
+                    Mon Compte
                   </Link>
                 )}
               </div>
@@ -49,13 +49,13 @@ export default function Navbar({ user, isGuest }) {
           {user && (
             <div className="flex items-center space-x-4">
               <span className="text-sm text-white/70">
-                {isGuest ? '👤 Guest Mode' : user.email}
+                {isGuest ? '👤 Mode Invité' : user.email}
               </span>
               <button
                 onClick={handleLogout}
                 className="bg-red-500/80 hover:bg-red-500 text-white px-4 py-2 rounded-lg border border-red-500 hover:shadow-lg transition-all font-medium"
               >
-                {isGuest ? 'Exit Guest' : 'Logout'}
+                {isGuest ? 'Quitter' : 'Déconnexion'}
               </button>
             </div>
           )}

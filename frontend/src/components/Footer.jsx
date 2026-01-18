@@ -9,7 +9,7 @@ export default function Footer() {
           <div>
             <h3 className="text-xl font-bold gradient-text mb-4">Metron</h3>
             <p className="text-gray-400 text-sm">
-              Platform for pricing and simulation of structured financial products. Built for students and finance professionals.
+              Plateforme de pricing et de simulation de produits financiers structurés. Conçue pour les étudiants et les professionnels de la finance.
             </p>
             <div className="flex gap-4 mt-4">
               <a href="#" className="text-gray-400 hover:text-white transition-colors">
@@ -27,32 +27,32 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-white font-semibold mb-4">Quick Links</h4>
+            <h4 className="text-white font-semibold mb-4">Liens Rapides</h4>
             <div className="space-y-2">
               <Link to="/" className="block text-gray-400 hover:text-white transition-colors text-sm">
-                Dashboard
+                Tableau de bord
               </Link>
               <Link to="/market" className="block text-gray-400 hover:text-white transition-colors text-sm">
-                Market Data
+                Données de Marché
               </Link>
               <Link to="/simulation" className="block text-gray-400 hover:text-white transition-colors text-sm">
                 Simulation
               </Link>
               <Link to="/learning" className="block text-gray-400 hover:text-white transition-colors text-sm">
-                Learning Center
+                Centre d'Apprentissage
               </Link>
             </div>
           </div>
 
           {/* Resources */}
           <div>
-            <h4 className="text-white font-semibold mb-4">Resources</h4>
+            <h4 className="text-white font-semibold mb-4">Ressources</h4>
             <div className="space-y-2">
               <a href="#" className="block text-gray-400 hover:text-white transition-colors text-sm">
                 Documentation
               </a>
               <a href="#" className="block text-gray-400 hover:text-white transition-colors text-sm">
-                API Reference
+                Référence API
               </a>
               <a href="#" className="block text-gray-400 hover:text-white transition-colors text-sm">
                 GitHub
@@ -67,14 +67,14 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="border-t border-white/10 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-400 text-sm">
-            © 2026 Metron - SAS Projet. All rights reserved.
+            © 2026 Metron - SAS Projet. Tous droits réservés.
           </p>
           <div className="flex gap-6 mt-4 md:mt-0">
             <a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">
-              Privacy Policy
+              Politique de Confidentialité
             </a>
             <a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">
-              Terms of Service
+              Conditions d'Utilisation
             </a>
             <a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">
               Contact

@@ -18,7 +18,7 @@ export default function Login() {
       if (isSignUp) {
         const { error } = await supabase.auth.signUp({ email, password })
         if (error) throw error
-        alert('Check your email for verification link!')
+        alert('Vérifiez votre email pour le lien de vérification !')
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password })
         if (error) throw error
@@ -50,7 +50,7 @@ export default function Login() {
             <span className="gradient-text">METRON</span>
           </h1>
           <p className="text-gray-400 text-sm uppercase tracking-wider">
-            Structured Products Platform
+            Plateforme de Produits Structurés
           </p>
         </div>
 
@@ -64,14 +64,14 @@ export default function Login() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="input-futuristic w-full"
-              placeholder="your@email.com"
+              placeholder="votre@email.com"
               required
             />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
-              Password
+              Mot de passe
             </label>
             <div className="relative">
               <input
@@ -111,10 +111,10 @@ export default function Login() {
             {loading ? (
               <div className="flex items-center justify-center gap-2">
                 <div className="w-5 h-5 border-t-2 border-white rounded-full animate-spin"></div>
-                Loading...
+                Chargement...
               </div>
             ) : (
-              isSignUp ? 'Sign Up' : 'Login'
+              isSignUp ? 'Créer un compte' : 'Se connecter'
             )}
           </button>
         </form>
@@ -124,25 +124,25 @@ export default function Login() {
           onClick={handleGuestMode}
           className="w-full mt-4 bg-white/5 hover:bg-white/10 text-white px-6 py-3 rounded-xl border border-white/20 hover:border-metron-purple/50 transition-all font-medium"
         >
-          👤 Continue as Guest
+          👤 Continuer en tant qu'invité
         </button>
 
         <div className="mt-6 text-center">
           <p className="text-gray-400 text-sm">
-            {isSignUp ? 'Already have an account?' : "Don't have an account?"}
+            {isSignUp ? 'Vous avez déjà un compte ?' : "Vous n'avez pas de compte ?"}
           </p>
           <button
             onClick={() => setIsSignUp(!isSignUp)}
             className="text-metron-purple hover:text-metron-pink font-semibold mt-2 hover:underline transition-colors"
           >
-            {isSignUp ? 'Login' : 'Sign Up'}
+            {isSignUp ? 'Se connecter' : 'Créer un compte'}
           </button>
         </div>
 
         {/* Decorative line */}
         <div className="mt-8 pt-6 border-t border-white/10 text-center">
           <p className="text-gray-500 text-xs">
-            Powered by AI & Quantitative Finance
+            Propulsé par l'IA & la Finance Quantitative
           </p>
         </div>
       </div>
