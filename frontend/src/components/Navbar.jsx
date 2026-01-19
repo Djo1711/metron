@@ -1,8 +1,9 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { supabase } from '../services/supabase'
 
 export default function Navbar({ user, isGuest }) {
   const navigate = useNavigate()
+  const location = useLocation()
 
   const handleLogout = async () => {
     if (isGuest) {
@@ -13,6 +14,8 @@ export default function Navbar({ user, isGuest }) {
       navigate('/login')
     }
   }
+
+  const isActive = (path) => location.pathname === path
 
   return (
     <nav className="bg-metron-darker/95 backdrop-blur-xl border-b border-metron-purple/30 shadow-lg">
@@ -25,20 +28,20 @@ export default function Navbar({ user, isGuest }) {
             
             {user && (
               <div className="hidden md:flex space-x-2">
-                <Link to="/" className="text-white/80 hover:text-white hover:bg-white/10 px-4 py-2 rounded-lg transition-all">
+                <Link to="/" className={`px-4 py-2 rounded-lg transition-all ${isActive('/') ? 'bg-white/20 text-white' : 'text-white/80 hover:text-white hover:bg-white/10'}`}>
                   Tableau de bord
                 </Link>
-                <Link to="/market" className="text-white/80 hover:text-white hover:bg-white/10 px-4 py-2 rounded-lg transition-all">
+                <Link to="/market" className={`px-4 py-2 rounded-lg transition-all ${isActive('/market') ? 'bg-white/20 text-white' : 'text-white/80 hover:text-white hover:bg-white/10'}`}>
                   Données de Marché
                 </Link>
-                <Link to="/simulation" className="text-white/80 hover:text-white hover:bg-white/10 px-4 py-2 rounded-lg transition-all">
-                  Simulation
+                <Link to="/simulation" className={`px-4 py-2 rounded-lg transition-all ${isActive('/simulation') ? 'bg-white/20 text-white' : 'text-white/80 hover:text-white hover:bg-white/10'}`}>
+                  Pricing
                 </Link>
-                <Link to="/learning" className="text-white/80 hover:text-white hover:bg-white/10 px-4 py-2 rounded-lg transition-all">
+                <Link to="/learning" className={`px-4 py-2 rounded-lg transition-all ${isActive('/learning') ? 'bg-white/20 text-white' : 'text-white/80 hover:text-white hover:bg-white/10'}`}>
                   Apprentissage
                 </Link>
                 {!isGuest && (
-                  <Link to="/account" className="text-white/80 hover:text-white hover:bg-white/10 px-4 py-2 rounded-lg transition-all">
+                  <Link to="/account" className={`px-4 py-2 rounded-lg transition-all ${isActive('/account') ? 'bg-white/20 text-white' : 'text-white/80 hover:text-white hover:bg-white/10'}`}>
                     Mon Compte
                   </Link>
                 )}
