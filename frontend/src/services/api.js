@@ -9,7 +9,8 @@ const api = axios.create({
   },
 })
 
-// Market Data
+// ===== MARKET DATA =====
+
 export const getStockQuote = (ticker) => api.get(`/api/market/quote/${ticker}`)
 
 export const getStockHistory = (ticker, period = '1mo') => 
@@ -17,42 +18,53 @@ export const getStockHistory = (ticker, period = '1mo') =>
 
 export const getTrendingStocks = () => api.get('/api/market/trending')
 
-// Pricing
+export const getVolatility = (ticker, period = '1y') =>
+  api.get(`/api/market/volatility/${ticker}`, { params: { period } })
+
+export const searchStock = (query) => api.get(`/api/market/search/${query}`)
+
+/**
+ * Get quick data (prix + volatilité en un appel)
+ * UTILE pour auto-remplir le formulaire
+ */
+export const getQuickPricingData = async (ticker) => {
+  try {
+    const [quoteRes, volRes] = await Promise.all([
+      getStockQuote(ticker),
+      getVolatility(ticker, '1y')
+    ])
+    
+    return {
+      ticker: ticker.toUpperCase(),
+      name: quoteRes.data.name,
+      current_price: quoteRes.data.current_price,
+      volatility: volRes.data.annualized_volatility,
+      currency: quoteRes.data.currency
+    }
+  } catch (error) {
+    console.error('Error fetching quick data:', error)
+    throw error
+  }
+}
+
+// ===== PRICING =====
+
 export const priceReverseConvertible = (data) => 
   api.post('/api/pricing/reverse-convertible', data)
 
-// Simulations
-export const saveSimulation = (data) => api.post('/api/simulations/save', data)
-
-export const getUserSimulations = (userId) => api.get(`/api/simulations/user/${userId}`)
-
-export const deleteSimulation = (simulationId) => api.delete(`/api/simulations/${simulationId}`)
-
-export default api
-/**
- * Price Autocall / Phoenix
- */
 export const priceAutocall = (data) => 
   api.post('/api/pricing/autocall', data)
 
-/**
- * Price Capital Protected Product
- */
 export const priceCapitalProtected = (data) => 
   api.post('/api/pricing/capital-protected', data)
 
-/**
- * Price Warrant / Turbo
- */
 export const priceWarrant = (data) => 
   api.post('/api/pricing/warrant', data)
 
 /**
  * Router function pour appeler le bon endpoint selon le produit
- * UTILE pour la page Simulation avec menu déroulant
  */
 export const priceProduct = async (productType, params) => {
-  // Adapter les paramètres selon le produit
   const payload = {
     ticker: params.ticker,
     spot_price: params.spot_price,
@@ -101,41 +113,12 @@ export const priceProduct = async (productType, params) => {
   }
 }
 
-// ===== MARKET DATA - Compléter avec volatilité =====
+// ===== SIMULATIONS =====
 
-/**
- * Get volatility (tu as déjà l'endpoint backend)
- * Mais ajoute cette fonction pour l'utiliser facilement
- */
-export const getVolatility = (ticker, period = '1y') =>
-  api.get(`/api/market/volatility/${ticker}`, { params: { period } })
+export const saveSimulation = (data) => api.post('/api/simulations/save', data)
 
-/**
- * Get quick data (prix + volatilité en un appel)
- * UTILE pour auto-remplir le formulaire
- */
-export const getQuickPricingData = async (ticker) => {
-  try {
-    const [quoteRes, volRes] = await Promise.all([
-      getStockQuote(ticker),
-      getVolatility(ticker, '1y')
-    ])
-    
-    return {
-      ticker: ticker.toUpperCase(),
-      name: quoteRes.data.name,
-      current_price: quoteRes.data.current_price,
-      volatility: volRes.data.annualized_volatility,
-      currency: quoteRes.data.currency
-    }
-  } catch (error) {
-    console.error('Error fetching quick data:', error)
-    throw error
-  }
-}
-// Ajoute cette fonction
-export const searchStock = async (query) => {
-  return axios.get(`${API_URL}/api/search/search`, {
-    params: { query }
-  })
-}
+export const getUserSimulations = (userId) => api.get(`/api/simulations/user/${userId}`)
+
+export const deleteSimulation = (simulationId) => api.delete(`/api/simulations/${simulationId}`)
+
+export default api

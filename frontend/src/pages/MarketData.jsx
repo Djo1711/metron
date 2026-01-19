@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { getStockQuote, getStockHistory } from '../services/api'
+import { getStockQuote, getStockHistory, searchStock } from '../services/api'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
-import axios from 'axios'
 
 export default function MarketData() {
   const [searchParams] = useSearchParams()
@@ -66,7 +65,7 @@ export default function MarketData() {
     if (value.length >= 1) {
       setSearchLoading(true)
       try {
-        const response = await axios.get(`http://localhost:8000/api/market/search/${value}`)
+        const response = await searchStock(value)
         setSuggestions(response.data)
         setShowSuggestions(true)
       } catch (err) {
@@ -98,8 +97,7 @@ export default function MarketData() {
     setError(null)
     
     try {
-      // Chercher d'abord pour trouver le bon ticker
-      const searchResponse = await axios.get(`http://localhost:8000/api/market/search/${ticker}`)
+      const searchResponse = await searchStock(ticker)
       
       if (searchResponse.data && searchResponse.data.length > 0) {
         const bestMatch = searchResponse.data[0]
