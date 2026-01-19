@@ -6,6 +6,749 @@ export default function Learning() {
   const [activeTab, setActiveTab] = useState('tutorials')
   const [selectedProduct, setSelectedProduct] = useState('reverse_convertible')
   const [searchTerm, setSearchTerm] = useState("")
+  const [selectedLevel, setSelectedLevel] = useState('debutant')
+
+  const cours = {
+    debutant: {
+      title: "Niveau Débutant",
+      subtitle: "Introduction à la finance et aux marchés",
+      icon: "🌱",
+      modules: [
+        {
+          titre: "Module 1 : Qu'est-ce que la finance ?",
+          contenu: [
+            {
+              section: "La finance, c'est quoi ?",
+              texte: "La finance est l'ensemble des activités et mécanismes qui permettent de gérer l'argent dans le temps. Elle répond à trois questions fondamentales : Comment investir ? Comment financer ? Comment gérer les risques ?",
+              points: [
+                "**Investir** : Placer son argent pour le faire fructifier (actions, obligations, immobilier)",
+                "**Financer** : Obtenir de l'argent pour réaliser un projet (emprunt, levée de fonds)",
+                "**Gérer les risques** : Se protéger contre les pertes potentielles (assurance, diversification)"
+              ]
+            },
+            {
+              section: "Pourquoi la finance existe-t-elle ?",
+              texte: "La finance permet de transférer de l'argent de ceux qui en ont (épargnants) vers ceux qui en ont besoin (entreprises, États). Ce transfert se fait via les marchés financiers.",
+              exemple: "Vous déposez 10 000€ à la banque → La banque prête cet argent à une entreprise pour construire une usine → L'entreprise rembourse avec intérêt → Vous récupérez 10 500€. Tout le monde y gagne !"
+            },
+            {
+              section: "Les acteurs de la finance",
+              texte: "Plusieurs acteurs interagissent sur les marchés financiers :",
+              points: [
+                "**Investisseurs particuliers** : Vous et moi, qui épargnons et investissons",
+                "**Investisseurs institutionnels** : Banques, assurances, fonds de pension qui gèrent des milliards",
+                "**Entreprises** : Elles cherchent des financements pour se développer",
+                "**États** : Ils empruntent via des obligations pour financer les services publics",
+                "**Intermédiaires** : Banques, courtiers qui facilitent les transactions"
+              ]
+            }
+          ]
+        },
+        {
+          titre: "Module 2 : Les marchés financiers",
+          contenu: [
+            {
+              section: "Qu'est-ce qu'un marché financier ?",
+              texte: "Un marché financier est un lieu (physique ou virtuel) où s'échangent des actifs financiers. C'est comme un grand supermarché, mais au lieu d'acheter des tomates, vous achetez des actions, des obligations, des devises...",
+              points: [
+                "**Marché actions** : Achat/vente de parts d'entreprises (ex: Apple, Microsoft)",
+                "**Marché obligataire** : Achat/vente de dettes (obligations d'État ou d'entreprises)",
+                "**Marché des changes (Forex)** : Échange de devises (EUR/USD, etc.)",
+                "**Marché des matières premières** : Or, pétrole, blé..."
+              ]
+            },
+            {
+              section: "Comment fonctionne la Bourse ?",
+              texte: "La Bourse est le marché des actions. Quand une entreprise veut lever des fonds, elle vend des actions au public (Introduction en Bourse ou IPO). Ces actions s'échangent ensuite librement.",
+              exemple: "Apple a un prix de 150$ par action aujourd'hui. Si vous pensez qu'Apple va bien se porter, vous achetez à 150$. Si le prix monte à 180$, vous gagnez 30$ par action (20% de plus-value) !"
+            },
+            {
+              section: "Offre et Demande",
+              texte: "Le prix d'une action est déterminé par l'offre et la demande. Si beaucoup de gens veulent acheter Apple (forte demande), le prix monte. Si beaucoup veulent vendre (forte offre), le prix baisse.",
+              points: [
+                "**Prix monte** → Plus d'acheteurs que de vendeurs",
+                "**Prix baisse** → Plus de vendeurs que d'acheteurs",
+                "**Prix stable** → Équilibre entre offre et demande"
+              ]
+            }
+          ]
+        },
+        {
+          titre: "Module 3 : Les produits financiers de base",
+          contenu: [
+            {
+              section: "Les Actions",
+              texte: "Une action représente une part de propriété dans une entreprise. En achetant une action Apple, vous devenez copropriétaire d'Apple (même si c'est une toute petite part) !",
+              points: [
+                "**Gain potentiel** : Plus-value si le prix de l'action monte + dividendes (partage des bénéfices)",
+                "**Risque** : Le prix peut baisser et vous pouvez perdre votre investissement",
+                "**Exemple** : Vous achetez 10 actions Apple à 150$ = 1 500$. Apple monte à 180$ = vous avez 1 800$ → Gain de 300$ (20%)"
+              ]
+            },
+            {
+              section: "Les Obligations",
+              texte: "Une obligation, c'est comme un prêt que vous faites à un État ou une entreprise. En échange, ils vous paient des intérêts réguliers (coupons) et vous remboursent à la fin.",
+              points: [
+                "**Plus sûr** que les actions (surtout les obligations d'État)",
+                "**Rendement fixe** : Vous savez combien vous allez gagner",
+                "**Exemple** : Obligation à 10 000€, coupon 3%, durée 5 ans → Vous recevez 300€/an pendant 5 ans + 10 000€ à la fin"
+              ]
+            },
+            {
+              section: "Actions vs Obligations",
+              texte: "Comment choisir entre actions et obligations ?",
+              comparaison: {
+                actions: {
+                  avantages: ["Potentiel de gain élevé", "Participation à la croissance des entreprises"],
+                  inconvenients: ["Risque élevé de perte", "Volatilité importante"],
+                  profil: "Pour investisseurs prêts à prendre des risques"
+                },
+                obligations: {
+                  avantages: ["Revenus réguliers garantis", "Moins de risque"],
+                  inconvenients: ["Rendement limité", "Sensible aux taux d'intérêt"],
+                  profil: "Pour investisseurs prudents"
+                }
+              }
+            }
+          ]
+        },
+        {
+          titre: "Module 4 : Introduction aux produits structurés",
+          contenu: [
+            {
+              section: "C'est quoi un produit structuré ?",
+              texte: "Un produit structuré combine plusieurs instruments financiers (obligations + options) pour créer un profil risque/rendement personnalisé. C'est comme un menu au restaurant : vous combinez différents éléments pour avoir exactement ce que vous voulez !",
+              analogie: "Imaginez que vous voulez investir dans Apple mais : (1) vous ne voulez pas perdre votre capital, (2) vous voulez quand même profiter si Apple monte. Un produit structuré peut faire exactement ça en combinant une obligation (protection) + une option (exposition à la hausse)."
+            },
+            {
+              section: "Pourquoi utiliser des produits structurés ?",
+              points: [
+                "**Protection du capital** : Certains produits garantissent 100% de votre capital",
+                "**Rendement attractif** : Coupons réguliers plus élevés que les obligations classiques",
+                "**Personnalisation** : Adapté à votre vue de marché et votre appétit au risque",
+                "**Accès simplifié** : Stratégies complexes dans un seul produit"
+              ]
+            },
+            {
+              section: "Les 4 grands types de produits structurés",
+              texte: "Il existe 4 grandes familles de produits structurés que nous proposons sur notre plateforme :",
+              types: [
+                {
+                  nom: "Capital Garanti 🛡️",
+                  description: "Votre capital est protégé à 100% + participation à la hausse",
+                  pour: "Investisseurs très prudents"
+                },
+                {
+                  nom: "Autocall 📈",
+                  description: "Remboursement anticipé possible + coupons réguliers",
+                  pour: "Vue neutre à légèrement haussière"
+                },
+                {
+                  nom: "Reverse Convertible 📉",
+                  description: "Coupon élevé en échange d'un risque sur le capital",
+                  pour: "Recherche de rendement élevé"
+                },
+                {
+                  nom: "Warrant 🚀",
+                  description: "Effet de levier pour amplifier les gains (et pertes)",
+                  pour: "Traders expérimentés"
+                }
+              ]
+            },
+            {
+              section: "Prochaines étapes",
+              texte: "Maintenant que vous comprenez les bases, vous pouvez :",
+              actions: [
+                "Passer au **niveau intermédiaire** pour approfondir vos connaissances",
+                "Explorer l'onglet **Tutoriels** pour voir comment chaque produit fonctionne en détail",
+                "Utiliser le **Simulateur** pour tester le pricing de différents produits"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    intermediaire: {
+      title: "Niveau Intermédiaire",
+      subtitle: "Comprendre les mécanismes et la valorisation",
+      icon: "📊",
+      modules: [
+        {
+          titre: "Module 1 : La valorisation des actifs",
+          contenu: [
+            {
+              section: "Qu'est-ce que la valeur ?",
+              texte: "La valeur d'un actif financier est le prix qu'on est prêt à payer pour les flux de trésorerie futurs qu'il va générer. En finance, on dit que 'la valeur aujourd'hui = les flux futurs actualisés'.",
+              formule: "Valeur = Flux Futur / (1 + Taux d'actualisation)ⁿ",
+              exemple: "Une obligation qui paie 1 000€ dans 1 an vaut combien aujourd'hui ? Si le taux est 5%, elle vaut 1000 / 1.05 = 952€"
+            },
+            {
+              section: "Le concept d'actualisation",
+              texte: "L'actualisation traduit le fait que 100€ aujourd'hui valent plus que 100€ dans 1 an (car vous pouvez investir ces 100€ et obtenir plus). C'est la valeur temps de l'argent.",
+              points: [
+                "**Taux d'actualisation élevé** → Les flux futurs valent moins aujourd'hui",
+                "**Taux d'actualisation faible** → Les flux futurs valent plus aujourd'hui",
+                "Le taux d'actualisation reflète le risque : plus c'est risqué, plus le taux est élevé"
+              ]
+            },
+            {
+              section: "Valorisation d'une action",
+              texte: "Deux approches principales pour valoriser une action :",
+              methodes: [
+                {
+                  nom: "Méthode des flux de trésorerie actualisés (DCF)",
+                  description: "On estime tous les flux futurs de l'entreprise (bénéfices, dividendes) et on les actualise à aujourd'hui",
+                  formule: "Valeur = Σ (Flux futurs / (1+r)ⁿ)"
+                },
+                {
+                  nom: "Multiples de valorisation",
+                  description: "On compare avec des entreprises similaires (PER, Price/Book)",
+                  exemple: "Si le secteur tech a un PER de 25 et Apple génère 6$ de bénéfice par action → Prix théorique = 25 × 6 = 150$"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          titre: "Module 2 : Le risque et la volatilité",
+          contenu: [
+            {
+              section: "Qu'est-ce que le risque ?",
+              texte: "En finance, le risque c'est l'incertitude sur les rendements futurs. Plus le risque est élevé, plus les rendements peuvent varier (dans les deux sens).",
+              citation: "« Le risque vient de ne pas savoir ce que l'on fait » - Warren Buffett"
+            },
+            {
+              section: "La volatilité : mesurer le risque",
+              texte: "La volatilité mesure l'ampleur des variations de prix. C'est l'écart-type des rendements. Une volatilité de 20% signifie que le prix peut varier d'environ ±20% sur un an.",
+              formule: "σ = √(Σ(rendement - moyenne)² / n) × √252",
+              exemple: "Apple a une volatilité de 25% et un prix de 150$. Sur un an, on s'attend à ce qu'Apple soit entre 112$ et 188$ (±25%) avec 68% de probabilité."
+            },
+            {
+              section: "Relation Risque-Rendement",
+              texte: "C'est le principe fondamental de la finance : plus vous prenez de risques, plus le rendement espéré doit être élevé.",
+              points: [
+                "**Obligations d'État** : Risque faible → Rendement 3-5%/an",
+                "**Actions grandes capitalisations** : Risque moyen → Rendement 8-10%/an",
+                "**Actions small cap/crypto** : Risque élevé → Rendement potentiel 15-50%/an (mais pertes possibles)"
+              ]
+            },
+            {
+              section: "La diversification",
+              texte: "« Ne mettez pas tous vos œufs dans le même panier ». En diversifiant vos investissements, vous réduisez le risque global sans nécessairement réduire le rendement.",
+              exemple: "Si vous investissez 100% dans une seule action et qu'elle s'effondre (-50%), vous perdez 50%. Si vous investissez dans 10 actions différentes et qu'une seule s'effondre, vous ne perdez que 5%."
+            }
+          ]
+        },
+        {
+          titre: "Module 3 : Introduction aux produits dérivés",
+          contenu: [
+            {
+              section: "Qu'est-ce qu'un produit dérivé ?",
+              texte: "Un produit dérivé est un instrument financier dont la valeur 'dérive' d'un actif sous-jacent (action, obligation, indice, matière première). C'est un contrat entre deux parties basé sur l'évolution future du sous-jacent.",
+              analogie: "C'est comme parier sur un match de foot sans être joueur : vous ne possédez pas l'équipe, mais vous gagnez ou perdez selon le résultat."
+            },
+            {
+              section: "Les Options : Call et Put",
+              texte: "Une option donne le DROIT (pas l'obligation) d'acheter (call) ou vendre (put) un actif à un prix fixé (strike) jusqu'à une date donnée.",
+              details: [
+                {
+                  type: "Call (option d'achat)",
+                  definition: "Droit d'acheter au prix strike",
+                  utilisation: "Vous pensez que le prix va monter",
+                  exemple: "Call Apple strike 150$. Si Apple monte à 180$, vous pouvez acheter à 150$ et revendre à 180$ → Gain de 30$ par action"
+                },
+                {
+                  type: "Put (option de vente)",
+                  definition: "Droit de vendre au prix strike",
+                  utilisation: "Vous pensez que le prix va baisser OU vous voulez vous protéger",
+                  exemple: "Put Apple strike 150$. Si Apple tombe à 120$, vous vendez à 150$ → Vous évitez la perte de 30$"
+                }
+              ]
+            },
+            {
+              section: "Pourquoi les options sont puissantes",
+              points: [
+                "**Effet de levier** : Petite mise pour grande exposition (une option coûte 5$ mais contrôle une action à 150$)",
+                "**Risque limité** : Vous ne pouvez perdre que la prime payée (même si l'action s'effondre)",
+                "**Flexibilité** : Vous pouvez parier à la hausse, à la baisse, ou sur la stabilité",
+                "**Protection** : Hedging pour protéger votre portefeuille"
+              ]
+            },
+            {
+              section: "Le modèle de Black-Scholes",
+              texte: "C'est LE modèle mathématique qui permet de calculer le prix théorique d'une option. Développé en 1973, il a révolutionné la finance (Prix Nobel 1997).",
+              parametres: [
+                "**Prix spot (S)** : Prix actuel de l'actif",
+                "**Strike (K)** : Prix d'exercice de l'option",
+                "**Volatilité (σ)** : Mesure du risque",
+                "**Temps (T)** : Durée jusqu'à l'échéance",
+                "**Taux sans risque (r)** : Taux d'intérêt"
+              ],
+              formule: "C = S×N(d₁) - K×e⁻ʳᵀ×N(d₂)"
+            }
+          ]
+        },
+        {
+          titre: "Module 4 : Les Greeks - Gérer le risque",
+          contenu: [
+            {
+              section: "Pourquoi les Greeks ?",
+              texte: "Les Greeks mesurent comment le prix d'une option réagit aux changements de paramètres. C'est essentiel pour gérer le risque et comprendre votre exposition.",
+              analogie: "Les Greeks sont comme le tableau de bord d'une voiture : ils vous indiquent votre vitesse (delta), accélération (gamma), consommation (theta), etc."
+            },
+            {
+              section: "Les 5 Greeks principaux",
+              greeks: [
+                {
+                  nom: "Delta (Δ)",
+                  definition: "Sensibilité au prix du sous-jacent",
+                  interpretation: "Delta = 0.5 → Si l'action monte de 1$, l'option monte de 0.50$",
+                  plage: "Call : 0 à 1 | Put : -1 à 0"
+                },
+                {
+                  nom: "Gamma (Γ)",
+                  definition: "Variation du delta quand le prix change",
+                  interpretation: "Gamma élevé → Delta change rapidement → Plus de risque",
+                  astuce: "Maximum pour les options ATM (at-the-money)"
+                },
+                {
+                  nom: "Vega (ν)",
+                  definition: "Sensibilité à la volatilité",
+                  interpretation: "Vega = 15 → Si volatilité +1%, l'option vaut +15$",
+                  astuce: "Toujours positif pour acheteurs d'options"
+                },
+                {
+                  nom: "Theta (Θ)",
+                  definition: "Érosion temporelle (perte de valeur chaque jour)",
+                  interpretation: "Theta = -0.05 → L'option perd 0.05$ par jour",
+                  astuce: "Accélère près de l'échéance"
+                },
+                {
+                  nom: "Rho (ρ)",
+                  definition: "Sensibilité aux taux d'intérêt",
+                  interpretation: "Généralement peu important sauf options long terme",
+                  astuce: "Calls : rho positif | Puts : rho négatif"
+                }
+              ]
+            },
+            {
+              section: "Utiliser les Greeks en pratique",
+              strategie: "Delta Hedging",
+              texte: "Les traders professionnels utilisent les Greeks pour neutraliser certains risques. Par exemple, si vous vendez des calls (delta négatif), vous achetez des actions (delta positif) pour être delta-neutre.",
+              exemple: "Vous vendez 10 calls delta 0.6 → Delta total = -6. Vous achetez 6 actions → Delta net = 0. Vous êtes protégé contre les petits mouvements du marché."
+            }
+          ]
+        },
+        {
+          titre: "Module 5 : Construction des produits structurés",
+          contenu: [
+            {
+              section: "Comment sont construits les produits structurés ?",
+              texte: "Un produit structuré combine typiquement deux éléments : une composante obligataire (sécurité) + une composante optionnelle (performance). C'est comme un sandwich : le pain (obligation) + la garniture (options).",
+              schema: {
+                obligation: {
+                  role: "Protéger le capital ou générer un rendement fixe",
+                  proportion: "70-90% du capital selon le produit"
+                },
+                options: {
+                  role: "Créer le profil de payoff désiré",
+                  proportion: "10-30% du capital"
+                }
+              }
+            },
+            {
+              section: "Exemple : Construction d'un Capital Garanti",
+              etapes: [
+                {
+                  etape: "Capital initial",
+                  montant: "10 000€"
+                },
+                {
+                  etape: "Obligation zero-coupon",
+                  montant: "9 524€ (pour récupérer 10 000€ dans 1 an à 5%)",
+                  role: "Garantit le capital"
+                },
+                {
+                  etape: "Call options",
+                  montant: "476€ (le reste)",
+                  role: "Participation à la hausse"
+                },
+                {
+                  etape: "Résultat",
+                  texte: "Capital protégé à 100% + participation à la hausse via les options"
+                }
+              ]
+            },
+            {
+              section: "Exemple : Construction d'un Reverse Convertible",
+              etapes: [
+                {
+                  etape: "Capital initial",
+                  montant: "10 000€"
+                },
+                {
+                  etape: "Obligation",
+                  montant: "10 000€ qui paie un coupon élevé (8%)",
+                  role: "Génère le rendement"
+                },
+                {
+                  etape: "Put vendu",
+                  montant: "Prime encaissée pour vendre un put barrière 60%",
+                  role: "Finance le coupon élevé mais crée le risque"
+                },
+                {
+                  etape: "Résultat",
+                  texte: "Coupon élevé mais risque de recevoir des actions si baisse > 40%"
+                }
+              ]
+            },
+            {
+              section: "Les paramètres clés à comprendre",
+              parametres: [
+                {
+                  nom: "Barrière",
+                  definition: "Niveau de prix qui déclenche ou annule certains paiements",
+                  impact: "Plus la barrière est basse, plus vous êtes protégé"
+                },
+                {
+                  nom: "Participation",
+                  definition: "% de la performance que vous captez",
+                  impact: "Participation 80% → Vous gagnez 80% de la hausse"
+                },
+                {
+                  nom: "Coupon",
+                  definition: "Paiement périodique fixe",
+                  impact: "Coupon élevé souvent = risque plus élevé"
+                },
+                {
+                  nom: "Maturité",
+                  definition: "Durée de vie du produit",
+                  impact: "Plus long = plus d'incertitude mais plus de potentiel"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    avance: {
+      title: "Niveau Avancé",
+      subtitle: "Modélisation, pricing et stratégies avancées",
+      icon: "🎓",
+      modules: [
+        {
+          titre: "Module 1 : Modèles de pricing avancés",
+          contenu: [
+            {
+              section: "Au-delà de Black-Scholes",
+              texte: "Le modèle de Black-Scholes pose des hypothèses simplificatrices : volatilité constante, pas de sauts, distribution log-normale. Dans la réalité, ces hypothèses sont violées. D'où le besoin de modèles plus sophistiqués.",
+              limites: [
+                "**Volatilité smile** : La volatilité implicite varie selon le strike",
+                "**Queues épaisses** : Les crashs sont plus fréquents que prédit par la loi normale",
+                "**Volatilité stochastique** : La volatilité elle-même varie de façon aléatoire"
+              ]
+            },
+            {
+              section: "Modèle de Heston (volatilité stochastique)",
+              texte: "Le modèle de Heston assume que la volatilité suit elle-même un processus stochastique. C'est plus réaliste car la volatilité n'est pas constante.",
+              formules: [
+                "dS = μS dt + √(v) S dW₁",
+                "dv = κ(θ - v) dt + σ √(v) dW₂"
+              ],
+              parametres: [
+                "v : variance instantanée",
+                "κ : vitesse de retour à la moyenne",
+                "θ : variance long terme",
+                "σ : volatilité de la volatilité",
+                "ρ : corrélation entre S et v"
+              ]
+            },
+            {
+              section: "Simulations Monte Carlo",
+              texte: "Méthode numérique qui simule des milliers de scénarios possibles pour estimer la valeur d'un produit complexe. Particulièrement utile pour les produits path-dependent.",
+              algorithme: [
+                "1. Générer N trajectoires aléatoires du sous-jacent",
+                "2. Pour chaque trajectoire, calculer le payoff final",
+                "3. Faire la moyenne des payoffs",
+                "4. Actualiser au taux sans risque",
+                "5. C'est votre prix !"
+              ],
+              exemple: "Pour un autocall, on simule 100 000 trajectoires. Pour chaque trajectoire, on vérifie si l'autocall se déclenche, sinon on calcule le payoff à maturité. Prix = moyenne actualisée."
+            },
+            {
+              section: "Arbres binomiaux",
+              texte: "Méthode discrète qui modélise l'évolution du prix comme une succession de mouvements up/down. Utile pour les options américaines (exercice anticipé possible).",
+              avantages: [
+                "Simple à comprendre et implémenter",
+                "Gère naturellement l'exercice anticipé",
+                "Converge vers Black-Scholes quand on augmente le nombre de pas"
+              ]
+            }
+          ]
+        },
+        {
+          titre: "Module 2 : Gestion du risque avancée",
+          contenu: [
+            {
+              section: "Value-at-Risk (VaR)",
+              texte: "La VaR mesure la perte maximale potentielle sur un horizon donné avec un niveau de confiance donné. C'est LA métrique de risque en finance.",
+              definition: "VaR(95%, 1 jour) = 100 000€ signifie : Il y a 5% de chances de perdre plus de 100 000€ demain",
+              methodes: [
+                "**Méthode paramétrique** : Assume normalité, utilise moyenne et écart-type",
+                "**Simulation historique** : Utilise les rendements passés",
+                "**Monte Carlo** : Simule l'avenir avec des modèles stochastiques"
+              ]
+            },
+            {
+              section: "Expected Shortfall (ES / CVaR)",
+              texte: "L'ES va plus loin que la VaR : elle mesure la perte moyenne SI vous dépassez la VaR. C'est important car la VaR ne dit rien sur l'ampleur des pertes extrêmes.",
+              exemple: "VaR = -100k, mais si ça arrive, vous perdez en moyenne 150k (ES = -150k)"
+            },
+            {
+              section: "Hedging dynamique",
+              texte: "Le hedging dynamique consiste à ajuster continuellement votre portefeuille pour maintenir une exposition neutre. C'est ce que font les market makers.",
+              strategie: {
+                nom: "Delta-Gamma Hedging",
+                principe: "Neutraliser à la fois le delta (risque directionnel) et le gamma (risque de convexité)",
+                instruments: "Actions (pour le delta) + Options (pour le gamma)",
+                frequence: "Rééquilibrage quotidien ou intraday selon la volatilité"
+              }
+            },
+            {
+              section: "Stress Testing",
+              texte: "Le stress testing consiste à évaluer comment votre portefeuille réagirait à des scénarios extrêmes (krach, crise de liquidité, hausse violente des taux).",
+              scenarios: [
+                "**Krach 2008** : Baisse de 50% des marchés actions",
+                "**Hausse des taux** : +300 points de base",
+                "**Volatilité extrême** : Doublement de la volatilité implicite",
+                "**Crise de liquidité** : Spreads bid-ask × 10"
+              ]
+            }
+          ]
+        },
+        {
+          titre: "Module 3 : Volatilité implicite et smile",
+          contenu: [
+            {
+              section: "Le Volatility Smile",
+              texte: "En théorie Black-Scholes, la volatilité devrait être constante pour tous les strikes. En pratique, on observe un 'smile' ou 'skew' : la volatilité implicite varie avec le strike.",
+              formes: [
+                "**Smile** : Volatilité plus élevée pour les options ITM et OTM (forme de U)",
+                "**Skew** : Volatilité décroissante avec le strike (marchés actions)",
+                "**Smirk** : Mix des deux"
+              ]
+            },
+            {
+              section: "Pourquoi le smile existe ?",
+              raisons: [
+                "**Peur des crashs** : Les investisseurs paient plus cher pour se protéger contre les baisses",
+                "**Queues épaisses** : Les événements extrêmes sont plus fréquents que la loi normale ne le prédit",
+                "**Offre et demande** : Forte demande pour les puts OTM (protection)",
+                "**Sauts de prix** : Les marchés ne bougent pas de façon continue"
+              ]
+            },
+            {
+              section: "Trading la volatilité",
+              texte: "Les traders sophistiqués ne tradent pas seulement la direction (hausse/baisse) mais aussi la volatilité elle-même.",
+              strategies: [
+                {
+                  nom: "Long Straddle",
+                  composition: "Acheter Call + Put au même strike ATM",
+                  pari: "Grosse variation de prix (dans un sens ou l'autre)",
+                  Greeks: "Delta neutre, Vega positif, Gamma positif, Theta négatif"
+                },
+                {
+                  nom: "Iron Condor",
+                  composition: "Vendre Call + Put proches, acheter Call + Put éloignés",
+                  pari: "Prix reste dans une fourchette",
+                  Greeks: "Delta neutre, Vega négatif, Theta positif"
+                },
+                {
+                  nom: "Volatility Arbitrage",
+                  composition: "Acheter volatilité implicite sous-évaluée, vendre sur-évaluée",
+                  pari: "Retour à la moyenne de la volatilité",
+                  risque: "Nécessite hedging dynamique constant"
+                }
+              ]
+            },
+            {
+              section: "La surface de volatilité",
+              texte: "La surface de volatilité représente la volatilité implicite en fonction du strike ET de la maturité. C'est un objet 3D que les traders observent constamment.",
+              dimensions: [
+                "**Axe X** : Strike (moneyness)",
+                "**Axe Y** : Maturité",
+                "**Axe Z** : Volatilité implicite"
+              ],
+              utilisation: "Identifier les arbitrages, pricer les exotiques, gérer le risque de volatilité"
+            }
+          ]
+        },
+        {
+          titre: "Module 4 : Produits exotiques",
+          contenu: [
+            {
+              section: "Options à barrière",
+              texte: "Les options à barrière s'activent ou se désactivent si le sous-jacent touche un certain niveau. Elles sont moins chères que les vanilles.",
+              types: [
+                {
+                  nom: "Knock-Out",
+                  description: "Option qui disparaît si la barrière est touchée",
+                  exemple: "Call knock-out barrière 200$ sur Apple à 150$. Si Apple touche 200$, l'option meurt immédiatement (même si c'est rentable)"
+                },
+                {
+                  nom: "Knock-In",
+                  description: "Option qui s'active seulement si la barrière est touchée",
+                  exemple: "Put knock-in barrière 100$. L'option n'existe que si Apple tombe sous 100$"
+                },
+                {
+                  nom: "Down-and-Out Put",
+                  description: "Put qui disparaît si on touche une barrière basse",
+                  utilisation: "Protection partielle moins chère"
+                }
+              ]
+            },
+            {
+              section: "Options digitales (Binary)",
+              texte: "Payoff tout-ou-rien. Si la condition est remplie → paiement fixe, sinon → 0.",
+              exemple: "Digitale 'Apple > 160$ à maturité' qui paie 1000$. Si Apple = 161$, vous gagnez 1000$. Si Apple = 159$, vous gagnez 0$.",
+              risque: "Gamma explosif près de la barrière à l'échéance"
+            },
+            {
+              section: "Options asiatiques",
+              texte: "Le payoff dépend du prix MOYEN sur la période, pas seulement du prix final. Moins volatiles donc moins chères.",
+              formule: "Payoff = Max(0, Prix_Moyen - Strike)",
+              avantage: "Moins sensible aux manipulations de prix à l'échéance"
+            },
+            {
+              section: "Options lookback",
+              texte: "Le payoff dépend du prix maximum ou minimum atteint pendant la vie de l'option.",
+              exemple: "Lookback Call : Payoff = Prix_Max - Strike. Vous êtes sûr d'avoir le meilleur prix !",
+              cout: "Très chères car elles offrent le timing parfait"
+            },
+            {
+              section: "Rainbow Options",
+              texte: "Options sur plusieurs sous-jacents. Le payoff dépend du meilleur (best-of) ou du pire (worst-of).",
+              utilisation: "Diversification, corrélation entre actifs"
+            }
+          ]
+        },
+        {
+          titre: "Module 5 : Structuration avancée de produits",
+          contenu: [
+            {
+              section: "Ingénierie financière",
+              texte: "L'ingénierie financière consiste à décomposer et recombiner des produits financiers pour créer de nouveaux payoffs. C'est comme des LEGOs financiers.",
+              principes: [
+                "**Put-Call Parity** : Call - Put = Spot - PV(Strike)",
+                "**Réplication statique** : Reproduire un payoff avec un portefeuille fixe",
+                "**Réplication dynamique** : Ajuster continuellement pour reproduire un payoff"
+              ]
+            },
+            {
+              section: "Structuration d'un Phoenix/Autocall complexe",
+              caracteristiques: [
+                "**Observation trimestrielle** : Vérification tous les 3 mois",
+                "**Barrière autocall descendante** : 100%, 95%, 90%, 85%... (plus facile à déclencher avec le temps)",
+                "**Coupon mémoire** : Si le coupon n'est pas payé, il s'accumule",
+                "**Barrière de protection conditionnelle** : Protection uniquement à certaines dates"
+              ],
+              construction: [
+                "1. Obligation zero-coupon pour garantir une partie du capital",
+                "2. Digitales pour les coupons conditionnels",
+                "3. Options barrière pour l'autocall",
+                "4. Put down-and-in pour le risque de perte"
+              ]
+            },
+            {
+              section: "Optimisation de produits",
+              texte: "Comment créer le meilleur produit pour un profil client donné ?",
+              etapes: [
+                "**1. Définir les objectifs** : Rendement cible, risque maximum acceptable",
+                "**2. Contraintes** : Budget, horizon, fiscalité",
+                "**3. Optimisation** : Utiliser des modèles pour maximiser rendement/risque",
+                "**4. Backtesting** : Tester sur données historiques",
+                "**5. Stress testing** : Vérifier la robustesse"
+              ]
+            },
+            {
+              section: "Pricing et couverture en pratique",
+              texte: "Dans le monde réel, pricer et couvrir un produit structuré est complexe.",
+              defis: [
+                "**Spreads bid-ask** : Coûts de transaction importants",
+                "**Illiquidité** : Certains strikes/maturités peu liquides",
+                "**Risque de modèle** : Votre modèle est-il correct ?",
+                "**Risque de contrepartie** : Et si l'émetteur fait faillite ?",
+                "**Coûts de financement** : Le coût d'emprunter pour hedger"
+              ]
+            },
+            {
+              section: "Réglementation et compliance",
+              texte: "Les produits structurés sont fortement régulés pour protéger les investisseurs.",
+              regulations: [
+                "**MiFID II** (Europe) : Transparence, appropriateness, best execution",
+                "**PRIIPs** : Document d'information clé obligatoire",
+                "**Dodd-Frank** (USA) : Réglementation des dérivés OTC",
+                "**EMIR** : Reporting des transactions"
+              ],
+              obligations: [
+                "Tester l'adéquation du produit au profil client",
+                "Fournir des informations claires sur les risques",
+                "Calculer et afficher les coûts",
+                "Monitorer les risques en continu"
+              ]
+            }
+          ]
+        },
+        {
+          titre: "Module 6 : Stratégies de trading avancées",
+          contenu: [
+            {
+              section: "Market Making",
+              texte: "Les market makers fournissent de la liquidité en cotant en permanence des prix bid et ask. Ils gagnent sur le spread mais prennent un risque d'inventaire.",
+              principes: [
+                "Rester delta-neutre via hedging dynamique",
+                "Gérer l'inventaire pour éviter une exposition directionnelle",
+                "Ajuster les spreads selon la volatilité et le risque",
+                "Utiliser des algorithmes pour automatiser"
+              ]
+            },
+            {
+              section: "Arbitrage statistique",
+              texte: "Exploiter les déviations temporaires de relations statistiques entre actifs.",
+              exemples: [
+                {
+                  nom: "Pairs Trading",
+                  principe: "Acheter l'actif sous-évalué, vendre le sur-évalué dans une paire corrélée",
+                  exemple: "Coca vs Pepsi, Air France vs Lufthansa"
+                },
+                {
+                  nom: "Volatility Arbitrage",
+                  principe: "Acheter volatilité implicite cheap, vendre volatilité réalisée",
+                  execution: "Delta-hedge daily pour isoler la volatilité"
+                },
+                {
+                  nom: "Convertible Arbitrage",
+                  principe: "Acheter obligation convertible sous-évaluée, shorter l'action",
+                  profit: "Sur la convexité et la volatilité"
+                }
+              ]
+            },
+            {
+              section: "Utilisation de Machine Learning",
+              texte: "Le ML est de plus en plus utilisé en finance quantitative pour prédire les prix, optimiser les stratégies, détecter des patterns.",
+              applications: [
+                "**Prédiction de volatilité** : LSTM, GRU pour séries temporelles",
+                "**Pricing d'options** : Neural networks pour approximer Black-Scholes",
+                "**Détection d'arbitrage** : Reinforcement learning",
+                "**Risk management** : Classification des scénarios de crise"
+              ],
+              attention: "Overfitting, regime change, non-stationnarité des marchés"
+            }
+          ]
+        }
+      ]
+    }
+  }
 
   const tutorials = [
     {
@@ -613,6 +1356,17 @@ export default function Learning() {
         {/* Onglets principaux */}
         <div className="flex justify-center gap-4 mb-8">
           <button
+            onClick={() => setActiveTab('cours')}
+            className={`px-8 py-3 rounded-xl font-semibold transition-all ${
+              activeTab === 'cours'
+                ? 'bg-gradient-metron shadow-neon-purple text-white'
+                : 'glass-card text-gray-400 hover:text-white border border-white/10'
+            }`}
+            aria-label="Onglet Cours"
+          >
+            📖 Cours
+          </button>
+          <button
             onClick={() => setActiveTab('tutorials')}
             className={`px-8 py-3 rounded-xl font-semibold transition-all ${
               activeTab === 'tutorials'
@@ -632,9 +1386,276 @@ export default function Learning() {
             }`}
             aria-label="Onglet Glossaire"
           >
-            📖 Glossaire
+            📋 Glossaire
           </button>
         </div>
+
+        {/* Cours */}
+        {activeTab === 'cours' && (
+          <div>
+            {/* Sélection du niveau */}
+            <div className="glass-card p-6 mb-8 border border-metron-purple/30">
+              <h2 className="text-2xl font-bold text-white mb-4 text-center">
+                Choisissez votre niveau
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {Object.entries(cours).map(([key, level]) => (
+                  <button
+                    key={key}
+                    onClick={() => setSelectedLevel(key)}
+                    className={`p-6 rounded-lg border-2 transition-all ${
+                      selectedLevel === key
+                        ? 'border-metron-purple bg-metron-purple/20 shadow-neon-purple'
+                        : 'border-white/10 hover:border-metron-purple/50'
+                    }`}
+                  >
+                    <div className="text-5xl mb-3">{level.icon}</div>
+                    <h3 className="font-bold text-white mb-2 text-lg">{level.title}</h3>
+                    <p className="text-xs text-gray-400">{level.subtitle}</p>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Contenu du cours */}
+            {cours[selectedLevel] && (
+              <div className="space-y-6">
+                {cours[selectedLevel].modules.map((module, moduleIdx) => (
+                  <div key={moduleIdx} className="glass-card p-8 border border-metron-blue/30">
+                    <h2 className="text-3xl font-bold text-white mb-6">{module.titre}</h2>
+                    
+                    {module.contenu.map((section, sectionIdx) => (
+                      <div key={sectionIdx} className="mb-8">
+                        <h3 className="text-2xl font-bold text-metron-purple mb-4">
+                          {section.section}
+                        </h3>
+                        
+                        {section.texte && (
+                          <p className="text-gray-300 mb-4 leading-relaxed">{section.texte}</p>
+                        )}
+                        
+                        {section.points && (
+                          <ul className="space-y-2 mb-4">
+                            {section.points.map((point, idx) => (
+                              <li key={idx} className="flex gap-3 text-gray-300">
+                                <span className="text-metron-purple mt-1">•</span>
+                                <span dangerouslySetInnerHTML={{ __html: point }} />
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                        
+                        {section.exemple && (
+                          <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 mb-4">
+                            <p className="text-sm font-semibold text-blue-400 mb-2">💡 Exemple</p>
+                            <p className="text-gray-300 text-sm">{section.exemple}</p>
+                          </div>
+                        )}
+                        
+                        {section.formule && (
+                          <div className="bg-metron-purple/10 border border-metron-purple/30 rounded-lg p-4 mb-4">
+                            <p className="font-mono text-metron-purple">{section.formule}</p>
+                          </div>
+                        )}
+                        
+                        {section.analogie && (
+                          <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4 mb-4">
+                            <p className="text-sm font-semibold text-green-400 mb-2">🔍 Analogie</p>
+                            <p className="text-gray-300 text-sm">{section.analogie}</p>
+                          </div>
+                        )}
+                        
+                        {section.citation && (
+                          <div className="border-l-4 border-metron-purple pl-4 italic text-gray-400 mb-4">
+                            {section.citation}
+                          </div>
+                        )}
+                        
+                        {section.comparaison && (
+                          <div className="grid md:grid-cols-2 gap-4 mb-4">
+                            <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4">
+                              <h4 className="font-bold text-green-400 mb-2">Actions</h4>
+                              <p className="text-xs text-gray-400 mb-2">Avantages :</p>
+                              <ul className="space-y-1 mb-3">
+                                {section.comparaison.actions.avantages.map((a, i) => (
+                                  <li key={i} className="text-sm text-gray-300">✓ {a}</li>
+                                ))}
+                              </ul>
+                              <p className="text-xs text-gray-400 mb-2">Inconvénients :</p>
+                              <ul className="space-y-1 mb-3">
+                                {section.comparaison.actions.inconvenients.map((a, i) => (
+                                  <li key={i} className="text-sm text-gray-300">✗ {a}</li>
+                                ))}
+                              </ul>
+                              <p className="text-xs text-blue-300 italic">{section.comparaison.actions.profil}</p>
+                            </div>
+                            <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
+                              <h4 className="font-bold text-blue-400 mb-2">Obligations</h4>
+                              <p className="text-xs text-gray-400 mb-2">Avantages :</p>
+                              <ul className="space-y-1 mb-3">
+                                {section.comparaison.obligations.avantages.map((a, i) => (
+                                  <li key={i} className="text-sm text-gray-300">✓ {a}</li>
+                                ))}
+                              </ul>
+                              <p className="text-xs text-gray-400 mb-2">Inconvénients :</p>
+                              <ul className="space-y-1 mb-3">
+                                {section.comparaison.obligations.inconvenients.map((a, i) => (
+                                  <li key={i} className="text-sm text-gray-300">✗ {a}</li>
+                                ))}
+                              </ul>
+                              <p className="text-xs text-blue-300 italic">{section.comparaison.obligations.profil}</p>
+                            </div>
+                          </div>
+                        )}
+                        
+                        {section.types && (
+                          <div className="grid md:grid-cols-2 gap-4 mb-4">
+                            {section.types.map((type, idx) => (
+                              <div key={idx} className="bg-white/5 border border-white/10 rounded-lg p-4">
+                                <h4 className="font-bold text-white mb-2">{type.nom}</h4>
+                                <p className="text-sm text-gray-300 mb-2">{type.description}</p>
+                                <p className="text-xs text-metron-purple italic">Pour : {type.pour}</p>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                        
+                        {section.actions && (
+                          <ul className="space-y-2">
+                            {section.actions.map((action, idx) => (
+                              <li key={idx} className="flex gap-3 text-gray-300">
+                                <span className="text-green-400 mt-1">→</span>
+                                <span dangerouslySetInnerHTML={{ __html: action }} />
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                        
+                        {section.methodes && (
+                          <div className="space-y-4 mb-4">
+                            {section.methodes.map((methode, idx) => (
+                              <div key={idx} className="bg-white/5 border border-white/10 rounded-lg p-4">
+                                <h4 className="font-bold text-white mb-2">{methode.nom}</h4>
+                                <p className="text-sm text-gray-300 mb-2">{methode.description}</p>
+                                {methode.formule && (
+                                  <p className="font-mono text-sm text-metron-purple">{methode.formule}</p>
+                                )}
+                                {methode.exemple && (
+                                  <p className="text-xs text-gray-400 mt-2">Ex: {methode.exemple}</p>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                        
+                        {section.details && (
+                          <div className="space-y-3 mb-4">
+                            {section.details.map((detail, idx) => (
+                              <div key={idx} className="bg-white/5 border border-white/10 rounded-lg p-4">
+                                <h4 className="font-bold text-metron-purple mb-2">{detail.type}</h4>
+                                <p className="text-sm text-gray-300 mb-1"><span className="font-semibold">Définition :</span> {detail.definition}</p>
+                                <p className="text-sm text-gray-300 mb-1"><span className="font-semibold">Utilisation :</span> {detail.utilisation}</p>
+                                <p className="text-xs text-gray-400 italic">{detail.exemple}</p>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                        
+                        {section.parametres && (
+                          <div className="bg-white/5 border border-white/10 rounded-lg p-4 mb-4">
+                            <p className="text-sm font-semibold text-white mb-3">Paramètres :</p>
+                            
+                            <ul className="space-y-3">
+                              {section.parametres.map((param, idx) => (
+                                <li key={idx} className="text-sm text-gray-300">
+                                  
+                                  {/* Cas 1 : paramètre simple (string) */}
+                                  {typeof param === 'string' && (
+                                    <span className="font-mono text-metron-purple">{param}</span>
+                                  )}
+                                  
+                                  {/* Cas 2 : paramètre structuré (objet) */}
+                                  {typeof param === 'object' && (
+                                    <div>
+                                      <p className="font-bold text-metron-purple">{param.nom}</p>
+                                      <p className="text-gray-300 text-sm">{param.definition}</p>
+                                      {param.impact && (
+                                        <p className="text-xs text-gray-400 italic">
+                                          Impact : {param.impact}
+                                        </p>
+                                      )}
+                                    </div>
+                                  )}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+
+                        
+                        {section.formules && section.formules.length > 0 && (
+                          <div className="space-y-2 mb-4">
+                            {section.formules.map((f, idx) => (
+                              <div key={idx} className="bg-metron-purple/10 border border-metron-purple/30 rounded-lg p-3">
+                                <p className="font-mono text-sm text-metron-purple">{f}</p>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                        
+                        {section.greeks && (
+                          <div className="space-y-4 mb-4">
+                            {section.greeks.map((greek, idx) => (
+                              <div key={idx} className="bg-gradient-to-r from-metron-purple/10 to-metron-blue/10 border border-metron-purple/30 rounded-lg p-4">
+                                <h4 className="font-bold text-white mb-2">{greek.nom}</h4>
+                                <p className="text-sm text-gray-300 mb-1">{greek.definition}</p>
+                                <p className="text-sm text-blue-300 mb-1">💡 {greek.interpretation}</p>
+                                <p className="text-xs text-gray-400 italic">{greek.plage || greek.astuce}</p>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                        
+                        {section.etapes && (
+                          <div className="space-y-3 mb-4">
+                            {section.etapes.map((etape, idx) => (
+                              <div key={idx} className="bg-white/5 border border-white/10 rounded-lg p-4">
+                                <div className="flex items-start gap-3">
+                                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-metron-purple/30 flex items-center justify-center text-white font-bold text-sm">
+                                    {idx + 1}
+                                  </div>
+                                  <div className="flex-1">
+                                    <h4 className="font-bold text-white mb-1">{etape.etape}</h4>
+                                    {etape.montant && <p className="text-sm text-metron-purple mb-1">{etape.montant}</p>}
+                                    {etape.role && <p className="text-xs text-gray-400">{etape.role}</p>}
+                                    {etape.texte && <p className="text-sm text-gray-300">{etape.texte}</p>}
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                        
+                        {section.strategies && (
+                          <div className="space-y-4 mb-4">
+                            {section.strategies.map((strat, idx) => (
+                              <div key={idx} className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/30 rounded-lg p-4">
+                                <h4 className="font-bold text-white mb-2">{strat.nom}</h4>
+                                <p className="text-sm text-gray-300 mb-1"><span className="font-semibold">Composition :</span> {strat.composition}</p>
+                                <p className="text-sm text-gray-300 mb-1"><span className="font-semibold">Pari :</span> {strat.pari}</p>
+                                <p className="text-xs text-gray-400"><span className="font-semibold">Greeks :</span> {strat.Greeks || strat.risque}</p>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Tutoriels */}
         {activeTab === 'tutorials' && (
