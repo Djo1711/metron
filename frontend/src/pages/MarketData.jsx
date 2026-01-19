@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { getStockQuote, getStockHistory, searchStock } from '../services/api'
+import { getStockQuote, getStockHistory } from '../services/api'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
+import axios from 'axios'
 
 export default function MarketData() {
   const [searchParams] = useSearchParams()
@@ -11,7 +12,12 @@ export default function MarketData() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [period, setPeriod] = useState('1mo')
-  const [searchSuggestion, setSearchSuggestion] = useState('')
+  
+  // Nouveaux states pour l'autocomplétion
+  const [suggestions, setSuggestions] = useState([])
+  const [showSuggestions, setShowSuggestions] = useState(false)
+  const [searchLoading, setSearchLoading] = useState(false)
+  const searchRef = useRef(null)
 
   const periods = [
     { label: '1J', value: '1d' },
@@ -32,6 +38,17 @@ export default function MarketData() {
     { name: 'Investing.com', url: 'https://fr.investing.com/', emoji: '📈' },
   ]
 
+  // Fermer les suggestions quand on clique ailleurs
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setShowSuggestions(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
   // Auto-load ticker from URL params
   useEffect(() => {
     const tickerParam = searchParams.get('ticker')
@@ -41,27 +58,60 @@ export default function MarketData() {
     }
   }, [searchParams])
 
+  // Recherche en temps réel
+  const handleInputChange = async (e) => {
+    const value = e.target.value
+    setTicker(value)
+    
+    if (value.length >= 1) {
+      setSearchLoading(true)
+      try {
+        const response = await axios.get(`http://localhost:8000/api/market/search/${value}`)
+        setSuggestions(response.data)
+        setShowSuggestions(true)
+      } catch (err) {
+        console.error('Erreur recherche:', err)
+        setSuggestions([])
+      } finally {
+        setSearchLoading(false)
+      }
+    } else {
+      setSuggestions([])
+      setShowSuggestions(false)
+    }
+  }
+
+  // Sélectionner une suggestion
+  const handleSelectSuggestion = (suggestion) => {
+    setTicker(suggestion.ticker)
+    setShowSuggestions(false)
+    loadStockData(suggestion.ticker)
+  }
+
+  // Recherche modifiée pour supporter les noms complets
   const handleSearch = async (e) => {
     e.preventDefault()
     if (!ticker.trim()) return
     
+    setShowSuggestions(false)
     setLoading(true)
     setError(null)
-    setSearchSuggestion('')
     
     try {
-      // Utilise l'endpoint de recherche intelligent
-      const searchResponse = await searchStock(ticker)
-      const resolvedTicker = searchResponse.data.ticker
+      // Chercher d'abord pour trouver le bon ticker
+      const searchResponse = await axios.get(`http://localhost:8000/api/market/search/${ticker}`)
       
-      // Affiche un message si fuzzy match
-      if (searchResponse.data.match_type === 'fuzzy') {
-        setSearchSuggestion(`Résultat pour "${searchResponse.data.matched_name}"`)
+      if (searchResponse.data && searchResponse.data.length > 0) {
+        const bestMatch = searchResponse.data[0]
+        setTicker(bestMatch.ticker)
+        await loadStockData(bestMatch.ticker)
+      } else {
+        setError('Aucune action trouvée pour "' + ticker + '"')
+        setStockData(null)
+        setHistoryData([])
       }
-      
-      await loadStockData(resolvedTicker)
-    } catch (error) {
-      setError(error.response?.data?.detail || 'Action non trouvée ou erreur API')
+    } catch (err) {
+      setError('Action non trouvée ou erreur API')
       setStockData(null)
       setHistoryData([])
     } finally {
@@ -71,12 +121,10 @@ export default function MarketData() {
 
   const loadStockData = async (tickerSymbol) => {
     setLoading(true)
+    setError(null)
     try {
-      // Get quote
       const quoteResponse = await getStockQuote(tickerSymbol.toUpperCase())
       setStockData(quoteResponse.data)
-      
-      // Get history
       await loadHistory(tickerSymbol.toUpperCase(), period)
     } catch (error) {
       setError('Action non trouvée ou erreur API')
@@ -119,30 +167,63 @@ export default function MarketData() {
           </p>
         </div>
 
-        {/* Search Box */}
-        <div className="glass-card p-8 mb-8 border border-metron-purple/30">
-          <form onSubmit={handleSearch} className="flex gap-4 mb-4">
-            <input
-              type="text"
-              value={ticker}
-              onChange={(e) => setTicker(e.target.value)}
-              placeholder="Ticker ou nom d'entreprise (ex: AAPL, Apple, Micros...)"
-              className="input-futuristic flex-1 text-lg"
-            />
-            <button
-              type="submit"
-              disabled={loading}
-              className="btn-neon px-8"
-            >
-              {loading ? 'Recherche...' : '🔍 Rechercher'}
-            </button>
-          </form>
-          {searchSuggestion && (
-            <p className="text-sm text-metron-purple mb-2">💡 {searchSuggestion}</p>
+        {/* Search Box avec autocomplétion */}
+        <div className="relative mb-8" ref={searchRef}>
+          <div className="glass-card p-8 border border-metron-purple/30">
+            <form onSubmit={handleSearch}>
+              <div className="flex gap-4 mb-4">
+                <div className="flex-1 relative">
+                  <input
+                    type="text"
+                    value={ticker}
+                    onChange={handleInputChange}
+                    onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
+                    placeholder="Rechercher un ticker ou nom (AAPL, Apple...)"
+                    className="input-futuristic w-full text-lg"
+                    autoComplete="off"
+                  />
+                </div>
+                
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="btn-neon px-8"
+                >
+                  {loading ? 'Recherche...' : '🔍 Rechercher'}
+                </button>
+              </div>
+            </form>
+            
+            <p className="text-xs text-gray-500">
+              💡 Tapez n'importe quelle lettre pour voir les suggestions
+            </p>
+          </div>
+
+          {/* Dropdown HORS du glass-card */}
+          {showSuggestions && suggestions.length > 0 && (
+            <div className="absolute z-[9999] left-8 right-8 mt-[-3rem] bg-metron-darker border border-metron-purple/50 rounded-lg shadow-2xl max-h-96 overflow-y-auto">
+              {searchLoading ? (
+                <div className="p-4 text-center text-gray-400">Recherche...</div>
+              ) : (
+                suggestions.map((suggestion, index) => (
+                  <button
+                    key={index}
+                    type="button"
+                    onClick={() => handleSelectSuggestion(suggestion)}
+                    className="w-full px-4 py-3 text-left hover:bg-metron-purple/20 transition-colors border-b border-white/5 last:border-b-0"
+                  >
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <p className="font-bold text-white">{suggestion.ticker}</p>
+                        <p className="text-sm text-gray-400 truncate">{suggestion.name}</p>
+                      </div>
+                      <span className="text-xs text-metron-purple">{suggestion.exchange}</span>
+                    </div>
+                  </button>
+                ))
+              )}
+            </div>
           )}
-          <p className="text-xs text-gray-500">
-            💡 Astuce : Recherchez par ticker (AAPL) ou par nom (Apple, Micros, Amazn...)
-          </p>
         </div>
 
         {/* News Section */}
@@ -358,8 +439,11 @@ export default function MarketData() {
           <div className="glass-card p-16 text-center border border-white/10">
             <div className="text-7xl mb-6">📈</div>
             <p className="text-gray-400 text-xl mb-2">Recherchez une action pour commencer</p>
+            <p className="text-gray-500 text-sm mb-4">
+              🇺🇸 Américaines : AAPL, MSFT, TSLA, GOOGL
+            </p>
             <p className="text-gray-500 text-sm">
-              Essayez : Apple, MSFT, Amazn, Tesla, Googl...
+              🇫🇷 Françaises : MC.PA (LVMH), OR.PA (L'Oréal), AI.PA (Air Liquide), SAN.PA (Sanofi)
             </p>
           </div>
         )}
