@@ -232,7 +232,7 @@ export default function Simulation({ isGuest }) {
       <div className="max-w-7xl mx-auto px-4">
         <div className="text-center mb-12">
           <h1 className="text-5xl font-bold mb-3">
-            <span className="gradient-text">Moteur de pricing de Produits Structurés</span>
+            <span className="gradient-text">Simulateur de Produits Structurés</span>
           </h1>
           <p className="text-gray-400 text-lg">
             Pricing Black-Scholes et Monte Carlo en temps réel

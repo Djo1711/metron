@@ -35,7 +35,7 @@ export default function Navbar({ user, isGuest }) {
                   Données de Marché
                 </Link>
                 <Link to="/simulation" className={`px-4 py-2 rounded-lg transition-all ${isActive('/simulation') ? 'bg-white/20 text-white' : 'text-white/80 hover:text-white hover:bg-white/10'}`}>
-                  Pricing
+                  Simulateur
                 </Link>
                 <Link to="/learning" className={`px-4 py-2 rounded-lg transition-all ${isActive('/learning') ? 'bg-white/20 text-white' : 'text-white/80 hover:text-white hover:bg-white/10'}`}>
                   Apprentissage

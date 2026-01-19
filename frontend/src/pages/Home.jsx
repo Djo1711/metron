@@ -50,7 +50,7 @@ export default function Home() {
           <Link to="/simulation" className="glass-card p-8 hover:shadow-neon-purple card-hover group cursor-pointer">
             <div className="text-4xl mb-4">⚡</div>
             <h3 className="text-2xl font-bold text-metron-purple mb-3 group-hover:text-metron-pink transition-colors">
-              Moteur de Pricing
+              Simulateur
             </h3>
             <p className="text-gray-400">
               Simulations Black-Scholes et Monte Carlo pour un pricing avancé
