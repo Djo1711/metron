@@ -40,6 +40,43 @@
   .card-hover {
     @apply transition-all duration-300 hover:scale-105 hover:shadow-neon-purple;
   }
+
+  /* ✨ NOUVEAUX STYLES POUR TOOLTIPS ✨ */
+  
+  /* Tooltip term (underline dotted) */
+  .tooltip-term {
+    @apply border-b border-dotted border-metron-purple/50 cursor-help inline-block;
+  }
+
+  /* Animation fade in pour tooltips */
+  .animate-fadeIn {
+    animation: fadeIn 0.2s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-5px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Tooltip info icon pulse effect */
+  .info-icon-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
 }
 
 /* Scrollbar custom */
