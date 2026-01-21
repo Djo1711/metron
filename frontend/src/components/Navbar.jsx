@@ -29,7 +29,7 @@ export default function Navbar({ user, isGuest }) {
             {user && (
               <div className="hidden md:flex space-x-2">
                 <Link to="/" className={`px-4 py-2 rounded-lg transition-all ${isActive('/') ? 'bg-white/20 text-white' : 'text-white/80 hover:text-white hover:bg-white/10'}`}>
-                  Tableau de bord
+                  Accueil
                 </Link>
                 <Link to="/market" className={`px-4 py-2 rounded-lg transition-all ${isActive('/market') ? 'bg-white/20 text-white' : 'text-white/80 hover:text-white hover:bg-white/10'}`}>
                   Données de Marché
@@ -39,6 +39,9 @@ export default function Navbar({ user, isGuest }) {
                 </Link>
                 <Link to="/learning" className={`px-4 py-2 rounded-lg transition-all ${isActive('/learning') ? 'bg-white/20 text-white' : 'text-white/80 hover:text-white hover:bg-white/10'}`}>
                   Apprentissage
+                </Link>
+                <Link to="/team" className={`px-4 py-2 rounded-lg transition-all ${isActive('/team') ? 'bg-white/20 text-white' : 'text-white/80 hover:text-white hover:bg-white/10'}`}>
+                  Notre Équipe
                 </Link>
                 {!isGuest && (
                   <Link to="/account" className={`px-4 py-2 rounded-lg transition-all ${isActive('/account') ? 'bg-white/20 text-white' : 'text-white/80 hover:text-white hover:bg-white/10'}`}>
