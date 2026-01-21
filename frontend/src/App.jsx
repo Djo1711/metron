@@ -13,6 +13,7 @@ import Home from './pages/Home'
 import MarketData from './pages/MarketData'
 import Simulation from './pages/Simulation'
 import Learning from './pages/Learning'
+import Team from './pages/Team'
 import MyAccount from './pages/MyAccount'
 import NotFound from './pages/NotFound'
 
@@ -83,6 +84,10 @@ function App() {
             <Route
               path="/learning"
               element={isAuthenticated ? <Learning /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/team"
+              element={isAuthenticated ? <Team /> : <Navigate to="/login" />}
             />
             <Route
               path="/account"
