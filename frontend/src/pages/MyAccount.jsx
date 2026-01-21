@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../services/supabase'
-import { getUserSimulations, deleteSimulation } from '../services/api'
 
 export default function MyAccount() {
   const [user, setUser] = useState(null)
-  const [simulations, setSimulations] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [tab, setTab] = useState('profile')
@@ -24,33 +22,11 @@ export default function MyAccount() {
       }
       
       setUser(user)
-
-      if (user) {
-        try {
-          const response = await getUserSimulations(user.id)
-          setSimulations(response.data || [])
-        } catch (simError) {
-          console.error('Erreur simulations:', simError)
-          setSimulations([])
-        }
-      }
     } catch (error) {
       console.error('Erreur lors du chargement des données:', error)
       setError('Erreur : ' + error.message)
     } finally {
       setLoading(false)
-    }
-  }
-
-  const handleDeleteSimulation = async (id) => {
-    if (!confirm('Supprimer cette simulation ?')) return
-    
-    try {
-      await deleteSimulation(id)
-      setSimulations(simulations.filter(sim => sim.id !== id))
-    } catch (error) {
-      console.error('Erreur de suppression:', error)
-      alert('Erreur lors de la suppression de la simulation')
     }
   }
 
@@ -83,7 +59,7 @@ export default function MyAccount() {
             <span className="gradient-text">Mon Compte</span>
           </h1>
           <p className="text-gray-400 text-lg">
-            Gérez votre profil et votre historique de simulations
+            Gérez votre profil et vos préférences
           </p>
         </div>
 
@@ -98,16 +74,6 @@ export default function MyAccount() {
             }`}
           >
             👤 Profil
-          </button>
-          <button
-            onClick={() => setTab('simulations')}
-            className={`px-8 py-3 rounded-xl font-semibold transition-all ${
-              tab === 'simulations'
-                ? 'bg-gradient-metron shadow-neon-purple text-white'
-                : 'glass-card text-gray-400 hover:text-white border border-white/10'
-            }`}
-          >
-            📊 Simulations ({simulations.length})
           </button>
           <button
             onClick={() => setTab('settings')}
@@ -151,98 +117,27 @@ export default function MyAccount() {
               </div>
 
               <div className="bg-gradient-to-r from-metron-purple/20 to-metron-blue/20 p-6 rounded-xl border border-metron-purple/50">
-                <label className="block text-sm font-medium text-gray-400 mb-2">Total des simulations</label>
-                <p className="text-4xl font-bold text-white">{simulations.length}</p>
+                <label className="block text-sm font-medium text-gray-400 mb-2">Accès rapide</label>
+                <div className="grid md:grid-cols-2 gap-4 mt-4">
+                  <a 
+                    href="/simulation" 
+                    className="bg-white/5 hover:bg-white/10 p-4 rounded-lg border border-white/10 hover:border-metron-purple/50 transition-all cursor-pointer"
+                  >
+                    <div className="text-2xl mb-2">📊</div>
+                    <p className="text-white font-semibold">Mes Simulations</p>
+                    <p className="text-sm text-gray-400 mt-1">Voir toutes mes simulations sauvegardées</p>
+                  </a>
+                  <a 
+                    href="/learning" 
+                    className="bg-white/5 hover:bg-white/10 p-4 rounded-lg border border-white/10 hover:border-metron-blue/50 transition-all cursor-pointer"
+                  >
+                    <div className="text-2xl mb-2">📚</div>
+                    <p className="text-white font-semibold">Apprentissage</p>
+                    <p className="text-sm text-gray-400 mt-1">Continuer mes cours et tutoriels</p>
+                  </a>
+                </div>
               </div>
             </div>
-          </div>
-        )}
-
-        {/* Simulations Tab */}
-        {tab === 'simulations' && (
-          <div>
-            {simulations.length === 0 ? (
-              <div className="glass-card p-16 text-center border border-white/10">
-                <div className="text-6xl mb-4">📊</div>
-                <p className="text-gray-400 text-xl mb-2">Aucune simulation pour le moment</p>
-                <p className="text-gray-500 mb-6">Créez votre première simulation de pricing !</p>
-                <a href="/simulation" className="inline-block btn-neon">
-                  Démarrer une simulation →
-                </a>
-              </div>
-            ) : (
-              <div className="space-y-6">
-                {simulations.map((sim) => (
-                  <div
-                    key={sim.id}
-                    className="glass-card p-6 border border-metron-purple/20 card-hover"
-                  >
-                    <div className="flex justify-between items-start mb-6">
-                      <div>
-                        <h3 className="text-2xl font-bold text-white mb-1">
-                          {sim.product_type}
-                        </h3>
-                        <p className="text-sm text-gray-400">
-                          📅 {new Date(sim.created_at).toLocaleString('fr-FR')}
-                        </p>
-                      </div>
-                      <button
-                        onClick={() => handleDeleteSimulation(sim.id)}
-                        className="text-red-400 hover:text-red-300 hover:bg-red-500/10 px-4 py-2 rounded-lg transition-all border border-red-500/20 hover:border-red-500/50"
-                      >
-                        🗑️ Supprimer
-                      </button>
-                    </div>
-
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div className="bg-white/5 p-5 rounded-xl border border-white/10">
-                        <h4 className="font-semibold text-metron-purple mb-3 text-lg">Paramètres</h4>
-                        <div className="space-y-2 text-sm">
-                          <div className="flex justify-between">
-                            <span className="text-gray-400">Ticker :</span>
-                            <span className="text-white font-semibold">{sim.ticker}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-gray-400">Principal :</span>
-                            <span className="text-white font-semibold">${sim.parameters?.principal}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-gray-400">Coupon :</span>
-                            <span className="text-white font-semibold">{sim.parameters?.coupon_rate}%</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-gray-400">Barrière :</span>
-                            <span className="text-white font-semibold">{sim.parameters?.barrier_level}%</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="bg-white/5 p-5 rounded-xl border border-white/10">
-                        <h4 className="font-semibold text-metron-blue mb-3 text-lg">Résultats</h4>
-                        <div className="space-y-2 text-sm">
-                          <div className="flex justify-between">
-                            <span className="text-gray-400">Juste Valeur :</span>
-                            <span className="text-white font-semibold">${sim.results?.fair_value?.toFixed(2)}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-gray-400">Delta :</span>
-                            <span className="text-white font-semibold">{sim.results?.delta?.toFixed(4)}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-gray-400">Vega :</span>
-                            <span className="text-white font-semibold">{sim.results?.vega?.toFixed(2)}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-gray-400">Seuil de rentabilité :</span>
-                            <span className="text-white font-semibold">${sim.results?.break_even_price?.toFixed(2)}</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
           </div>
         )}
 
@@ -263,6 +158,24 @@ export default function MyAccount() {
                     <input type="checkbox" className="w-5 h-5 accent-metron-purple" defaultChecked />
                     <span className="text-gray-300">Sauvegarde automatique des simulations</span>
                   </label>
+                  <label className="flex items-center gap-3 cursor-pointer p-4 bg-white/5 rounded-lg border border-white/10 hover:border-metron-purple/50 transition-all">
+                    <input type="checkbox" className="w-5 h-5 accent-metron-purple" defaultChecked />
+                    <span className="text-gray-300">Recevoir des recommandations de contenu éducatif</span>
+                  </label>
+                </div>
+              </div>
+
+              <div className="pt-6 border-t border-white/10">
+                <h3 className="text-lg font-semibold text-white mb-4">Apparence</h3>
+                <div className="space-y-3">
+                  <div className="p-4 bg-white/5 rounded-lg border border-white/10">
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Thème</label>
+                    <select className="input-futuristic w-full md:w-64">
+                      <option value="dark">Sombre (Actuel)</option>
+                      <option value="light">Clair (Bientôt disponible)</option>
+                      <option value="auto">Automatique (Bientôt disponible)</option>
+                    </select>
+                  </div>
                 </div>
               </div>
 
