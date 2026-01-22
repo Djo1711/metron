@@ -1,12 +1,99 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 export default function Learning() {
+    // ⭐ Modules lus (persistants)
+  const [completedModules, setCompletedModules] = useState(() => {
+    const saved = localStorage.getItem('completedModules')
+    return saved ? JSON.parse(saved) : {}
+  })
+
+  useEffect(() => {
+    localStorage.setItem(
+      'completedModules',
+      JSON.stringify(completedModules)
+    )
+  }, [completedModules])
+
+  const toggleModuleCompletion = (level, moduleIdx) => {
+    setCompletedModules(prev => {
+      const current = prev[level] || []
+      return {
+        ...prev,
+        [level]: current.includes(moduleIdx)
+          ? current.filter(i => i !== moduleIdx)
+          : [...current, moduleIdx]
+      }
+    })
+  }
+
+  const isModuleCompleted = (level, moduleIdx) =>
+    completedModules[level]?.includes(moduleIdx)
+
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState('tutorials')
   const [selectedProduct, setSelectedProduct] = useState('reverse_convertible')
   const [searchTerm, setSearchTerm] = useState("")
+  const [suggestions, setSuggestions] = useState([])
+  const [showSuggestions, setShowSuggestions] = useState(false)
+  const [searchLoading, setSearchLoading] = useState(false)
+  const searchRef = useRef(null)
   const [selectedLevel, setSelectedLevel] = useState('debutant')
+  // ✅ NOUVEAUX ÉTATS POUR LES QCM
+  const [quizAnswers, setQuizAnswers] = useState({}); // Stocke les réponses de l'utilisateur
+  const [quizSubmitted, setQuizSubmitted] = useState({}); // Sait si le quiz a été soumis
+  const [quizScores, setQuizScores] = useState({}); // Stocke les scores
+  const [showLevelTest, setShowLevelTest] = useState(false); // Pour le popup de test de niveau
+
+  useEffect(() => {
+  const handleClickOutside = (event) => {
+    if (searchRef.current && !searchRef.current.contains(event.target)) {
+      setShowSuggestions(false)
+    }
+  }
+  document.addEventListener('mousedown', handleClickOutside)
+  return () =>
+    document.removeEventListener('mousedown', handleClickOutside)
+}, [])
+
+  const handleInputChange = (e) => {
+    const value = e.target.value
+    setSearchTerm(value)
+
+    if (value.length >= 1) {
+      setSearchLoading(true)
+
+      const results = []
+
+      glossary.forEach(section => {
+        section.terms.forEach(term => {
+          if (
+            term.term.toLowerCase().includes(value.toLowerCase()) ||
+            term.definition.toLowerCase().includes(value.toLowerCase())
+          ) {
+            results.push({
+              term: term.term,
+              section: section.section,
+              definition: term.definition
+            })
+          }
+        })
+      })
+
+      setSuggestions(results.slice(0, 8))
+      setShowSuggestions(true)
+      setSearchLoading(false)
+    } else {
+      setSuggestions([])
+      setShowSuggestions(false)
+    }
+  }
+
+
+  const handleSelectSuggestion = (suggestion) => {
+    setSearchTerm(suggestion.term)
+    setShowSuggestions(false)
+  }
 
   const cours = {
     debutant: {
@@ -41,6 +128,52 @@ export default function Learning() {
                 "**États** : Ils empruntent via des obligations pour financer les services publics",
                 "**Intermédiaires** : Banques, courtiers qui facilitent les transactions"
               ]
+            }
+          ],
+          quiz: [
+            {
+              question: "Quelle est la principale fonction de la finance ?",
+              options: [
+                "Gérer l'argent dans le temps",
+                "Créer de la monnaie",
+                "Contrôler les prix",
+                "Éviter les impôts"
+              ],
+              correct: 0, // Index de la bonne réponse (première option)
+              explication: "La finance permet de gérer l'argent dans le temps en investissant, finançant et gérant les risques."
+            },
+            {
+              question: "Qu'est-ce qu'un investisseur institutionnel ?",
+              options: [
+                "Une personne qui investit son épargne personnelle",
+                "Une banque, assurance ou fonds qui gère des milliards",
+                "Un trader indépendant",
+                "Un conseiller financier"
+              ],
+              correct: 1,
+              explication: "Les investisseurs institutionnels sont des entités comme les banques et assurances qui gèrent de très gros capitaux."
+            },
+            {
+              question: "Pourquoi la finance existe-t-elle ?",
+              options: [
+                "Pour enrichir les banques",
+                "Pour transférer l'argent des épargnants vers ceux qui en ont besoin",
+                "Pour compliquer les transactions",
+                "Pour créer des emplois"
+              ],
+              correct: 1,
+              explication: "La finance permet de faire circuler l'argent entre ceux qui épargnent et ceux qui ont besoin de financement."
+            },
+            {
+              question: "Quelle affirmation est VRAIE sur la gestion des risques ?",
+              options: [
+                "C'est uniquement pour les grandes entreprises",
+                "Elle permet de se protéger contre les pertes potentielles",
+                "Elle garantit de ne jamais perdre d'argent",
+                "Elle n'est pas importante en finance"
+              ],
+              correct: 1,
+              explication: "La gestion des risques vise à se protéger contre les pertes, mais ne les élimine pas complètement."
             }
           ]
         },
@@ -1341,6 +1474,58 @@ export default function Learning() {
 
   const selectedTutorial = tutorials.find(t => t.id === selectedProduct)
 
+    // Fonction pour sélectionner une réponse
+  const handleQuizAnswer = (level, moduleIdx, questionIdx, optionIdx) => {
+    const key = `${level}-${moduleIdx}`;
+    setQuizAnswers(prev => ({
+      ...prev,
+      [key]: {
+        ...prev[key],
+        [questionIdx]: optionIdx
+      }
+    }));
+  };
+
+  // Fonction pour soumettre le quiz
+  const submitQuiz = (level, moduleIdx) => {
+    const key = `${level}-${moduleIdx}`;
+    const module = cours[level].modules[moduleIdx];
+    const userAnswers = quizAnswers[key] || {};
+    
+    // Calculer le score
+    let correct = 0;
+    module.quiz.forEach((q, idx) => {
+      if (userAnswers[idx] === q.correct) {
+        correct++;
+      }
+    });
+    
+    const score = (correct / module.quiz.length) * 20; // Score sur 20
+    
+    // Sauvegarder le score
+    setQuizScores(prev => ({
+      ...prev,
+      [key]: { score, correct, total: module.quiz.length }
+    }));
+    
+    setQuizSubmitted(prev => ({
+      ...prev,
+      [key]: true
+    }));
+    
+    // Valider le module si score >= 16
+    if (score >= 16) {
+      toggleModuleCompletion(level, moduleIdx);
+    }
+  };
+
+  // Fonction pour recommencer le quiz
+  const resetQuiz = (level, moduleIdx) => {
+    const key = `${level}-${moduleIdx}`;
+    setQuizAnswers(prev => ({ ...prev, [key]: {} }));
+    setQuizSubmitted(prev => ({ ...prev, [key]: false }));
+  };
+
   return (
     <div className="min-h-screen bg-gradient-dark py-12">
       <div className="max-w-6xl mx-auto px-4">
@@ -1422,7 +1607,19 @@ export default function Learning() {
               <div className="space-y-6">
                 {cours[selectedLevel].modules.map((module, moduleIdx) => (
                   <div key={moduleIdx} className="glass-card p-8 border border-metron-blue/30">
-                    <h2 className="text-3xl font-bold text-white mb-6">{module.titre}</h2>
+                    <div className="flex items-center justify-between mb-6">
+                      <h2 className="text-3xl font-bold text-white">
+                        {module.titre}
+                      </h2>
+
+                      <button
+                        onClick={() => toggleModuleCompletion(selectedLevel, moduleIdx)}
+                        className="text-3xl transition-transform hover:scale-110"
+                        title="Marquer le module comme terminé"
+                      >
+                        {isModuleCompleted(selectedLevel, moduleIdx) ? "⭐" : "☆"}
+                      </button>
+                    </div>
                     
                     {module.contenu.map((section, sectionIdx) => (
                       <div key={sectionIdx} className="mb-8">
@@ -1648,6 +1845,125 @@ export default function Learning() {
                             ))}
                           </div>
                         )}
+
+                        {/* QCM - À ajouter APRÈS toutes les sections, avant la fermeture du div du module */}
+                        {module.quiz && module.quiz.length > 0 && (
+                          <div className="mt-8 pt-8 border-t-2 border-metron-purple/30">
+                            <h3 className="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+                              📝 Quiz de validation
+                              <span className="text-sm font-normal text-gray-400">
+                                (Score requis : 16/20)
+                              </span>
+                            </h3>
+                            
+                            {(() => {
+                              const key = `${selectedLevel}-${moduleIdx}`;
+                              const submitted = quizSubmitted[key];
+                              const score = quizScores[key];
+                              const userAnswers = quizAnswers[key] || {};
+                              
+                              return (
+                                <div className="space-y-6">
+                                  {module.quiz.map((q, qIdx) => (
+                                    <div key={qIdx} className="bg-white/5 border border-white/10 rounded-lg p-5">
+                                      <p className="text-white font-semibold mb-4">
+                                        {qIdx + 1}. {q.question}
+                                      </p>
+                                      
+                                      <div className="space-y-2">
+                                        {q.options.map((option, oIdx) => {
+                                          const isSelected = userAnswers[qIdx] === oIdx;
+                                          const isCorrect = q.correct === oIdx;
+                                          
+                                          let buttonClass = "w-full text-left p-3 rounded-lg border transition-all ";
+                                          
+                                          if (!submitted) {
+                                            buttonClass += isSelected
+                                              ? "border-metron-purple bg-metron-purple/20"
+                                              : "border-white/20 hover:border-metron-purple/50";
+                                          } else {
+                                            if (isCorrect) {
+                                              buttonClass += "border-green-500 bg-green-500/20";
+                                            } else if (isSelected && !isCorrect) {
+                                              buttonClass += "border-red-500 bg-red-500/20";
+                                            } else {
+                                              buttonClass += "border-white/10";
+                                            }
+                                          }
+                                          
+                                          return (
+                                            <button
+                                              key={oIdx}
+                                              onClick={() => !submitted && handleQuizAnswer(selectedLevel, moduleIdx, qIdx, oIdx)}
+                                              disabled={submitted}
+                                              className={buttonClass}
+                                            >
+                                              <span className="text-gray-300">
+                                                {submitted && isCorrect && "✅ "}
+                                                {submitted && isSelected && !isCorrect && "❌ "}
+                                                {option}
+                                              </span>
+                                            </button>
+                                          );
+                                        })}
+                                      </div>
+                                      
+                                      {submitted && (
+                                        <div className="mt-3 p-3 bg-blue-500/10 border border-blue-500/30 rounded">
+                                          <p className="text-sm text-blue-300">
+                                            💡 {q.explication}
+                                          </p>
+                                        </div>
+                                      )}
+                                    </div>
+                                  ))}
+                                  
+                                  {/* Boutons et résultats */}
+                                  <div className="flex flex-col items-center gap-4">
+                                    {!submitted ? (
+                                      <button
+                                        onClick={() => submitQuiz(selectedLevel, moduleIdx)}
+                                        disabled={Object.keys(userAnswers).length !== module.quiz.length}
+                                        className="btn-neon px-8 disabled:opacity-50 disabled:cursor-not-allowed"
+                                      >
+                                        Valider mes réponses
+                                      </button>
+                                    ) : (
+                                      <>
+                                        <div className={`text-center p-6 rounded-lg border-2 ${
+                                          score.score >= 16
+                                            ? 'border-green-500 bg-green-500/10'
+                                            : 'border-orange-500 bg-orange-500/10'
+                                        }`}>
+                                          <p className="text-3xl font-bold text-white mb-2">
+                                            {score.score.toFixed(1)}/20
+                                          </p>
+                                          <p className="text-gray-300 mb-2">
+                                            {score.correct}/{score.total} bonnes réponses
+                                          </p>
+                                          <p className={`font-bold ${
+                                            score.score >= 16 ? 'text-green-400' : 'text-orange-400'
+                                          }`}>
+                                            {score.score >= 16
+                                              ? '🎉 Module validé ! Excellent travail !'
+                                              : '📚 Révisez et réessayez pour valider le module'}
+                                          </p>
+                                        </div>
+                                        
+                                        <button
+                                          onClick={() => resetQuiz(selectedLevel, moduleIdx)}
+                                          className="btn-neon-secondary px-6"
+                                        >
+                                          Recommencer le quiz
+                                        </button>
+                                      </>
+                                    )}
+                                  </div>
+                                </div>
+                              );
+                            })()}
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -1854,14 +2170,54 @@ export default function Learning() {
         {/* Glossaire avec barre de recherche */}
         {activeTab === 'glossary' && (
           <div className="space-y-12">
-            <div className="mb-8 flex justify-center">
-              <input
-                type="text"
-                placeholder="Rechercher un terme..."
-                className="w-full max-w-md p-3 rounded-xl border border-white/20 bg-white/5 text-white placeholder-gray-400 focus:outline-none focus:border-metron-purple"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+            <div className="relative mb-8" ref={searchRef}>
+              <div className="glass-card p-8 border border-metron-purple/30">
+                <div className="flex gap-4 mb-4">
+                  <div className="flex-1 relative">
+                    <input
+                      type="text"
+                      placeholder="Rechercher un terme..."
+                      className="input-futuristic w-full text-lg"
+                      value={searchTerm}
+                      onChange={handleInputChange}
+                      onFocus={() =>
+                        suggestions.length > 0 && setShowSuggestions(true)
+                      }
+                      autoComplete="off"
+                    />
+                  </div>
+                </div>
+                <p className="text-xs text-gray-500">
+                  💡 Tapez pour rechercher dans le glossaire
+                </p>
+              </div>
+
+              {/* Dropdown HORS du glass-card */}
+              {showSuggestions && suggestions.length > 0 && (
+                <div className="absolute z-[9999] left-8 right-8 mt-[-3rem] bg-metron-darker border border-metron-purple/50 rounded-lg shadow-2xl max-h-96 overflow-y-auto">
+                  {searchLoading ? (
+                    <div className="p-4 text-center text-gray-400">
+                      Recherche...
+                    </div>
+                  ) : (
+                    suggestions.map((suggestion, index) => (
+                      <button
+                        key={index}
+                        type="button"
+                        onClick={() => handleSelectSuggestion(suggestion)}
+                        className="w-full px-4 py-3 text-left hover:bg-metron-purple/20 transition-colors border-b border-white/5 last:border-b-0"
+                      >
+                        <p className="font-bold text-white">
+                          {suggestion.term}
+                        </p>
+                        <p className="text-xs text-metron-purple">
+                          {suggestion.section}
+                        </p>
+                      </button>
+                    ))
+                  )}
+                </div>
+              )}
             </div>
 
             {filteredGlossary.length > 0 ? (
