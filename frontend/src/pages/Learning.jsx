@@ -44,6 +44,8 @@ export default function Learning() {
   const [quizSubmitted, setQuizSubmitted] = useState({}); // Sait si le quiz a été soumis
   const [quizScores, setQuizScores] = useState({}); // Stocke les scores
   const [showLevelTest, setShowLevelTest] = useState(false); // Pour le popup de test de niveau
+  const [openQuizzes, setOpenQuizzes] = useState({}); // Pour savoir quels quiz sont ouverts
+  const [openModules, setOpenModules] = useState({}); // Pour savoir quels modules sont ouverts
 
   useEffect(() => {
   const handleClickOutside = (event) => {
@@ -94,6 +96,30 @@ export default function Learning() {
     setSearchTerm(suggestion.term)
     setShowSuggestions(false)
   }
+  // Fonction pour ouvrir/fermer un quiz
+  const toggleQuiz = (level, moduleIdx) => {
+    const key = `${level}-${moduleIdx}`;
+    setOpenQuizzes(prev => ({
+      ...prev,
+      [key]: !prev[key]
+    }));
+  };
+
+  // Fonction pour ouvrir/fermer un module
+  const toggleModule = (level, moduleIdx) => {
+    const key = `${level}-${moduleIdx}`;
+    setOpenModules(prev => ({
+      ...prev,
+      [key]: !prev[key]
+    }));
+  };
+
+  // Vérifier si un module est complètement réussi (quiz validé)
+  const isModuleFullyCompleted = (level, moduleIdx) => {
+    const key = `${level}-${moduleIdx}`;
+    const score = quizScores[key];
+    return score && score.score >= 16;
+  };
 
   const cours = {
     debutant: {
@@ -114,20 +140,101 @@ export default function Learning() {
               ]
             },
             {
+              section: "Les trois piliers de la finance",
+              texte: "La finance moderne repose sur trois piliers fondamentaux qui structurent toutes les décisions financières.",
+              details: [
+                {
+                  type: "1. L'investissement",
+                  definition: "Processus d'allocation de capital dans des actifs pour générer des rendements futurs",
+                  utilisation: "Choisir où placer son argent pour le faire croître",
+                  exemple: "Acheter des actions Tesla en espérant que leur valeur augmente dans 5 ans"
+                },
+                {
+                  type: "2. Le financement",
+                  definition: "Obtention de ressources financières pour réaliser des projets",
+                  utilisation: "Lever des fonds via emprunt bancaire, émission d'actions ou d'obligations",
+                  exemple: "Une startup lève 1M€ auprès d'investisseurs pour développer son application"
+                },
+                {
+                  type: "3. La gestion des risques",
+                  definition: "Identification, évaluation et atténuation des risques financiers",
+                  utilisation: "Se protéger contre les pertes via diversification, assurance, hedging",
+                  exemple: "Un agriculteur utilise des contrats à terme pour se protéger contre la baisse des prix du blé"
+                }
+              ]
+            },
+            {
               section: "Pourquoi la finance existe-t-elle ?",
               texte: "La finance permet de transférer de l'argent de ceux qui en ont (épargnants) vers ceux qui en ont besoin (entreprises, États). Ce transfert se fait via les marchés financiers.",
               exemple: "Vous déposez 10 000€ à la banque → La banque prête cet argent à une entreprise pour construire une usine → L'entreprise rembourse avec intérêt → Vous récupérez 10 500€. Tout le monde y gagne !"
             },
             {
-              section: "Les acteurs de la finance",
-              texte: "Plusieurs acteurs interagissent sur les marchés financiers :",
+              section: "Le rôle de la finance dans l'économie",
+              texte: "La finance joue un rôle crucial dans le développement économique en permettant l'allocation efficace des ressources.",
               points: [
-                "**Investisseurs particuliers** : Vous et moi, qui épargnons et investissons",
-                "**Investisseurs institutionnels** : Banques, assurances, fonds de pension qui gèrent des milliards",
-                "**Entreprises** : Elles cherchent des financements pour se développer",
-                "**États** : Ils empruntent via des obligations pour financer les services publics",
-                "**Intermédiaires** : Banques, courtiers qui facilitent les transactions"
+                "**Facilite l'innovation** : Les entreprises tech peuvent lever des milliards pour développer de nouvelles technologies",
+                "**Crée de l'emploi** : Les investissements permettent aux entreprises de recruter et de se développer",
+                "**Améliore le niveau de vie** : L'épargne investie génère des rendements qui augmentent la richesse",
+                "**Finance les infrastructures** : Les États empruntent pour construire routes, hôpitaux, écoles"
               ]
+            },
+            {
+              section: "Les acteurs de la finance",
+              texte: "Plusieurs acteurs interagissent sur les marchés financiers, chacun avec un rôle spécifique.",
+              details: [
+                {
+                  type: "Investisseurs particuliers",
+                  definition: "Individus qui investissent leur épargne personnelle",
+                  utilisation: "Via courtiers en ligne, PEA, assurance-vie",
+                  exemple: "Marie investit 500€/mois dans un ETF S&P 500 pour préparer sa retraite"
+                },
+                {
+                  type: "Investisseurs institutionnels",
+                  definition: "Entités gérant de très gros volumes (banques, assurances, fonds de pension)",
+                  utilisation: "Gestion de milliards d'euros pour le compte de millions de clients",
+                  exemple: "BlackRock gère plus de 10 000 milliards de dollars d'actifs"
+                },
+                {
+                  type: "Entreprises",
+                  definition: "Sociétés cherchant à financer leur croissance",
+                  utilisation: "Émission d'actions (IPO) ou d'obligations corporate",
+                  exemple: "Apple émet des obligations pour 5 milliards pour financer son rachat d'actions"
+                },
+                {
+                  type: "États et institutions publiques",
+                  definition: "Gouvernements empruntant pour financer les dépenses publiques",
+                  utilisation: "Émission d'obligations souveraines (OAT, Treasury bonds)",
+                  exemple: "La France émet des OAT 10 ans à 3% pour financer le budget de l'État"
+                },
+                {
+                  type: "Intermédiaires financiers",
+                  definition: "Banques, courtiers, plateformes facilitant les transactions",
+                  utilisation: "Mise en relation acheteurs/vendeurs, conseil, exécution d'ordres",
+                  exemple: "Interactive Brokers permet d'acheter des actions Apple en quelques clics"
+                }
+              ]
+            },
+            {
+              section: "La valeur temps de l'argent",
+              texte: "Concept fondamental : 100€ aujourd'hui valent PLUS que 100€ dans un an. Pourquoi ? Car vous pouvez investir ces 100€ aujourd'hui et obtenir 105€ dans un an.",
+              exemple: "Préférez-vous recevoir 1000€ aujourd'hui ou 1000€ dans 5 ans ? Évidemment aujourd'hui ! Si vous investissez 1000€ à 5% par an, vous aurez 1276€ dans 5 ans.",
+              formule: "Valeur Future = Valeur Présente × (1 + taux)^années"
+            },
+            {
+              section: "Finance personnelle vs Finance d'entreprise",
+              texte: "Bien que les principes soient similaires, les échelles et objectifs diffèrent.",
+              comparaison: {
+                actions: {
+                  avantages: ["Gestion de patrimoine personnel", "Épargne pour retraite, projets", "Décisions individuelles"],
+                  inconvenients: ["Montants limités (milliers/millions)", "Moins de sophistication", "Fiscalité personnelle"],
+                  profil: "Investisseur particulier : PEA, assurance-vie, immobilier"
+                },
+                obligations: {
+                  avantages: ["Gestion de trésorerie d'entreprise", "Financement de croissance", "Conseil d'administration"],
+                  inconvenients: ["Montants élevés (millions/milliards)", "Instruments complexes", "Optimisation fiscale corporate"],
+                  profil: "CFO d'entreprise : émissions obligataires, M&A, hedging"
+                }
+              }
             }
           ],
           quiz: [
@@ -139,7 +246,7 @@ export default function Learning() {
                 "Contrôler les prix",
                 "Éviter les impôts"
               ],
-              correct: 0, // Index de la bonne réponse (première option)
+              correct: 0,
               explication: "La finance permet de gérer l'argent dans le temps en investissant, finançant et gérant les risques."
             },
             {
@@ -174,6 +281,182 @@ export default function Learning() {
               ],
               correct: 1,
               explication: "La gestion des risques vise à se protéger contre les pertes, mais ne les élimine pas complètement."
+            },
+            {
+              question: "Parmi ces activités, laquelle N'est PAS une fonction principale de la finance ?",
+              options: [
+                "Investir",
+                "Financer",
+                "Produire des biens",
+                "Gérer les risques"
+              ],
+              correct: 2,
+              explication: "La production de biens relève de l'activité opérationnelle de l'entreprise, pas de la finance. Les trois fonctions financières sont investir, financer et gérer les risques."
+            },
+            {
+              question: "Qu'est-ce que la 'valeur temps de l'argent' ?",
+              options: [
+                "Le temps nécessaire pour gagner de l'argent",
+                "100€ aujourd'hui valent plus que 100€ demain",
+                "L'argent perd de la valeur avec le temps à cause de l'inflation uniquement",
+                "Le coût horaire du travail"
+              ],
+              correct: 1,
+              explication: "La valeur temps de l'argent signifie qu'un euro aujourd'hui vaut plus qu'un euro futur car vous pouvez l'investir et obtenir un rendement."
+            },
+            {
+              question: "Quel est le rôle principal d'une banque dans le système financier ?",
+              options: [
+                "Créer de l'argent à partir de rien",
+                "Servir d'intermédiaire entre épargnants et emprunteurs",
+                "Garantir que les investissements ne perdent jamais de valeur",
+                "Fixer les prix des actions"
+              ],
+              correct: 1,
+              explication: "Les banques collectent l'épargne et la prêtent à ceux qui en ont besoin, jouant un rôle d'intermédiaire crucial dans l'économie."
+            },
+            {
+              question: "Si vous investissez 1000€ à 5% par an, combien aurez-vous après 1 an ?",
+              options: [
+                "1000€",
+                "1050€",
+                "1500€",
+                "950€"
+              ],
+              correct: 1,
+              explication: "1000€ × (1 + 0.05) = 1050€. Vous gagnez 5% de 1000€ = 50€ d'intérêts."
+            },
+            {
+              question: "Quelle est la différence entre finance personnelle et finance d'entreprise ?",
+              options: [
+                "Il n'y a aucune différence",
+                "La finance d'entreprise concerne uniquement les grandes sociétés cotées",
+                "Les montants, objectifs et instruments diffèrent mais les principes sont similaires",
+                "La finance personnelle ne concerne pas l'investissement"
+              ],
+              correct: 2,
+              explication: "Les principes fondamentaux sont les mêmes (investir, financer, gérer les risques) mais les échelles, objectifs et instruments utilisés diffèrent."
+            },
+            {
+              question: "Qu'est-ce que BlackRock ?",
+              options: [
+                "Une banque centrale",
+                "Un investisseur institutionnel gérant des trillions de dollars",
+                "Une crypto-monnaie",
+                "Une bourse d'échange"
+              ],
+              correct: 1,
+              explication: "BlackRock est le plus grand gestionnaire d'actifs au monde, avec plus de 10 000 milliards de dollars sous gestion."
+            },
+            {
+              question: "Comment un État finance-t-il ses dépenses publiques ?",
+              options: [
+                "Uniquement par les impôts",
+                "En imprimant de l'argent sans limite",
+                "Par les impôts et l'émission d'obligations souveraines",
+                "En empruntant uniquement aux banques"
+              ],
+              correct: 2,
+              explication: "Les États financent leurs dépenses via les impôts et en empruntant sur les marchés en émettant des obligations (OAT en France, Treasury bonds aux USA)."
+            },
+            {
+              question: "Qu'est-ce qu'une IPO (Introduction en Bourse) ?",
+              options: [
+                "Un nouveau type d'obligation",
+                "Quand une entreprise vend ses actions au public pour la première fois",
+                "Un indice boursier",
+                "Un produit d'épargne garanti"
+              ],
+              correct: 1,
+              explication: "IPO (Initial Public Offering) est le processus par lequel une entreprise privée devient publique en vendant ses actions au grand public."
+            },
+            {
+              question: "Pourquoi un agriculteur utiliserait-il des contrats à terme ?",
+              options: [
+                "Pour spéculer sur le prix du blé",
+                "Pour se protéger contre la baisse des prix de ses récoltes",
+                "Pour obtenir un prêt bancaire",
+                "Pour payer moins d'impôts"
+              ],
+              correct: 1,
+              explication: "Les contrats à terme permettent de fixer un prix de vente à l'avance, protégeant l'agriculteur contre une chute des prix."
+            },
+            {
+              question: "Quel est l'objectif principal d'un fonds de pension ?",
+              options: [
+                "Maximiser les profits à court terme",
+                "Gérer l'épargne retraite pour verser des pensions futures",
+                "Spéculer sur les crypto-monnaies",
+                "Prêter de l'argent aux particuliers"
+              ],
+              correct: 1,
+              explication: "Les fonds de pension collectent et investissent l'épargne retraite pour garantir le paiement des pensions aux retraités."
+            },
+            {
+              question: "Qu'est-ce que la diversification ?",
+              options: [
+                "Investir tout son argent dans une seule action",
+                "Répartir ses investissements sur différents actifs pour réduire le risque",
+                "Acheter uniquement des obligations d'État",
+                "Garder son argent en cash"
+              ],
+              correct: 1,
+              explication: "La diversification consiste à ne pas mettre tous ses œufs dans le même panier, réduisant ainsi le risque global du portefeuille."
+            },
+            {
+              question: "Si une startup lève 1 million d'euros auprès d'investisseurs, quelle fonction de la finance utilise-t-elle ?",
+              options: [
+                "Investissement",
+                "Financement",
+                "Gestion des risques",
+                "Spéculation"
+              ],
+              correct: 1,
+              explication: "La levée de fonds correspond à la fonction de financement : obtenir des ressources pour réaliser un projet."
+            },
+            {
+              question: "Quelle est la principale différence entre un courtier et une banque ?",
+              options: [
+                "Il n'y a aucune différence",
+                "Le courtier facilite les transactions mais ne prête pas d'argent comme une banque",
+                "Le courtier ne peut travailler qu'avec des particuliers",
+                "La banque ne peut pas acheter d'actions"
+              ],
+              correct: 1,
+              explication: "Un courtier met en relation acheteurs et vendeurs et exécute des ordres, tandis qu'une banque collecte l'épargne et octroie des prêts."
+            },
+            {
+              question: "Pourquoi dit-on que la finance 'alloue efficacement les ressources' ?",
+              options: [
+                "Parce qu'elle permet de diriger l'argent vers les projets les plus rentables",
+                "Parce qu'elle garantit que tout le monde gagne de l'argent",
+                "Parce qu'elle élimine tous les risques",
+                "Parce qu'elle distribue l'argent de manière égale"
+              ],
+              correct: 0,
+              explication: "La finance dirige les capitaux vers les projets offrant le meilleur rapport rendement/risque, optimisant ainsi l'utilisation des ressources."
+            },
+            {
+              question: "Qu'est-ce qu'un PEA (Plan d'Épargne en Actions) ?",
+              options: [
+                "Un type d'obligation d'État",
+                "Un compte d'investissement en actions avec avantages fiscaux en France",
+                "Une assurance-vie",
+                "Un prêt immobilier"
+              ],
+              correct: 1,
+              explication: "Le PEA est une enveloppe fiscale permettant d'investir en actions européennes avec une fiscalité avantageuse après 5 ans."
+            },
+            {
+              question: "Quel montant total aurez-vous si vous investissez 1000€ à 10% par an pendant 2 ans (intérêts composés) ?",
+              options: [
+                "1200€",
+                "1210€",
+                "1100€",
+                "1000€"
+              ],
+              correct: 1,
+              explication: "Année 1: 1000 × 1.10 = 1100€. Année 2: 1100 × 1.10 = 1210€. Les intérêts de la première année génèrent eux-mêmes des intérêts."
             }
           ]
         },
@@ -191,9 +474,57 @@ export default function Learning() {
               ]
             },
             {
+              section: "Les différents types de marchés",
+              texte: "Les marchés financiers se divisent en plusieurs catégories selon le type d'actif échangé.",
+              details: [
+                {
+                  type: "Marché actions (Equity)",
+                  definition: "Échange de parts de propriété d'entreprises",
+                  utilisation: "Bourses comme NYSE, NASDAQ, Euronext",
+                  exemple: "Vous achetez 10 actions Apple sur le NASDAQ à 150$ l'action = 1500$ investi"
+                },
+                {
+                  type: "Marché obligataire (Fixed Income)",
+                  definition: "Échange de titres de dette émis par États et entreprises",
+                  utilisation: "Marché de gré à gré (OTC) principalement",
+                  exemple: "La France émet une obligation à 10 ans qui paie 3% par an"
+                },
+                {
+                  type: "Marché des changes (Forex)",
+                  definition: "Échange de devises entre pays",
+                  utilisation: "Trading 24h/24, le plus grand marché au monde (6000 Mds$/jour)",
+                  exemple: "Vous échangez 1000€ contre 1080$ au taux EUR/USD = 1.08"
+                },
+                {
+                  type: "Marché des matières premières (Commodities)",
+                  definition: "Échange de ressources physiques (or, pétrole, blé)",
+                  utilisation: "Contrats à terme, marchés spécialisés (CME, LME)",
+                  exemple: "Acheter un contrat à terme sur le pétrole pour livraison dans 3 mois"
+                },
+                {
+                  type: "Marché des dérivés",
+                  definition: "Instruments dont la valeur dépend d'un sous-jacent",
+                  utilisation: "Options, futures, swaps pour hedging ou spéculation",
+                  exemple: "Acheter une option call sur Tesla pour parier sur la hausse"
+                }
+              ]
+            },
+            {
               section: "Comment fonctionne la Bourse ?",
               texte: "La Bourse est le marché des actions. Quand une entreprise veut lever des fonds, elle vend des actions au public (Introduction en Bourse ou IPO). Ces actions s'échangent ensuite librement.",
               exemple: "Apple a un prix de 150$ par action aujourd'hui. Si vous pensez qu'Apple va bien se porter, vous achetez à 150$. Si le prix monte à 180$, vous gagnez 30$ par action (20% de plus-value) !"
+            },
+            {
+              section: "Le mécanisme de formation des prix",
+              texte: "Les prix sur les marchés sont déterminés par la rencontre entre l'offre (vendeurs) et la demande (acheteurs).",
+              points: [
+                "**Carnet d'ordres** : Liste de tous les ordres d'achat et de vente en attente",
+                "**Bid (Demande)** : Prix auquel quelqu'un est prêt à acheter",
+                "**Ask (Offre)** : Prix auquel quelqu'un est prêt à vendre",
+                "**Spread** : Différence entre bid et ask (coût de transaction)",
+                "**Last (Dernier)** : Prix de la dernière transaction exécutée"
+              ],
+              exemple: "Apple - Bid: 149.95$ (acheteurs), Ask: 150.05$ (vendeurs), Spread: 0.10$. Si vous achetez, vous payez 150.05$."
             },
             {
               section: "Offre et Demande",
@@ -203,6 +534,300 @@ export default function Learning() {
                 "**Prix baisse** → Plus de vendeurs que d'acheteurs",
                 "**Prix stable** → Équilibre entre offre et demande"
               ]
+            },
+            {
+              section: "Les indices boursiers",
+              texte: "Un indice boursier mesure la performance d'un panier d'actions représentatif d'un marché ou d'un secteur.",
+              details: [
+                {
+                  type: "S&P 500",
+                  definition: "Les 500 plus grandes entreprises américaines",
+                  utilisation: "Référence du marché américain",
+                  exemple: "Apple, Microsoft, Amazon, Tesla... représentent environ 30% de l'indice"
+                },
+                {
+                  type: "CAC 40",
+                  definition: "Les 40 plus grandes entreprises françaises",
+                  utilisation: "Baromètre de l'économie française",
+                  exemple: "LVMH, Total, Sanofi, BNP Paribas..."
+                },
+                {
+                  type: "NASDAQ",
+                  definition: "Indice technologique américain",
+                  utilisation: "Performance du secteur tech",
+                  exemple: "Apple, Google, Meta, Tesla, Nvidia..."
+                },
+                {
+                  type: "MSCI World",
+                  definition: "1600 entreprises de 23 pays développés",
+                  utilisation: "Exposition diversifiée mondiale",
+                  exemple: "Permet d'investir dans le monde entier en un seul ETF"
+                }
+              ]
+            },
+            {
+              section: "Marché primaire vs marché secondaire",
+              texte: "Distinction fondamentale entre création de nouveaux titres et échange de titres existants.",
+              comparaison: {
+                actions: {
+                  avantages: ["Émission de nouveaux titres", "L'argent va à l'entreprise/État", "IPO, nouvelles émissions d'obligations"],
+                  inconvenients: ["Moins liquide", "Réservé aux institutionnels souvent", "Commissions élevées"],
+                  profil: "Exemple : Apple émet 1 milliard de nouvelles actions et reçoit les fonds"
+                },
+                obligations: {
+                  avantages: ["Échange de titres existants entre investisseurs", "L'argent circule entre investisseurs", "Bourse, trading quotidien"],
+                  inconvenients: ["Très liquide", "Accessible à tous", "Spreads faibles"],
+                  profil: "Exemple : Vous achetez des actions Apple à un autre investisseur sur le NASDAQ"
+                }
+              }
+            },
+            {
+              section: "La liquidité des marchés",
+              texte: "La liquidité mesure la facilité avec laquelle on peut acheter ou vendre un actif sans impacter son prix.",
+              points: [
+                "**Marché liquide** : Beaucoup d'acheteurs et vendeurs, spread faible (ex: Apple, Microsoft)",
+                "**Marché illiquide** : Peu de transactions, spread large (ex: petites capitalisations, marchés exotiques)",
+                "**Impact sur le prix** : Sur un marché liquide, acheter 1000 actions ne fait pas bouger le prix",
+                "**Coût de transaction** : Plus le marché est liquide, moins les coûts sont élevés"
+              ],
+              exemple: "Apple trade 50 millions d'actions par jour (très liquide). Une petite biotech peut n'en trader que 10 000 (illiquide)."
+            },
+            {
+              section: "Les horaires de marché",
+              texte: "Chaque bourse a des horaires d'ouverture spécifiques. Certains marchés comme le Forex sont ouverts 24h/24.",
+              points: [
+                "**NYSE/NASDAQ** : 9h30-16h00 EST (15h30-22h00 Paris)",
+                "**Euronext Paris** : 9h00-17h30 CET",
+                "**Tokyo Stock Exchange** : 9h00-15h00 JST",
+                "**Forex** : 24h/24 du dimanche soir au vendredi soir"
+              ]
+            },
+            {
+              section: "Les bulles spéculatives et krachs",
+              texte: "L'histoire des marchés est marquée par des bulles (hausses irrationnelles) suivies de krachs (effondrements brutaux).",
+              exemple: "Bulle Internet 2000 : Le NASDAQ atteint 5000 points puis s'effondre à 1100 (-78%). Krach 2008 : Crise des subprimes, le S&P 500 perd 57%."
+            }
+          ],
+          quiz: [
+            {
+              question: "Qu'est-ce qu'un marché financier ?",
+              options: [
+                "Un supermarché qui vend des produits financiers",
+                "Un lieu où s'échangent des actifs financiers",
+                "Une banque centrale",
+                "Un magasin de devises"
+              ],
+              correct: 1,
+              explication: "Un marché financier est un lieu (physique ou virtuel) où acheteurs et vendeurs échangent des actifs financiers comme des actions ou obligations."
+            },
+            {
+              question: "Quelle est la différence entre le marché primaire et le marché secondaire ?",
+              options: [
+                "Il n'y a aucune différence",
+                "Le primaire est pour les nouveaux titres, le secondaire pour l'échange entre investisseurs",
+                "Le primaire est plus important que le secondaire",
+                "Le secondaire n'existe plus aujourd'hui"
+              ],
+              correct: 1,
+              explication: "Sur le marché primaire, l'entreprise émet de nouveaux titres et reçoit les fonds. Sur le marché secondaire, les investisseurs s'échangent des titres existants."
+            },
+            {
+              question: "Qu'est-ce que le spread bid-ask ?",
+              options: [
+                "La différence entre le prix d'achat et le prix de vente",
+                "Le rendement d'une obligation",
+                "La commission du courtier",
+                "La volatilité du marché"
+              ],
+              correct: 0,
+              explication: "Le spread est la différence entre le meilleur prix d'achat (bid) et le meilleur prix de vente (ask). C'est un coût de transaction."
+            },
+            {
+              question: "Quel est le plus grand marché financier au monde en termes de volume quotidien ?",
+              options: [
+                "Marché actions (NYSE)",
+                "Marché obligataire",
+                "Marché des changes (Forex)",
+                "Marché des matières premières"
+              ],
+              correct: 2,
+              explication: "Le Forex échange plus de 6 000 milliards de dollars par jour, bien plus que tous les autres marchés. Il est ouvert 24h/24."
+            },
+            {
+              question: "Que représente le S&P 500 ?",
+              options: [
+                "Les 500 plus petites entreprises américaines",
+                "Les 500 plus grandes entreprises américaines",
+                "500 actions européennes",
+                "Un indice de matières premières"
+              ],
+              correct: 1,
+              explication: "Le S&P 500 est un indice regroupant les 500 plus grandes entreprises cotées aux États-Unis, représentant environ 80% de la capitalisation boursière américaine."
+            },
+            {
+              question: "Si le prix d'une action monte, cela signifie que :",
+              options: [
+                "L'entreprise a fait plus de bénéfices",
+                "Il y a plus d'acheteurs que de vendeurs",
+                "Le gouvernement a fixé un prix plus élevé",
+                "L'entreprise a versé des dividendes"
+              ],
+              correct: 1,
+              explication: "Le prix monte quand la demande (acheteurs) dépasse l'offre (vendeurs). C'est le mécanisme de l'offre et de la demande."
+           },
+           {
+              question: "Qu'est-ce qu'une IPO ?",
+              options: [
+                "Un type d'obligation",
+                "Introduction en Bourse d'une entreprise",
+                "Un indice boursier",
+                "Une stratégie d'investissement"
+              ],
+              correct: 1,
+              explication: "IPO (Initial Public Offering) est le processus par lequel une entreprise privée vend ses actions au public pour la première fois."
+            },
+            {
+              question: "Sur quel marché s'échange principalement le pétrole ?",
+              options: [
+              "Marché actions",
+              "Marché obligataire",
+              "Marché des matières premières",
+              "Marché des changes"
+              ],
+              correct: 2,
+              explication: "Le pétrole est une matière première (commodity) qui s'échange sur des marchés spécialisés comme le CME ou l'ICE via des contrats à terme."
+            },
+            {
+              question: "Qu'est-ce que la liquidité d'un marché ?",
+              options: [
+              "La quantité d'eau dans le marché",
+              "La facilité d'acheter/vendre sans impacter le prix",
+              "Le nombre d'entreprises cotées",
+              "Les horaires d'ouverture"
+              ],
+              correct: 1,
+              explication: "Un marché liquide permet d'acheter ou vendre rapidement de gros volumes sans faire bouger significativement les prix grâce à la présence de nombreux participants."
+            },
+            {
+              question: "Quels sont les horaires de trading du NYSE (New York) ?",
+              options: [
+              "24h/24",
+              "9h30-16h00 EST",
+              "8h00-20h00 EST",
+              "Seulement le matin"
+              ],
+              correct: 1,
+              explication: "Le NYSE (New York Stock Exchange) est ouvert de 9h30 à 16h00 heure de New York (soit 15h30-22h00 heure de Paris)."
+            },
+            {
+              question: "Qu'est-ce que le CAC 40 ?",
+              options: [
+              "Les 40 plus grandes entreprises françaises",
+              "Un indice de 40 pays",
+              "40 entreprises technologiques",
+              "Les 40 meilleures actions mondiales"
+              ],
+              correct: 0,
+              explication: "Le CAC 40 est l'indice boursier de référence de la bourse de Paris, composé des 40 plus grandes entreprises françaises cotées sur Euronext Paris."
+            },
+            {
+              question: "Comment appelle-t-on un effondrement brutal des marchés ?",
+              options: [
+              "Une bulle",
+              "Un krach",
+              "Une récession",
+              "Une inflation"
+              ],
+              correct: 1,
+              explication: "Un krach boursier est une chute brutale et rapide des cours, comme en 1929, 2000 (bulle internet) ou 2008 (crise des subprimes)."
+            },
+            {
+              question: "Le marché Forex est ouvert :",
+              options: [
+              "9h-17h uniquement",
+              "24h/24 en semaine",
+              "Seulement le week-end",
+              "Uniquement pendant les heures de bureau"
+              ],
+              correct: 1,
+              explication: "Le Forex fonctionne 24h/24 du dimanche soir au vendredi soir car les devises s'échangent successivement sur les places de Tokyo, Londres, New York."
+            },
+            {
+              question: "Qu'est-ce qu'un ETF (Exchange Traded Fund) ?",
+              options: [
+              "Une action d'une entreprise technologique",
+              "Un fonds indiciel coté en bourse qui réplique un indice",
+              "Une obligation d'État",
+              "Un type de crypto-monnaie"
+              ],
+              correct: 1,
+              explication: "Un ETF est un panier d'actions qui réplique un indice (comme le S&P 500) et se trade comme une action. C'est une façon simple et peu coûteuse de se diversifier."
+            },
+            {
+              question: "Si vous achetez au prix 'Ask' et vendez au prix 'Bid', que perdez-vous ?",
+              options: [
+              "Rien, c'est pareil",
+              "Le spread (différence bid-ask)",
+              "La commission uniquement",
+              "La volatilité"
+              ],
+              correct: 1,
+              explication: "Vous perdez le spread : vous achetez plus cher (ask) et vendez moins cher (bid). C'est un coût de transaction inhérent au marché."
+            },
+            {
+              question: "Qu'est-ce qui cause une bulle spéculative ?",
+              options: [
+              "Les taux d'intérêt élevés",
+              "Une hausse irrationnelle des prix déconnectée de la réalité économique",
+              "La diversification",
+              "Les dividendes élevés"
+              ],
+              correct: 1,
+              explication: "Une bulle se forme quand les prix montent de façon excessive portés par l'euphorie et la spéculation, dépassant largement la valeur fondamentale des actifs."
+            },
+            {
+              question: "Quel indice suivre pour investir dans la tech américaine ?",
+              options: [
+              "CAC 40",
+              "FTSE 100",
+              "NASDAQ",
+              "DAX"
+              ],
+              correct: 2,
+              explication: "Le NASDAQ Composite est l'indice de référence pour les valeurs technologiques américaines (Apple, Microsoft, Google, Meta, Tesla...)."
+            },
+            {
+              question: "Combien vaut 1 point de S&P 500 si vous détenez un contrat future ?",
+              options: [
+              "1$",
+              "10$",
+              "50$",
+              "100$"
+              ],
+              correct: 2,
+              explication: "Un contrat future sur le S&P 500 vaut 50$ par point. Si l'indice monte de 10 points, le contrat gagne 500$."
+            },
+            {
+              question: "Quelle est la capitalisation boursière approximative du marché actions mondial ?",
+              options: [
+              "10 milliards $",
+              "100 milliards $",
+              "10 000 milliards $",
+              "100 000 milliards (100 trillions) $"
+              ],
+              correct: 3,
+              explication: "La capitalisation boursière mondiale dépasse les 100 000 milliards de dollars (100 trillions), avec les USA représentant environ 40-45% du total."
+            },
+            {
+              question: "Quel événement a causé le krach boursier de 2008 ?",
+              options: [
+              "La bulle internet",
+              "La crise des subprimes (crédits immobiliers risqués)",
+              "La guerre commerciale",
+              "Le Brexit"
+              ],
+              correct: 1,
+              explication: "La crise de 2008 a été déclenchée par l'effondrement du marché immobilier américain et la faillite de banques ayant prêté massivement à des emprunteurs peu solvables."
             }
           ]
         },
@@ -213,35 +838,380 @@ export default function Learning() {
               section: "Les Actions",
               texte: "Une action représente une part de propriété dans une entreprise. En achetant une action Apple, vous devenez copropriétaire d'Apple (même si c'est une toute petite part) !",
               points: [
-                "**Gain potentiel** : Plus-value si le prix de l'action monte + dividendes (partage des bénéfices)",
-                "**Risque** : Le prix peut baisser et vous pouvez perdre votre investissement",
-                "**Exemple** : Vous achetez 10 actions Apple à 150$ = 1 500$. Apple monte à 180$ = vous avez 1 800$ → Gain de 300$ (20%)"
+                "Gain potentiel : Plus-value si le prix de l'action monte + dividendes (partage des bénéfices)",
+                "Risque : Le prix peut baisser et vous pouvez perdre votre investissement",
+                `Exemple :
+              Vous achetez 10 actions Apple à 150$ = 1 500$.
+              Apple monte à 180$ → vous avez 1 800$.
+              Gain de 300$ (20%)`
+              ]
+            },
+            {
+              section: "Anatomie d'une action",
+              texte: "Posséder une action vous confère plusieurs droits et opportunités de gains.",
+              details: [
+                {
+                  type: "Droit de vote",
+                  definition: "Chaque action donne généralement 1 voix aux assemblées générales",
+                  utilisation: "Voter sur les décisions stratégiques, élection du conseil d'administration",
+                  exemple: "Si vous détenez 100 actions Tesla, vous avez 100 voix pour voter les résolutions"
+                },
+                {
+                  type: "Dividendes",
+                  definition: "Part des bénéfices redistribuée aux actionnaires",
+                  utilisation: "Revenu passif régulier (trimestriel ou annuel)",
+                  exemple: "Apple verse 0.24$ par action par trimestre. Si vous avez 100 actions, vous recevez 96$/an"
+                },
+                {
+                  type: "Plus-value (Capital Gain)",
+                  definition: "Gain réalisé quand vous vendez l'action plus cher que vous l'avez achetée",
+                  utilisation: "Stratégie de croissance à long terme",
+                  exemple: "Achat à 100,vente à 150, vente à 150 → Plus-value de 50$ par action (+50%)"
+                },
+                {
+                  type: "Droit préférentiel de souscription",
+                  definition: "Priorité pour acheter de nouvelles actions lors d'augmentations de capital",
+                  utilisation: "Maintenir votre pourcentage de propriété",
+                  exemple: "L'entreprise émet 10% d'actions nouvelles, vous pouvez en acheter 10% pour ne pas être dilué"
+                }
+              ]
+            },
+            {
+              section: "Les différents types d'actions",
+              texte: "Toutes les actions ne se valent pas. Il existe différentes catégories selon la taille de l'entreprise et son stade de développement.",
+              points: [
+                `Large caps :
+              Grandes entreprises (>10 Mds$)
+              Apple, Microsoft, LVMH
+              Moins risqué, croissance modérée`,
+                "Mid caps : Entreprises moyennes (2–10 Mds$) – Équilibre risque/rendement",
+                "Small caps : Petites entreprises (<2 Mds$) – Fort potentiel de croissance mais plus volatiles",
+                "Growth stocks : Actions de croissance, peu/pas de dividendes, bénéfices réinvestis (Amazon, Tesla)",
+                "Value stocks : Actions sous-évaluées, dividendes réguliers (banques, utilities)",
+                "Blue chips : Grandes entreprises établies, valeurs sûres (Coca-Cola, Johnson & Johnson)"
               ]
             },
             {
               section: "Les Obligations",
               texte: "Une obligation, c'est comme un prêt que vous faites à un État ou une entreprise. En échange, ils vous paient des intérêts réguliers (coupons) et vous remboursent à la fin.",
               points: [
-                "**Plus sûr** que les actions (surtout les obligations d'État)",
-                "**Rendement fixe** : Vous savez combien vous allez gagner",
-                "**Exemple** : Obligation à 10 000€, coupon 3%, durée 5 ans → Vous recevez 300€/an pendant 5 ans + 10 000€ à la fin"
+              "Plus sûr que les actions (surtout les obligations d'État)",
+              "Rendement fixe : Vous savez combien vous allez gagner",
+              "Exemple : Obligation à 10 000€, coupon 3%, durée 5 ans → Vous recevez 300€/an pendant 5 ans + 10 000€ à la fin"
               ]
+            },
+            {
+              section: "Comprendre les obligations en détail",
+              texte: "Les obligations sont des instruments de dette qui fonctionnent selon des mécanismes précis.",
+              details: [
+              {
+              type: "Valeur nominale (Principal)",
+              definition: "Montant que l'émetteur doit rembourser à l'échéance",
+              utilisation: "Généralement 1000€ ou 1000$ par obligation",
+              exemple: "Vous achetez une obligation nominale 1000€, vous recevrez 1000€ à maturité"
+              },
+              {
+              type: "Coupon",
+              definition: "Taux d'intérêt fixe payé annuellement",
+              utilisation: "Revenu régulier pour l'investisseur",
+              exemple: "Obligation 1000€ à coupon 5% → vous recevez 50€ par an"
+              },
+              {
+              type: "Maturité",
+              definition: "Date à laquelle l'obligation arrive à échéance et le principal est remboursé",
+              utilisation: "Court terme (<3 ans), moyen terme (3-10 ans), long terme (>10 ans)",
+              exemple: "Obligation à 10 ans émise en 2024 arrive à maturité en 2034"
+              },
+              {
+              type: "Rendement (Yield)",
+              definition: "Rendement effectif en tenant compte du prix d'achat",
+              utilisation: "Indicateur clé pour comparer les obligations",
+              exemple: "Si vous achetez une obligation 5% à 950€ (sous le pair), votre rendement réel est > 5%"
+              }
+              ]
+            },
+            {
+              section: "Types d'obligations",
+              texte: "Les obligations se différencient par leur émetteur, leur niveau de risque et leurs caractéristiques.",
+              points: [
+              "Obligations d'État (Sovereign Bonds) : Émises par les gouvernements - USA (Treasury), France (OAT), Allemagne (Bund) - Très sûres",
+              "Obligations corporate (Corporate Bonds) : Émises par entreprises - Rendement plus élevé, risque de défaut plus élevé",
+              "High Yield (Junk Bonds) : Obligations à haut rendement d'entreprises peu notées - 6-10%+ mais risque de défaut significatif",
+              "Obligations convertibles : Peuvent être converties en actions - Hybride entre obligation et action",
+              "Obligations indexées sur l'inflation : Coupon ajusté selon l'inflation - Protection contre la hausse des prix"
+              ]
+            },
+            {
+              section: "Rating et risque de crédit",
+              texte: "Les agences de notation (S&P, Moody's, Fitch) évaluent la capacité de l'émetteur à rembourser sa dette.",
+              points: [
+              "AAA : Qualité maximale, risque minimal (Allemagne, USA)",
+              "AA, A, BBB : Investment grade, qualité correcte",
+              "BB, B, CCC : Speculative grade (junk), risque élevé",
+              "D : Défaut de paiement",
+              "Plus le rating est faible, plus le rendement exigé est élevé pour compenser le risque"
+              ],
+              exemple: "Une obligation AAA allemande paie 2.5%, une obligation BB d'une entreprise en difficulté paie 8%."
+            },
+            {
+              section: "Prix des obligations et taux d'intérêt",
+              texte: "Le prix des obligations bouge inversement aux taux d'intérêt. C'est crucial à comprendre !",
+              exemple: "Vous achetez une obligation à 1000€ payant 3%. Si les taux montent à 5%, votre obligation devient moins attractive et son prix baisse à ~850€. Si les taux baissent à 2%, votre obligation vaut plus, environ 1100€.",
+              formule: "Prix ↑ quand Taux ↓ | Prix ↓ quand Taux ↑"
             },
             {
               section: "Actions vs Obligations",
               texte: "Comment choisir entre actions et obligations ?",
               comparaison: {
-                actions: {
-                  avantages: ["Potentiel de gain élevé", "Participation à la croissance des entreprises"],
-                  inconvenients: ["Risque élevé de perte", "Volatilité importante"],
-                  profil: "Pour investisseurs prêts à prendre des risques"
-                },
-                obligations: {
-                  avantages: ["Revenus réguliers garantis", "Moins de risque"],
-                  inconvenients: ["Rendement limité", "Sensible aux taux d'intérêt"],
-                  profil: "Pour investisseurs prudents"
-                }
+              actions: {
+              avantages: ["Potentiel de gain élevé", "Participation à la croissance des entreprises", "Dividendes possibles", "Liquidité élevée"],
+              inconvenients: ["Risque élevé de perte", "Volatilité importante", "Pas de garantie de rendement", "Sensible aux cycles économiques"],
+              profil: "Pour investisseurs prêts à prendre des risques avec horizon >5 ans"
+              },
+              obligations: {
+              avantages: ["Revenus réguliers garantis", "Moins de risque", "Priorité en cas de faillite", "Prévisibilité"],
+              inconvenients: ["Rendement limité", "Sensible aux taux d'intérêt", "Pas de participation aux bénéfices", "Risque de défaut"],
+              profil: "Pour investisseurs prudents cherchant des revenus stables"
               }
+              }
+            },
+            {
+              section: "Les fonds d'investissement (OPCVM)",
+              texte: "Un fonds permet d'investir dans un panier d'actions ou d'obligations géré par des professionnels.",
+              points: [
+              "Fonds mutuels : Gestion active, frais ~1-2%, objectif battre le marché",
+              "ETF : Gestion passive, réplique un indice, frais <0.5%, très populaire",
+              "Fonds obligataires : Panier d'obligations pour diversifier le risque",
+              "Fonds équilibrés : Mix actions/obligations (ex: 60/40)"
+              ],
+              exemple: "ETF S&P 500 : Un seul achat vous donne accès aux 500 plus grandes entreprises US pour <10€."
+            },
+            {
+              section: "Rendement total et effet des dividendes réinvestis",
+              texte: "Le rendement total inclut plus-values ET dividendes. Réinvestir les dividendes crée un effet boule de neige.",
+              exemple: "Investir 10 000€ dans le S&P 500 pendant 30 ans à 10% par an (dividendes réinvestis) donne environ 175 000€. Sans réinvestir les dividendes, seulement 120 000€."
+            }
+          ],
+          quiz: [
+            {
+              question: "Que représente une action ?",
+              options: [
+                "Un prêt à une entreprise",
+                "Une part de propriété dans une entreprise",
+                "Une obligation d'État",
+                "Un produit dérivé"
+              ],
+              correct: 1,
+              explication: "Une action est une part du capital d'une entreprise. En détenir vous rend copropriétaire (actionnaire) de cette entreprise."
+            },
+            {
+              question: "Qu'est-ce qu'un dividende ?",
+              options: [
+                "Le prix d'achat d'une action",
+                "Une part des bénéfices distribuée aux actionnaires",
+                "Le taux d'intérêt d'une obligation",
+                "La commission du courtier"
+              ],
+              correct: 1,
+              explication: "Le dividende est une partie des bénéfices de l'entreprise redistribuée aux actionnaires, généralement trimestriellement ou annuellement."
+            },
+            {
+              question: "Si vous achetez 10 actions Apple à 150$ et les vendez à 180$, quel est votre gain ?",
+              options: [
+                "30$",
+                "300$",
+                "180$",
+                "1500$"
+              ],
+              correct: 1,
+              explication: "Gain par action = 180$ - 150$ = 30.Pour10actions:30. Pour 10 actions : 30. Pour10actions:30 × 10 = 300$ de plus-value."
+            },
+            {
+              question: "Qu'est-ce qu'une obligation ?",
+              options: [
+                "Une action d'une entreprise",
+                "Un prêt que vous faites à un État ou une entreprise",
+                "Un compte d'épargne",
+                "Une assurance"
+              ],
+              correct: 1,
+              explication: "Une obligation est un titre de créance : vous prêtez de l'argent à l'émetteur (État ou entreprise) qui vous paie des intérêts et rembourse le capital à l'échéance."
+            },
+            {
+              question: "Quel est le rendement annuel d'une obligation de 1000€ avec un coupon de 4% ?",
+              options: [
+                "4€",
+                "40€",
+                "400€",
+                "1040€"
+              ],
+              correct: 1,
+              explication: "Coupon 4% sur 1000€ = 0.04 × 1000€ = 40€ par an d'intérêts."
+            },
+            {
+              question: "Quelle est la relation entre prix des obligations et taux d'intérêt ?",
+              options: [
+                "Ils évoluent dans le même sens",
+                "Ils évoluent en sens inverse",
+                "Ils ne sont pas liés",
+                "Le prix des obligations ne change jamais"
+              ],
+              correct: 1,
+              explication: "Quand les taux montent, les obligations existantes (à taux fixe plus bas) perdent de la valeur. Inversement, quand les taux baissent, elles prennent de la valeur."
+            },
+            {
+              question: "Qu'est-ce qu'un ETF ?",
+              options: [
+                "Une action d'une entreprise technologique",
+                "Un fonds qui réplique un indice et se trade en bourse",
+                "Un type d'obligation",
+                "Une devise"
+              ],
+              correct: 1,
+              explication: "Un ETF (Exchange Traded Fund) est un panier d'actifs qui réplique un indice (comme le S&P 500) et se négocie en bourse comme une action."
+            },
+            {
+              question: "Quelle catégorie d'actions est généralement la plus risquée mais avec le plus fort potentiel ?",
+              options: [
+                "Large caps",
+                "Blue chips",
+                "Small caps",
+                "Obligations"
+              ],
+              correct: 2,
+              explication: "Les small caps (petites capitalisations) sont plus volatiles mais offrent un potentiel de croissance plus élevé que les grandes entreprises établies."
+            },
+            {
+              question: "Qu'est-ce qu'une action 'Growth' ?",
+              options: [
+                "Une action qui verse de gros dividendes",
+                "Une action de croissance qui réinvestit ses bénéfices",
+                "Une action bon marché",
+                "Une obligation convertible"
+              ],
+              correct: 1,
+              explication: "Les growth stocks privilégient la croissance en réinvestissant les bénéfices plutôt que de verser des dividendes (ex: Amazon, Tesla pendant longtemps)."
+            },
+            {
+              question: "Que signifie le rating AAA pour une obligation ?",
+              options: [
+                "Risque très élevé",
+                "Qualité maximale, risque minimal",
+                "Rendement très élevé",
+                "Durée très courte"
+              ],
+              correct: 1,
+              explication: "AAA est la meilleure note attribuée par les agences (S&P, Moody's), indiquant un risque de défaut quasi-nul. Seuls quelques pays comme l'Allemagne ont ce rating."
+            },
+            {
+              question: "Qu'appelle-t-on 'Junk Bonds' ?",
+              options: [
+                "Obligations pourries sans valeur",
+                "Obligations à haut rendement mais risque élevé (BB et moins)",
+                "Obligations d'État",
+                "Obligations indexées sur l'inflation"
+              ],
+              correct: 1,
+              explication: "Les 'junk bonds' (obligations pourries) sont des obligations corporate notées BB ou moins, offrant des rendements élevés pour compenser le risque de défaut important."
+            },
+            {
+              question: "Si les taux d'intérêt passent de 3% à 5%, que se passe-t-il pour votre obligation à 3% ?",
+              options: [
+                "Son prix monte",
+                "Son prix baisse",
+                "Son prix ne change pas",
+                "Elle paie maintenant 5%"
+              ],
+              correct: 1,
+              explication: "Votre obligation à 3% devient moins attractive face aux nouvelles obligations à 5%, donc son prix de marché baisse pour ajuster son rendement effectif."
+            },
+            {
+              question: "Quel droit confère généralement une action ordinaire ?",
+              options: [
+                "Droit à un rendement garanti",
+                "Droit de vote aux assemblées générales",
+                "Droit à un remboursement du capital",
+                "Droit à un coupon fixe"
+              ],
+              correct: 1,
+              explication: "Une action ordinaire donne généralement 1 voix par action aux assemblées générales pour voter sur les décisions importantes de l'entreprise."
+            },
+            {
+              question: "Quelle est la différence principale entre actions et obligations ?",
+              options: [
+                "Les actions représentent la propriété, les obligations une dette",
+                "Les actions sont toujours plus rentables",
+                "Les obligations sont toujours sans risque",
+                "Il n'y a aucune différence"
+              ],
+              correct: 0,
+              explication: "Les actions font de vous un propriétaire (actionnaire), les obligations font de vous un créancier (prêteur). Deux positions juridiques et financières très différentes."
+            },
+            {
+              question: "Qu'est-ce qu'une obligation convertible ?",
+              options: [
+                "Une obligation qui peut être échangée contre de l'or",
+                "Une obligation qui peut être convertie en actions de l'entreprise",
+                "Une obligation dont le coupon varie",
+                "Une obligation remboursable avant échéance"
+              ],
+              correct: 1,
+              explication: "Une obligation convertible peut être transformée en actions de l'entreprise selon des conditions prédéfinies, combinant sécurité de l'obligation et potentiel de l'action."
+            },
+            {
+              question: "Si Apple verse 0.24$ de dividende par trimestre et vous détenez 100 actions, combien recevez-vous par an ?",
+              options: [
+                "24$",
+                "96$",
+                "240$",
+                "2.40$"
+              ],
+              correct: 1,
+              explication: "0.24$ × 4 trimestres = 0.96$ par action par an. Pour 100 actions : 0.96$ × 100 = 96$ par an."
+            },
+            {
+              question: "Qu'est-ce qu'un fonds mutuel ?",
+              options: [
+                "Une action individuelle",
+                "Un panier d'actifs géré professionnellement",
+                "Une obligation d'État",
+                "Un compte bancaire"
+              ],
+              correct: 1,
+              explication: "Un fonds mutuel (OPCVM) est un portefeuille d'actions et/ou obligations géré par des professionnels, permettant la diversification même avec un petit capital."
+            },
+            {
+              question: "Pourquoi réinvestir les dividendes est-il important ?",
+              options: [
+                "Pour payer moins d'impôts",
+                "Pour bénéficier de l'effet des intérêts composés",
+                "C'est obligatoire",
+                "Pour réduire le risque"
+              ],
+              correct: 1,
+              explication: "Réinvestir les dividendes permet d'acheter plus d'actions qui généreront elles-mêmes des dividendes, créant un effet boule de neige (intérêts composés) très puissant sur le long terme."
+            },
+            {
+              question: "Qu'est-ce qu'une 'Blue Chip' ?",
+              options: [
+                "Une petite entreprise prometteuse",
+                "Une grande entreprise établie et fiable",
+                "Une action technologique",
+                "Une obligation"
+              ],
+              correct: 1,
+              explication: "Les 'Blue Chips' sont de grandes entreprises solides et reconnues (ex: Coca-Cola, Johnson & Johnson, LVMH) considérées comme des valeurs sûres."
+            },
+            {
+              question: "Si vous achetez une obligation à 950€ (sous le pair) avec valeur nominale 1000€ et coupon 5%, quel est votre rendement réel ?",
+              options: [
+                "Exactement 5%",
+                "Plus de 5%",
+                "Moins de 5%",
+                "0%"
+              ],
+              correct: 1,
+              explication: "Vous recevez 50€ de coupon (5% de 1000€) mais n'avez payé que 950€. Rendement = 50/950 = 5.26%. En plus, à l'échéance vous recevrez 1000€ au lieu de 950€ (gain supplémentaire de 50€)."
             }
           ]
         },
@@ -254,53 +1224,380 @@ export default function Learning() {
               analogie: "Imaginez que vous voulez investir dans Apple mais : (1) vous ne voulez pas perdre votre capital, (2) vous voulez quand même profiter si Apple monte. Un produit structuré peut faire exactement ça en combinant une obligation (protection) + une option (exposition à la hausse)."
             },
             {
+              section: "Les composants d'un produit structuré",
+              texte: "Un produit structuré est construit comme un sandwich : une base solide (obligation) et une garniture (options) pour créer la saveur désirée.",
+              details: [
+                {
+                  type: "Composante obligataire",
+                  definition: "Partie du capital investie en obligations pour garantir la sécurité",
+                  utilisation: "Protection du capital ou génération de revenus fixes",
+                  exemple: "Sur 10 000€ investis, 9 000€ sont placés en obligation zero-coupon qui vaudra 10 000€ dans 5 ans"
+                },
+                {
+                  type: "Composante optionnelle",
+                  definition: "Options (calls, puts, barrières) pour créer le profil de performance",
+                  utilisation: "Exposition à la hausse, génération de revenus, protection contre la baisse",
+                  exemple: "Les 1 000€ restants achètent des options call sur Apple pour participer à la hausse"
+                },
+                {
+                  type: "Sous-jacent",
+                  definition: "L'actif de référence (action, indice, panier) sur lequel repose le produit",
+                  utilisation: "Détermine la performance du produit",
+                  exemple: "Apple, S&P 500, un panier de 3 actions tech, etc."
+                }
+              ]
+            },
+            {
               section: "Pourquoi utiliser des produits structurés ?",
               points: [
-                "**Protection du capital** : Certains produits garantissent 100% de votre capital",
-                "**Rendement attractif** : Coupons réguliers plus élevés que les obligations classiques",
-                "**Personnalisation** : Adapté à votre vue de marché et votre appétit au risque",
-                "**Accès simplifié** : Stratégies complexes dans un seul produit"
+              "Protection du capital : Certains produits garantissent 100% de votre capital",
+              "Rendement attractif : Coupons réguliers plus élevés que les obligations classiques",
+              "Personnalisation : Adapté à votre vue de marché et votre appétit au risque",
+              "Accès simplifié : Stratégies complexes dans un seul produit"
+              ]
+            },
+            {
+              section: "Pour qui sont les produits structurés ?",
+              texte: "Les produits structurés s'adressent à différents profils d'investisseurs selon leur complexité et leur niveau de risque.",
+              points: [
+              "Investisseurs prudents : Capital garanti pour s'exposer aux actions sans risque",
+              "Recherche de rendement : Autocalls et Reverse Convertibles pour des coupons élevés",
+              "Sophistiqués : Warrants et produits à levier pour maximiser les gains",
+              "Institutionnels : Hedging complexe et gestion de portefeuille"
               ]
             },
             {
               section: "Les 4 grands types de produits structurés",
               texte: "Il existe 4 grandes familles de produits structurés que nous proposons sur notre plateforme :",
-              types: [
-                {
-                  nom: "Capital Garanti 🛡️",
-                  description: "Votre capital est protégé à 100% + participation à la hausse",
-                  pour: "Investisseurs très prudents"
+              details: [
+              {
+              type: "Capital Garanti 🛡️",
+              definition: "Votre capital est protégé à 100% + participation à la hausse",
+              utilisation: "Pour investisseurs très prudents",
+              exemple: "10 000€ investis, garantie de récupérer au minimum 10 000€ + 80% de la hausse d'Apple sur 5 ans"
+              },
+              {
+              type: "Autocall 📈",
+              definition: "Remboursement anticipé possible + coupons réguliers",
+              utilisation: "Vue neutre à légèrement haussière",
+              exemple: "Coupon 8% par an tant qu'Apple reste au-dessus de 60% du prix initial. Remboursement automatique si Apple dépasse 100%"
+              },
+              {
+              type: "Reverse Convertible 📉",
+              definition: "Coupon élevé en échange d'un risque sur le capital",
+              utilisation: "Recherche de rendement élevé",
+              exemple: "Coupon 10% garanti mais risque de recevoir des actions Apple si le prix chute de plus de 40%"
+              },
+              {
+              type: "Warrant 🚀",
+              definition: "Effet de levier pour amplifier les gains (et pertes)",
+              utilisation: "Traders expérimentés",
+              exemple: "Levier 5x : si Apple monte de 10%, le warrant gagne 50% (mais si baisse de 10%, perte de 50%)"
+              }
+              ]
+            },
+            {
+              section: "Comparaison des 4 produits",
+              texte: "Chaque type de produit structuré répond à un objectif et un profil de risque différent.",
+              comparaison: {
+              actions: {
+              avantages: ["Capital Garanti: Aucun risque de perte", "Autocall: Coupons réguliers + sortie anticipée", "Reverse: Coupon très élevé", "Warrant: Gains amplifiés"],
+              inconvenients: ["Capital Garanti: Participation limitée", "Autocall: Gain plafonné", "Reverse: Risque de perte significatif", "Warrant: Perte totale possible"],
+              profil: "Risque croissant : Capital Garanti < Autocall < Reverse < Warrant"
+              },
+              obligations: {
+              avantages: ["Capital Garanti: 5+ ans", "Autocall: 1-3 ans", "Reverse: 6 mois-2 ans", "Warrant: 3 mois-2 ans"],
+              inconvenients: ["Capital Garanti: 2-5%/an + participation", "Autocall: 6-10%/an", "Reverse: 8-15%/an", "Warrant: -100% à +500%+"],
+              profil: "Rendement espéré croissant avec le risque"
+              }
+              }
+            },
+            {
+              section: "Comment sont construits les produits structurés ?",
+              texte: "La construction d'un produit structuré suit une logique d'ingénierie financière précise.",
+              exemple: "Capital Garanti sur Apple, 10 000€, 5 ans, participation 80% : (1) Acheter une obligation zero-coupon à 7 800€ qui vaudra 10 000€ dans 5 ans → Capital garanti. (2) Utiliser les 2 200€ restants pour acheter des options call sur Apple → Participation à la hausse de 80%."
+            },
+            {
+              section: "Les barrières : concept clé",
+              texte: "Beaucoup de produits structurés utilisent des barrières pour définir les conditions de paiement.",
+              points: [
+              "Barrière de protection : Niveau sous lequel vous perdez la protection (ex: 60% du prix initial)",
+              "Barrière autocall : Niveau qui déclenche le remboursement anticipé (ex: 100% du prix initial)",
+              "Barrière de coupon : Niveau pour recevoir le coupon (ex: 70% du prix initial)",
+              "Knock-in/Knock-out : Barrières qui activent ou désactivent certaines options"
+              ],
+              exemple: "Autocall avec barrière à 60% : tant qu'Apple reste au-dessus de 60% du prix initial, vous recevez 8%/an. Si Apple touche les 60%, vous perdez la protection."
+            },
+            {
+              section: "Avantages et risques des produits structurés",
+              texte: "Comme tout investissement, les produits structurés présentent des avantages mais aussi des risques à bien comprendre.",
+              comparaison: {
+                actions: {
+                  avantages: ["Personnalisation du profil risque/rendement", "Accès à des stratégies sophistiquées", "Protection possible du capital", "Rendements attractifs"],
+                  inconvenients: [],
+                  profil: "Avantages"
                 },
-                {
-                  nom: "Autocall 📈",
-                  description: "Remboursement anticipé possible + coupons réguliers",
-                  pour: "Vue neutre à légèrement haussière"
-                },
-                {
-                  nom: "Reverse Convertible 📉",
-                  description: "Coupon élevé en échange d'un risque sur le capital",
-                  pour: "Recherche de rendement élevé"
-                },
-                {
-                  nom: "Warrant 🚀",
-                  description: "Effet de levier pour amplifier les gains (et pertes)",
-                  pour: "Traders expérimentés"
+                obligations: {
+                  avantages: [],
+                  inconvenients: ["Complexité nécessitant une bonne compréhension", "Risque de l'émetteur (défaut possible)", "Liquidité limitée avant échéance", "Coûts implicites dans la structure"],
+                  profil: "Risques"
                 }
+              }
+            },
+            {
+              section: "Comprendre les payoffs (profils de gain/perte)",
+              texte: "Le payoff est le diagramme montrant ce que vous gagnez ou perdez selon le scénario final.",
+              exemple: "Reverse Convertible sur Apple à 150$ avec barrière 60% (90)etcoupon10) et coupon 10% : (1) Apple finit > 90) et coupon 10 → Vous récupérez 10 000€ + 1 000€ de coupon = 11 000€. (2) Apple finit à 75$ (< 90$) → Vous recevez des actions Apple ayant perdu 50% de valeur + 1 000€ de coupon = perte nette de ~4 000€."
+            },
+            {
+              section: "Fiscalité des produits structurés (France)",
+              texte: "Les gains sur produits structurés sont soumis à la fiscalité française.",
+              points: [
+                `Flat Tax (PFU) :
+              30% (12.8% IR + 17.2% prélèvements sociaux)
+              Appliquée sur les plus-values`,
+                "Alternative : Barème progressif de l'IR si plus avantageux",
+                "Coupons : Imposés comme des intérêts (même régime que les obligations)",
+                "Enveloppes fiscales : Certains produits peuvent être logés en assurance-vie pour optimiser la fiscalité"
               ]
             },
             {
               section: "Prochaines étapes",
               texte: "Maintenant que vous comprenez les bases, vous pouvez :",
               actions: [
-                "Passer au **niveau intermédiaire** pour approfondir vos connaissances",
-                "Explorer l'onglet **Tutoriels** pour voir comment chaque produit fonctionne en détail",
-                "Utiliser le **Simulateur** pour tester le pricing de différents produits"
+              "Passer au niveau intermédiaire pour approfondir vos connaissances",
+              "Explorer l'onglet Tutoriels pour voir comment chaque produit fonctionne en détail",
+              "Utiliser le Simulateur pour tester le pricing de différents produits",
+              "Consulter le Glossaire pour maîtriser le vocabulaire technique"
               ]
+            }
+          ],
+          quiz: [
+            {
+              question: "Qu'est-ce qu'un produit structuré ?",
+              options: [
+              "Une action ordinaire",
+              "Un produit combinant obligations et options pour un profil risque/rendement personnalisé",
+              "Un compte d'épargne",
+              "Une crypto-monnaie"
+              ],
+              correct: 1,
+              explication: "Un produit structuré combine généralement une obligation (sécurité) et des options (performance) pour créer un profil d'investissement sur mesure."
+            },
+            {
+              question: "Quelle est la principale caractéristique d'un produit à Capital Garanti ?",
+              options: [
+              "Rendement très élevé garanti",
+              "Protection du capital à 100% + participation à la hausse",
+              "Effet de levier important",
+              "Coupon variable"
+              ],
+              correct: 1,
+              explication: "Un Capital Garanti protège votre investissement initial à 100% tout en vous permettant de participer (partiellement) à la hausse du sous-jacent."
+            },
+            {
+              question: "Qu'est-ce qu'un Autocall ?",
+              options: [
+              "Un appel téléphonique automatique",
+              "Un produit qui peut se rembourser automatiquement avant l'échéance",
+              "Une obligation classique",
+              "Une action à dividende"
+              ],
+              correct: 1,
+              explication: "Un Autocall peut se rembourser automatiquement si certaines conditions sont remplies (généralement si le sous-jacent atteint un certain niveau), vous versant capital + coupons cumulés."
+            },
+            {
+              question: "Quel produit offre généralement le coupon le plus élevé ?",
+              options: [
+              "Capital Garanti",
+              "Autocall",
+              "Reverse Convertible",
+              "Warrant"
+              ],
+              correct: 2,
+              explication: "Le Reverse Convertible offre les coupons les plus élevés (8-15%/an) mais en contrepartie d'un risque significatif de perte en capital si le sous-jacent chute fortement."
+            },
+            {
+              question: "Qu'est-ce qu'une barrière dans un produit structuré ?",
+              options: [
+              "Un mur physique",
+              "Un niveau de prix qui déclenche ou annule certains paiements",
+              "Le prix d'achat du produit",
+              "La commission du vendeur"
+              ],
+              correct: 1,
+              explication: "Une barrière est un seuil de prix prédéfini. Si le sous-jacent touche ou franchit cette barrière, cela modifie les caractéristiques du produit (déclenchement autocall, perte de protection, etc.)."
+            },
+            {
+              question: "Sur 10 000€ investis dans un Capital Garanti, quelle partie est généralement placée en obligation ?",
+              options: [
+              "0€ (tout en options)",
+              "Environ 8 000-9 500€",
+              "10 000€ (tout en obligations)",
+              "5 000€ (moitié-moitié)"
+              ],
+              correct: 1,
+              explication: "La majorité du capital (80-95%) est investie en obligation zero-coupon pour garantir le remboursement du nominal. Le reste (5-20%) achète des options pour la participation."
+            },
+            {
+              question: "Qu'est-ce qu'un Warrant ?",
+              options: [
+              "Un produit à capital garanti",
+              "Un produit à effet de levier amplifiant gains et pertes",
+              "Une obligation d'État",
+              "Un fonds monétaire"
+              ],
+              correct: 1,
+              explication: "Un Warrant est un produit dérivé avec effet de levier qui amplifie les mouvements du sous-jacent. Levier 5x signifie : si le sous-jacent monte de 10%, le warrant gagne 50% (mais perd aussi 50% si baisse de 10%)."
+            },
+            {
+              question: "Quel est le principal risque d'un Reverse Convertible ?",
+              options: [
+              "Perdre totalement son capital",
+              "Recevoir des actions ayant fortement chuté au lieu du capital",
+              "Ne pas recevoir de coupon",
+              "Inflation"
+              ],
+              correct: 1,
+              explication: "Si le sous-jacent chute sous la barrière, vous recevez des actions au lieu de votre capital. Si l'action a perdu 50%, vous subissez cette perte malgré le coupon reçu."
+            },
+            {
+              question: "Pour quel profil d'investisseur un Capital Garanti est-il le plus adapté ?",
+              options: [
+              "Investisseur agressif cherchant le maximum de rendement",
+              "Investisseur prudent voulant s'exposer aux actions sans risque",
+              "Trader day-trading",
+              "Spéculateur sur crypto"
+              ],
+              correct: 1,
+              explication: "Le Capital Garanti convient parfaitement aux investisseurs prudents qui veulent profiter de la hausse potentielle des marchés actions tout en étant certains de récupérer au minimum leur capital initial."
+            },
+            {
+              question: "Qu'est-ce que la 'participation' dans un Capital Garanti ?",
+              options: [
+              "Le nombre d'actionnaires",
+              "Le % de la hausse du sous-jacent que vous captez",
+              "Le coupon annuel",
+              "Les frais de gestion"
+              ],
+              correct: 1,
+              explication: "La participation détermine quelle proportion de la performance positive vous obtenez. Participation 80% signifie : si le sous-jacent monte de 50%, vous gagnez 40% (80% de 50%)."
+            },
+            {
+              question: "Combien de temps dure généralement un produit à Capital Garanti ?",
+              options: [
+              "1 mois",
+              "3-6 mois",
+              "3-7 ans",
+              "20 ans"
+              ],
+              correct: 2,
+              explication: "Les produits à Capital Garanti ont typiquement une maturité de 3 à 7 ans, le temps nécessaire pour que la composante obligataire arrive à maturité et garantisse le capital."
+            },
+            {
+              question: "Qu'arrive-t-il si vous vendez un produit structuré avant son échéance ?",
+              options: [
+              "Vous récupérez exactement votre capital",
+              "Vous vendez au prix de marché qui peut être inférieur au capital",
+              "C'est impossible, c'est bloqué",
+              "Vous gagnez automatiquement 10%"
+              ],
+              correct: 1,
+              explication: "Les produits structurés ont souvent une liquidité limitée. Si vous vendez avant l'échéance, vous pouvez subir une décote importante car les garanties ne sont valables qu'à maturité."
+            },
+            {
+              question: "Dans un Autocall, que se passe-t-il si la barrière autocall est touchée à une date d'observation ?",
+              options: [
+              "Vous perdez tout",
+              "Le produit se rembourse automatiquement avec capital + coupons",
+              "Rien ne change",
+              "Vous devez racheter des actions"
+              ],
+              correct: 1,
+              explication: "Si le sous-jacent est au-dessus de la barrière autocall à une date d'observation, le produit se termine automatiquement et vous recevez votre capital + tous les coupons (payés et non payés) immédiatement."
+            },
+            {
+              question: "Quel est l'avantage principal d'un produit structuré vs acheter directement des actions ?",
+              options: [
+              "C'est toujours moins cher",
+              "Personnalisation du profil risque/rendement (protection, coupons, levier)",
+              "Pas de fiscalité",
+              "Rendement garanti"
+              ],
+              correct: 1,
+              explication: "Les produits structurés permettent de personnaliser précisément votre exposition : protection du capital, coupons réguliers, limitation des pertes, effet de levier... impossibles avec de simples actions."
+            },
+            {
+              question: "Qu'est-ce qu'un 'sous-jacent' ?",
+              options: [
+              "La partie obligataire du produit",
+              "L'actif de référence sur lequel repose le produit (action, indice...)",
+              "Le rendement minimum",
+              "La barrière"
+              ],
+              correct: 1,
+              explication: "Le sous-jacent est l'actif financier dont dépend la performance du produit structuré : une action (Apple), un indice (S&P 500), un panier d'actions, une devise, une matière première, etc."
+            },
+            {
+              question: "Quelle est la fiscalité des gains sur produits structurés en France (2024) ?",
+              options: [
+              "0% (exonérés)",
+              "Flat Tax 30% (ou barème IR)",
+              "50%",
+              "Variable selon le jour"
+              ],
+              correct: 1,
+              explication: "Les plus-values sont soumises au PFU (Prélèvement Forfaitaire Unique) de 30%, ou au barème progressif de l'IR sur option si plus avantageux."
+            },
+            {
+              question: "Dans un Reverse Convertible, le coupon élevé compense :",
+              options: [
+              "L'inflation",
+              "Le risque de recevoir des actions ayant fortement baissé",
+              "Les frais bancaires",
+              "La fiscalité"
+              ],
+              correct: 1,
+              explication: "Le coupon élevé (8-15%) rémunère le risque que vous prenez : si le sous-jacent chute fortement sous la barrière, vous recevrez des actions dépréciées au lieu de votre capital."
+            },
+            {
+              question: "Combien d'effet de levier peut avoir un Warrant typique ?",
+              options: [
+              "0x (pas de levier)",
+              "1.5x",
+              "3x à 10x",
+              "Toujours exactement 2x"
+              ],
+              correct: 2,
+              explication: "Les Warrants ont généralement un levier entre 3x et 10x, parfois plus. Cela signifie qu'un mouvement de 1% du sous-jacent entraîne un mouvement de 3-10% du Warrant."
+            },
+            {
+              question: "Quel produit est le MOINS risqué ?",
+              options: [
+              "Warrant avec levier 10x",
+              "Reverse Convertible",
+              "Autocall",
+              "Capital Garanti"
+              ],
+              correct: 3,
+              explication: "Le Capital Garanti est le moins risqué car votre capital est protégé à 100% (à maturité et hors risque de défaut de l'émetteur). Les autres produits exposent votre capital à des pertes potentielles."
+            },
+            {
+              question: "Si un Autocall offre un coupon de 8% par an sur 3 ans et se déclenche après 1 an, combien recevez-vous de coupons ?",
+              options: [
+              "8% seulement (1 an)",
+              "24% (3 ans de coupons)",
+              "16% (2 ans)",
+              "0%"
+              ],
+              correct: 0,
+              explication: "Vous recevez le coupon uniquement pour la période écoulée, soit 1 an = 8%. Si le produit avait été un 'Autocall à mémoire', vous auriez pu recevoir les coupons futurs également, mais ce n'est pas le cas standard."
             }
           ]
         }
       ]
     },
+
     intermediaire: {
       title: "Niveau Intermédiaire",
       subtitle: "Comprendre les mécanismes et la valorisation",
@@ -1500,7 +2797,7 @@ export default function Learning() {
       }
     });
     
-    const score = (correct / module.quiz.length) * 20; // Score sur 20
+    const score = (correct / module.quiz.length) * 20;
     
     // Sauvegarder le score
     setQuizScores(prev => ({
@@ -1516,6 +2813,14 @@ export default function Learning() {
     // Valider le module si score >= 16
     if (score >= 16) {
       toggleModuleCompletion(level, moduleIdx);
+      
+      // ✅ FERMER LE MODULE AUTOMATIQUEMENT après 2 secondes
+      setTimeout(() => {
+        setOpenModules(prev => ({
+          ...prev,
+          [key]: false
+        }));
+      }, 10000);
     }
   };
 
@@ -1605,369 +2910,409 @@ export default function Learning() {
             {/* Contenu du cours */}
             {cours[selectedLevel] && (
               <div className="space-y-6">
-                {cours[selectedLevel].modules.map((module, moduleIdx) => (
-                  <div key={moduleIdx} className="glass-card p-8 border border-metron-blue/30">
-                    <div className="flex items-center justify-between mb-6">
-                      <h2 className="text-3xl font-bold text-white">
-                        {module.titre}
-                      </h2>
-
-                      <button
-                        onClick={() => toggleModuleCompletion(selectedLevel, moduleIdx)}
-                        className="text-3xl transition-transform hover:scale-110"
-                        title="Marquer le module comme terminé"
+                {cours[selectedLevel].modules.map((module, moduleIdx) => {
+                  const moduleKey = `${selectedLevel}-${moduleIdx}`;
+                  const isOpen = openModules[moduleKey] !== false; // Ouvert par défaut
+                  const isFullyCompleted = isModuleFullyCompleted(selectedLevel, moduleIdx);
+                  
+                  return (
+                    <div key={moduleIdx} className="glass-card border border-metron-blue/30 overflow-hidden">
+                      {/* En-tête du module (toujours visible) */}
+                      <div 
+                        className="flex items-center justify-between p-6 cursor-pointer hover:bg-white/5 transition-all"
+                        onClick={() => toggleModule(selectedLevel, moduleIdx)}
                       >
-                        {isModuleCompleted(selectedLevel, moduleIdx) ? "⭐" : "☆"}
-                      </button>
-                    </div>
-                    
-                    {module.contenu.map((section, sectionIdx) => (
-                      <div key={sectionIdx} className="mb-8">
-                        <h3 className="text-2xl font-bold text-metron-purple mb-4">
-                          {section.section}
-                        </h3>
-                        
-                        {section.texte && (
-                          <p className="text-gray-300 mb-4 leading-relaxed">{section.texte}</p>
-                        )}
-                        
-                        {section.points && (
-                          <ul className="space-y-2 mb-4">
-                            {section.points.map((point, idx) => (
-                              <li key={idx} className="flex gap-3 text-gray-300">
-                                <span className="text-metron-purple mt-1">•</span>
-                                <span dangerouslySetInnerHTML={{ __html: point }} />
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                        
-                        {section.exemple && (
-                          <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 mb-4">
-                            <p className="text-sm font-semibold text-blue-400 mb-2">💡 Exemple</p>
-                            <p className="text-gray-300 text-sm">{section.exemple}</p>
-                          </div>
-                        )}
-                        
-                        {section.formule && (
-                          <div className="bg-metron-purple/10 border border-metron-purple/30 rounded-lg p-4 mb-4">
-                            <p className="font-mono text-metron-purple">{section.formule}</p>
-                          </div>
-                        )}
-                        
-                        {section.analogie && (
-                          <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4 mb-4">
-                            <p className="text-sm font-semibold text-green-400 mb-2">🔍 Analogie</p>
-                            <p className="text-gray-300 text-sm">{section.analogie}</p>
-                          </div>
-                        )}
-                        
-                        {section.citation && (
-                          <div className="border-l-4 border-metron-purple pl-4 italic text-gray-400 mb-4">
-                            {section.citation}
-                          </div>
-                        )}
-                        
-                        {section.comparaison && (
-                          <div className="grid md:grid-cols-2 gap-4 mb-4">
-                            <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4">
-                              <h4 className="font-bold text-green-400 mb-2">Actions</h4>
-                              <p className="text-xs text-gray-400 mb-2">Avantages :</p>
-                              <ul className="space-y-1 mb-3">
-                                {section.comparaison.actions.avantages.map((a, i) => (
-                                  <li key={i} className="text-sm text-gray-300">✓ {a}</li>
-                                ))}
-                              </ul>
-                              <p className="text-xs text-gray-400 mb-2">Inconvénients :</p>
-                              <ul className="space-y-1 mb-3">
-                                {section.comparaison.actions.inconvenients.map((a, i) => (
-                                  <li key={i} className="text-sm text-gray-300">✗ {a}</li>
-                                ))}
-                              </ul>
-                              <p className="text-xs text-blue-300 italic">{section.comparaison.actions.profil}</p>
-                            </div>
-                            <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
-                              <h4 className="font-bold text-blue-400 mb-2">Obligations</h4>
-                              <p className="text-xs text-gray-400 mb-2">Avantages :</p>
-                              <ul className="space-y-1 mb-3">
-                                {section.comparaison.obligations.avantages.map((a, i) => (
-                                  <li key={i} className="text-sm text-gray-300">✓ {a}</li>
-                                ))}
-                              </ul>
-                              <p className="text-xs text-gray-400 mb-2">Inconvénients :</p>
-                              <ul className="space-y-1 mb-3">
-                                {section.comparaison.obligations.inconvenients.map((a, i) => (
-                                  <li key={i} className="text-sm text-gray-300">✗ {a}</li>
-                                ))}
-                              </ul>
-                              <p className="text-xs text-blue-300 italic">{section.comparaison.obligations.profil}</p>
-                            </div>
-                          </div>
-                        )}
-                        
-                        {section.types && (
-                          <div className="grid md:grid-cols-2 gap-4 mb-4">
-                            {section.types.map((type, idx) => (
-                              <div key={idx} className="bg-white/5 border border-white/10 rounded-lg p-4">
-                                <h4 className="font-bold text-white mb-2">{type.nom}</h4>
-                                <p className="text-sm text-gray-300 mb-2">{type.description}</p>
-                                <p className="text-xs text-metron-purple italic">Pour : {type.pour}</p>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                        
-                        {section.actions && (
-                          <ul className="space-y-2">
-                            {section.actions.map((action, idx) => (
-                              <li key={idx} className="flex gap-3 text-gray-300">
-                                <span className="text-green-400 mt-1">→</span>
-                                <span dangerouslySetInnerHTML={{ __html: action }} />
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                        
-                        {section.methodes && (
-                          <div className="space-y-4 mb-4">
-                            {section.methodes.map((methode, idx) => (
-                              <div key={idx} className="bg-white/5 border border-white/10 rounded-lg p-4">
-                                <h4 className="font-bold text-white mb-2">{methode.nom}</h4>
-                                <p className="text-sm text-gray-300 mb-2">{methode.description}</p>
-                                {methode.formule && (
-                                  <p className="font-mono text-sm text-metron-purple">{methode.formule}</p>
-                                )}
-                                {methode.exemple && (
-                                  <p className="text-xs text-gray-400 mt-2">Ex: {methode.exemple}</p>
-                                )}
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                        
-                        {section.details && (
-                          <div className="space-y-3 mb-4">
-                            {section.details.map((detail, idx) => (
-                              <div key={idx} className="bg-white/5 border border-white/10 rounded-lg p-4">
-                                <h4 className="font-bold text-metron-purple mb-2">{detail.type}</h4>
-                                <p className="text-sm text-gray-300 mb-1"><span className="font-semibold">Définition :</span> {detail.definition}</p>
-                                <p className="text-sm text-gray-300 mb-1"><span className="font-semibold">Utilisation :</span> {detail.utilisation}</p>
-                                <p className="text-xs text-gray-400 italic">{detail.exemple}</p>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                        
-                        {section.parametres && (
-                          <div className="bg-white/5 border border-white/10 rounded-lg p-4 mb-4">
-                            <p className="text-sm font-semibold text-white mb-3">Paramètres :</p>
-                            
-                            <ul className="space-y-3">
-                              {section.parametres.map((param, idx) => (
-                                <li key={idx} className="text-sm text-gray-300">
-                                  
-                                  {/* Cas 1 : paramètre simple (string) */}
-                                  {typeof param === 'string' && (
-                                    <span className="font-mono text-metron-purple">{param}</span>
-                                  )}
-                                  
-                                  {/* Cas 2 : paramètre structuré (objet) */}
-                                  {typeof param === 'object' && (
-                                    <div>
-                                      <p className="font-bold text-metron-purple">{param.nom}</p>
-                                      <p className="text-gray-300 text-sm">{param.definition}</p>
-                                      {param.impact && (
-                                        <p className="text-xs text-gray-400 italic">
-                                          Impact : {param.impact}
-                                        </p>
-                                      )}
-                                    </div>
-                                  )}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
+                        <div className="flex items-center gap-4">
+                          <button
+                            className="text-2xl transition-transform"
+                            style={{ transform: isOpen ? 'rotate(90deg)' : 'rotate(0deg)' }}
+                          >
+                            ▶
+                          </button>
+                          <h2 className="text-3xl font-bold text-white">
+                            {module.titre}
+                          </h2>
+                          {isFullyCompleted && (
+                            <span className="px-3 py-1 bg-green-500/20 border border-green-500/50 rounded-full text-green-400 text-sm font-semibold">
+                              ✓ Validé
+                            </span>
+                          )}
+                        </div>
 
-                        
-                        {section.formules && section.formules.length > 0 && (
-                          <div className="space-y-2 mb-4">
-                            {section.formules.map((f, idx) => (
-                              <div key={idx} className="bg-metron-purple/10 border border-metron-purple/30 rounded-lg p-3">
-                                <p className="font-mono text-sm text-metron-purple">{f}</p>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                        
-                        {section.greeks && (
-                          <div className="space-y-4 mb-4">
-                            {section.greeks.map((greek, idx) => (
-                              <div key={idx} className="bg-gradient-to-r from-metron-purple/10 to-metron-blue/10 border border-metron-purple/30 rounded-lg p-4">
-                                <h4 className="font-bold text-white mb-2">{greek.nom}</h4>
-                                <p className="text-sm text-gray-300 mb-1">{greek.definition}</p>
-                                <p className="text-sm text-blue-300 mb-1">💡 {greek.interpretation}</p>
-                                <p className="text-xs text-gray-400 italic">{greek.plage || greek.astuce}</p>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                        
-                        {section.etapes && (
-                          <div className="space-y-3 mb-4">
-                            {section.etapes.map((etape, idx) => (
-                              <div key={idx} className="bg-white/5 border border-white/10 rounded-lg p-4">
-                                <div className="flex items-start gap-3">
-                                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-metron-purple/30 flex items-center justify-center text-white font-bold text-sm">
-                                    {idx + 1}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation(); // Empêche de fermer le module quand on clique sur l'étoile
+                            toggleModuleCompletion(selectedLevel, moduleIdx);
+                          }}
+                          className="text-3xl transition-transform hover:scale-110"
+                          title="Marquer le module comme terminé"
+                        >
+                          {isModuleCompleted(selectedLevel, moduleIdx) ? "⭐" : "☆"}
+                        </button>
+                      </div>
+                      
+                      {/* Contenu du module (collapsible) */}
+                      {isOpen && (
+                        <div className="p-8 pt-0">
+                          {module.contenu.map((section, sectionIdx) => (
+                            <div key={sectionIdx} className="mb-8">
+                              <h3 className="text-2xl font-bold text-metron-purple mb-4">
+                                {section.section}
+                              </h3>
+                              
+                              {section.texte && (
+                                <p className="text-gray-300 mb-4 leading-relaxed">{section.texte}</p>
+                              )}
+                              
+                              {section.points && (
+                                <ul className="space-y-2 mb-4">
+                                  {section.points.map((point, idx) => (
+                                    <li key={idx} className="flex gap-3 text-gray-300">
+                                      <span className="text-metron-purple mt-1">•</span>
+                                      <span dangerouslySetInnerHTML={{ __html: point }} />
+                                    </li>
+                                  ))}
+                                </ul>
+                              )}
+                              
+                              {section.exemple && (
+                                <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 mb-4">
+                                  <p className="text-sm font-semibold text-blue-400 mb-2">💡 Exemple</p>
+                                  <p className="text-gray-300 text-sm">{section.exemple}</p>
+                                </div>
+                              )}
+                              
+                              {section.formule && (
+                                <div className="bg-metron-purple/10 border border-metron-purple/30 rounded-lg p-4 mb-4">
+                                  <p className="font-mono text-metron-purple">{section.formule}</p>
+                                </div>
+                              )}
+                              
+                              {section.analogie && (
+                                <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4 mb-4">
+                                  <p className="text-sm font-semibold text-green-400 mb-2">🔍 Analogie</p>
+                                  <p className="text-gray-300 text-sm">{section.analogie}</p>
+                                </div>
+                              )}
+                              
+                              {section.citation && (
+                                <div className="border-l-4 border-metron-purple pl-4 italic text-gray-400 mb-4">
+                                  {section.citation}
+                                </div>
+                              )}
+                              
+                              {section.comparaison && (
+                                <div className="grid md:grid-cols-2 gap-4 mb-4">
+                                  <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4">
+                                    <h4 className="font-bold text-green-400 mb-2">Actions</h4>
+                                    <p className="text-xs text-gray-400 mb-2">Avantages :</p>
+                                    <ul className="space-y-1 mb-3">
+                                      {section.comparaison.actions.avantages.map((a, i) => (
+                                        <li key={i} className="text-sm text-gray-300">✓ {a}</li>
+                                      ))}
+                                    </ul>
+                                    <p className="text-xs text-gray-400 mb-2">Inconvénients :</p>
+                                    <ul className="space-y-1 mb-3">
+                                      {section.comparaison.actions.inconvenients.map((a, i) => (
+                                        <li key={i} className="text-sm text-gray-300">✗ {a}</li>
+                                      ))}
+                                    </ul>
+                                    <p className="text-xs text-blue-300 italic">{section.comparaison.actions.profil}</p>
                                   </div>
-                                  <div className="flex-1">
-                                    <h4 className="font-bold text-white mb-1">{etape.etape}</h4>
-                                    {etape.montant && <p className="text-sm text-metron-purple mb-1">{etape.montant}</p>}
-                                    {etape.role && <p className="text-xs text-gray-400">{etape.role}</p>}
-                                    {etape.texte && <p className="text-sm text-gray-300">{etape.texte}</p>}
+                                  <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
+                                    <h4 className="font-bold text-blue-400 mb-2">Obligations</h4>
+                                    <p className="text-xs text-gray-400 mb-2">Avantages :</p>
+                                    <ul className="space-y-1 mb-3">
+                                      {section.comparaison.obligations.avantages.map((a, i) => (
+                                        <li key={i} className="text-sm text-gray-300">✓ {a}</li>
+                                      ))}
+                                    </ul>
+                                    <p className="text-xs text-gray-400 mb-2">Inconvénients :</p>
+                                    <ul className="space-y-1 mb-3">
+                                      {section.comparaison.obligations.inconvenients.map((a, i) => (
+                                        <li key={i} className="text-sm text-gray-300">✗ {a}</li>
+                                      ))}
+                                    </ul>
+                                    <p className="text-xs text-blue-300 italic">{section.comparaison.obligations.profil}</p>
                                   </div>
                                 </div>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                        
-                        {section.strategies && (
-                          <div className="space-y-4 mb-4">
-                            {section.strategies.map((strat, idx) => (
-                              <div key={idx} className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/30 rounded-lg p-4">
-                                <h4 className="font-bold text-white mb-2">{strat.nom}</h4>
-                                <p className="text-sm text-gray-300 mb-1"><span className="font-semibold">Composition :</span> {strat.composition}</p>
-                                <p className="text-sm text-gray-300 mb-1"><span className="font-semibold">Pari :</span> {strat.pari}</p>
-                                <p className="text-xs text-gray-400"><span className="font-semibold">Greeks :</span> {strat.Greeks || strat.risque}</p>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-
-                        {/* QCM - À ajouter APRÈS toutes les sections, avant la fermeture du div du module */}
-                        {module.quiz && module.quiz.length > 0 && (
-                          <div className="mt-8 pt-8 border-t-2 border-metron-purple/30">
-                            <h3 className="text-2xl font-bold text-white mb-4 flex items-center gap-3">
-                              📝 Quiz de validation
-                              <span className="text-sm font-normal text-gray-400">
-                                (Score requis : 16/20)
-                              </span>
-                            </h3>
-                            
-                            {(() => {
-                              const key = `${selectedLevel}-${moduleIdx}`;
-                              const submitted = quizSubmitted[key];
-                              const score = quizScores[key];
-                              const userAnswers = quizAnswers[key] || {};
+                              )}
                               
-                              return (
-                                <div className="space-y-6">
-                                  {module.quiz.map((q, qIdx) => (
-                                    <div key={qIdx} className="bg-white/5 border border-white/10 rounded-lg p-5">
-                                      <p className="text-white font-semibold mb-4">
-                                        {qIdx + 1}. {q.question}
-                                      </p>
-                                      
-                                      <div className="space-y-2">
-                                        {q.options.map((option, oIdx) => {
-                                          const isSelected = userAnswers[qIdx] === oIdx;
-                                          const isCorrect = q.correct === oIdx;
-                                          
-                                          let buttonClass = "w-full text-left p-3 rounded-lg border transition-all ";
-                                          
-                                          if (!submitted) {
-                                            buttonClass += isSelected
-                                              ? "border-metron-purple bg-metron-purple/20"
-                                              : "border-white/20 hover:border-metron-purple/50";
-                                          } else {
-                                            if (isCorrect) {
-                                              buttonClass += "border-green-500 bg-green-500/20";
-                                            } else if (isSelected && !isCorrect) {
-                                              buttonClass += "border-red-500 bg-red-500/20";
-                                            } else {
-                                              buttonClass += "border-white/10";
-                                            }
-                                          }
-                                          
-                                          return (
-                                            <button
-                                              key={oIdx}
-                                              onClick={() => !submitted && handleQuizAnswer(selectedLevel, moduleIdx, qIdx, oIdx)}
-                                              disabled={submitted}
-                                              className={buttonClass}
-                                            >
-                                              <span className="text-gray-300">
-                                                {submitted && isCorrect && "✅ "}
-                                                {submitted && isSelected && !isCorrect && "❌ "}
-                                                {option}
-                                              </span>
-                                            </button>
-                                          );
-                                        })}
-                                      </div>
-                                      
-                                      {submitted && (
-                                        <div className="mt-3 p-3 bg-blue-500/10 border border-blue-500/30 rounded">
-                                          <p className="text-sm text-blue-300">
-                                            💡 {q.explication}
-                                          </p>
-                                        </div>
+                              {section.types && (
+                                <div className="grid md:grid-cols-2 gap-4 mb-4">
+                                  {section.types.map((type, idx) => (
+                                    <div key={idx} className="bg-white/5 border border-white/10 rounded-lg p-4">
+                                      <h4 className="font-bold text-white mb-2">{type.nom}</h4>
+                                      <p className="text-sm text-gray-300 mb-2">{type.description}</p>
+                                      <p className="text-xs text-metron-purple italic">Pour : {type.pour}</p>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                              
+                              {section.actions && (
+                                <ul className="space-y-2">
+                                  {section.actions.map((action, idx) => (
+                                    <li key={idx} className="flex gap-3 text-gray-300">
+                                      <span className="text-green-400 mt-1">→</span>
+                                      <span dangerouslySetInnerHTML={{ __html: action }} />
+                                    </li>
+                                  ))}
+                                </ul>
+                              )}
+                              
+                              {section.methodes && (
+                                <div className="space-y-4 mb-4">
+                                  {section.methodes.map((methode, idx) => (
+                                    <div key={idx} className="bg-white/5 border border-white/10 rounded-lg p-4">
+                                      <h4 className="font-bold text-white mb-2">{methode.nom}</h4>
+                                      <p className="text-sm text-gray-300 mb-2">{methode.description}</p>
+                                      {methode.formule && (
+                                        <p className="font-mono text-sm text-metron-purple">{methode.formule}</p>
+                                      )}
+                                      {methode.exemple && (
+                                        <p className="text-xs text-gray-400 mt-2">Ex: {methode.exemple}</p>
                                       )}
                                     </div>
                                   ))}
-                                  
-                                  {/* Boutons et résultats */}
-                                  <div className="flex flex-col items-center gap-4">
-                                    {!submitted ? (
-                                      <button
-                                        onClick={() => submitQuiz(selectedLevel, moduleIdx)}
-                                        disabled={Object.keys(userAnswers).length !== module.quiz.length}
-                                        className="btn-neon px-8 disabled:opacity-50 disabled:cursor-not-allowed"
-                                      >
-                                        Valider mes réponses
-                                      </button>
-                                    ) : (
-                                      <>
-                                        <div className={`text-center p-6 rounded-lg border-2 ${
-                                          score.score >= 16
-                                            ? 'border-green-500 bg-green-500/10'
-                                            : 'border-orange-500 bg-orange-500/10'
-                                        }`}>
-                                          <p className="text-3xl font-bold text-white mb-2">
-                                            {score.score.toFixed(1)}/20
-                                          </p>
-                                          <p className="text-gray-300 mb-2">
-                                            {score.correct}/{score.total} bonnes réponses
-                                          </p>
-                                          <p className={`font-bold ${
-                                            score.score >= 16 ? 'text-green-400' : 'text-orange-400'
-                                          }`}>
-                                            {score.score >= 16
-                                              ? '🎉 Module validé ! Excellent travail !'
-                                              : '📚 Révisez et réessayez pour valider le module'}
-                                          </p>
+                                </div>
+                              )}
+                              
+                              {section.details && (
+                                <div className="space-y-3 mb-4">
+                                  {section.details.map((detail, idx) => (
+                                    <div key={idx} className="bg-white/5 border border-white/10 rounded-lg p-4">
+                                      <h4 className="font-bold text-metron-purple mb-2">{detail.type}</h4>
+                                      <p className="text-sm text-gray-300 mb-1"><span className="font-semibold">Définition :</span> {detail.definition}</p>
+                                      <p className="text-sm text-gray-300 mb-1"><span className="font-semibold">Utilisation :</span> {detail.utilisation}</p>
+                                      <p className="text-xs text-gray-400 italic">{detail.exemple}</p>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                              
+                              {section.parametres && (
+                                <div className="bg-white/5 border border-white/10 rounded-lg p-4 mb-4">
+                                  <p className="text-sm font-semibold text-white mb-3">Paramètres :</p>
+                                  <ul className="space-y-3">
+                                    {section.parametres.map((param, idx) => (
+                                      <li key={idx} className="text-sm text-gray-300">
+                                        {typeof param === 'string' && (
+                                          <span className="font-mono text-metron-purple">{param}</span>
+                                        )}
+                                        {typeof param === 'object' && (
+                                          <div>
+                                            <p className="font-bold text-metron-purple">{param.nom}</p>
+                                            <p className="text-gray-300 text-sm">{param.definition}</p>
+                                            {param.impact && (
+                                              <p className="text-xs text-gray-400 italic">
+                                                Impact : {param.impact}
+                                              </p>
+                                            )}
+                                          </div>
+                                        )}
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )}
+                              
+                              {section.formules && section.formules.length > 0 && (
+                                <div className="space-y-2 mb-4">
+                                  {section.formules.map((f, idx) => (
+                                    <div key={idx} className="bg-metron-purple/10 border border-metron-purple/30 rounded-lg p-3">
+                                      <p className="font-mono text-sm text-metron-purple">{f}</p>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                              
+                              {section.greeks && (
+                                <div className="space-y-4 mb-4">
+                                  {section.greeks.map((greek, idx) => (
+                                    <div key={idx} className="bg-gradient-to-r from-metron-purple/10 to-metron-blue/10 border border-metron-purple/30 rounded-lg p-4">
+                                      <h4 className="font-bold text-white mb-2">{greek.nom}</h4>
+                                      <p className="text-sm text-gray-300 mb-1">{greek.definition}</p>
+                                      <p className="text-sm text-blue-300 mb-1">💡 {greek.interpretation}</p>
+                                      <p className="text-xs text-gray-400 italic">{greek.plage || greek.astuce}</p>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                              
+                              {section.etapes && (
+                                <div className="space-y-3 mb-4">
+                                  {section.etapes.map((etape, idx) => (
+                                    <div key={idx} className="bg-white/5 border border-white/10 rounded-lg p-4">
+                                      <div className="flex items-start gap-3">
+                                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-metron-purple/30 flex items-center justify-center text-white font-bold text-sm">
+                                          {idx + 1}
+                                        </div>
+                                        <div className="flex-1">
+                                          <h4 className="font-bold text-white mb-1">{etape.etape}</h4>
+                                          {etape.montant && <p className="text-sm text-metron-purple mb-1">{etape.montant}</p>}
+                                          {etape.role && <p className="text-xs text-gray-400">{etape.role}</p>}
+                                          {etape.texte && <p className="text-sm text-gray-300">{etape.texte}</p>}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                              
+                              {section.strategies && (
+                                <div className="space-y-4 mb-4">
+                                  {section.strategies.map((strat, idx) => (
+                                    <div key={idx} className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/30 rounded-lg p-4">
+                                      <h4 className="font-bold text-white mb-2">{strat.nom}</h4>
+                                      <p className="text-sm text-gray-300 mb-1"><span className="font-semibold">Composition :</span> {strat.composition}</p>
+                                      <p className="text-sm text-gray-300 mb-1"><span className="font-semibold">Pari :</span> {strat.pari}</p>
+                                      <p className="text-xs text-gray-400"><span className="font-semibold">Greeks :</span> {strat.Greeks || strat.risque}</p>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          ))}
+
+                          {/* SECTION QUIZ (collapsible) */}
+                          {module.quiz && module.quiz.length > 0 && (
+                            <div className="mt-8 pt-8 border-t-2 border-metron-purple/30">
+                              {/* En-tête du Quiz (cliquable) */}
+                              <button
+                                onClick={() => toggleQuiz(selectedLevel, moduleIdx)}
+                                className="w-full flex items-center justify-between p-4 bg-metron-purple/10 hover:bg-metron-purple/20 rounded-lg border border-metron-purple/30 transition-all mb-4"
+                              >
+                                <div className="flex items-center gap-3">
+                                  <span className="text-2xl">
+                                    {openQuizzes[moduleKey] ? '📖' : '📝'}
+                                  </span>
+                                  <h3 className="text-2xl font-bold text-white">
+                                    Quiz de validation
+                                  </h3>
+                                  <span className="text-sm font-normal text-gray-400">
+                                    (Score requis : 16/20)
+                                  </span>
+                                </div>
+                                <span className="text-xl transition-transform" style={{ transform: openQuizzes[moduleKey] ? 'rotate(90deg)' : 'rotate(0deg)' }}>
+                                  ▶
+                                </span>
+                              </button>
+                              
+                              {/* Contenu du Quiz (s'affiche seulement si ouvert) */}
+                              {openQuizzes[moduleKey] && (() => {
+                                const key = `${selectedLevel}-${moduleIdx}`;
+                                const submitted = quizSubmitted[key];
+                                const score = quizScores[key];
+                                const userAnswers = quizAnswers[key] || {};
+                                
+                                return (
+                                  <div className="space-y-6">
+                                    {module.quiz.map((q, qIdx) => (
+                                      <div key={qIdx} className="bg-white/5 border border-white/10 rounded-lg p-5">
+                                        <p className="text-white font-semibold mb-4">
+                                          {qIdx + 1}. {q.question}
+                                        </p>
+                                        
+                                        <div className="space-y-2">
+                                          {q.options.map((option, oIdx) => {
+                                            const isSelected = userAnswers[qIdx] === oIdx;
+                                            const isCorrect = q.correct === oIdx;
+                                            
+                                            let buttonClass = "w-full text-left p-3 rounded-lg border transition-all ";
+                                            
+                                            if (!submitted) {
+                                              buttonClass += isSelected
+                                                ? "border-metron-purple bg-metron-purple/20"
+                                                : "border-white/20 hover:border-metron-purple/50";
+                                            } else {
+                                              if (isCorrect) {
+                                                buttonClass += "border-green-500 bg-green-500/20";
+                                              } else if (isSelected && !isCorrect) {
+                                                buttonClass += "border-red-500 bg-red-500/20";
+                                              } else {
+                                                buttonClass += "border-white/10";
+                                              }
+                                            }
+                                            
+                                            return (
+                                              <button
+                                                key={oIdx}
+                                                onClick={() => !submitted && handleQuizAnswer(selectedLevel, moduleIdx, qIdx, oIdx)}
+                                                disabled={submitted}
+                                                className={buttonClass}
+                                              >
+                                                <span className="text-gray-300">
+                                                  {submitted && isCorrect && "✅ "}
+                                                  {submitted && isSelected && !isCorrect && "❌ "}
+                                                  {option}
+                                                </span>
+                                              </button>
+                                            );
+                                          })}
                                         </div>
                                         
+                                        {submitted && (
+                                          <div className="mt-3 p-3 bg-blue-500/10 border border-blue-500/30 rounded">
+                                            <p className="text-sm text-blue-300">
+                                              💡 {q.explication}
+                                            </p>
+                                          </div>
+                                        )}
+                                      </div>
+                                    ))}
+                                    
+                                    {/* Boutons et résultats */}
+                                    <div className="flex flex-col items-center gap-4">
+                                      {!submitted ? (
                                         <button
-                                          onClick={() => resetQuiz(selectedLevel, moduleIdx)}
-                                          className="btn-neon-secondary px-6"
+                                          onClick={() => submitQuiz(selectedLevel, moduleIdx)}
+                                          disabled={Object.keys(userAnswers).length !== module.quiz.length}
+                                          className="btn-neon px-8 disabled:opacity-50 disabled:cursor-not-allowed"
                                         >
-                                          Recommencer le quiz
+                                          Valider mes réponses
                                         </button>
-                                      </>
-                                    )}
+                                      ) : (
+                                        <>
+                                          <div className={`text-center p-6 rounded-lg border-2 ${
+                                            score.score >= 16
+                                              ? 'border-green-500 bg-green-500/10'
+                                              : 'border-orange-500 bg-orange-500/10'
+                                          }`}>
+                                            <p className="text-3xl font-bold text-white mb-2">
+                                              {score.score.toFixed(1)}/20
+                                            </p>
+                                            <p className="text-gray-300 mb-2">
+                                              {score.correct}/{score.total} bonnes réponses
+                                            </p>
+                                            <p className={`font-bold ${
+                                              score.score >= 16 ? 'text-green-400' : 'text-orange-400'
+                                            }`}>
+                                              {score.score >= 16
+                                                ? '🎉 Module validé ! Excellent travail !'
+                                                : '📚 Révisez et réessayez pour valider le module'}
+                                            </p>
+                                          </div>
+                                          
+                                          <button
+                                            onClick={() => resetQuiz(selectedLevel, moduleIdx)}
+                                            className="btn-neon-secondary px-6"
+                                          >
+                                            Recommencer le quiz
+                                          </button>
+                                        </>
+                                      )}
+                                    </div>
                                   </div>
-                                </div>
-                              );
-                            })()}
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                ))}
+                                );
+                              })()}
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>
