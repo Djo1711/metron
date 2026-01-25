@@ -623,17 +623,6 @@ export default function Learning() {
               explication: "Le S&P 500 est un indice regroupant les 500 plus grandes entreprises cotées aux États-Unis, représentant environ 80% de la capitalisation boursière américaine."
             },
             {
-              question: "Si le prix d'une action monte, cela signifie que :",
-              options: [
-                "L'entreprise a fait plus de bénéfices",
-                "Il y a plus d'acheteurs que de vendeurs",
-                "Le gouvernement a fixé un prix plus élevé",
-                "L'entreprise a versé des dividendes"
-              ],
-              correct: 1,
-              explication: "Le prix monte quand la demande (acheteurs) dépasse l'offre (vendeurs). C'est le mécanisme de l'offre et de la demande."
-            },
-            {
               question: "Sur quel marché s'échange principalement le pétrole ?",
               options: [
               "Marché actions",
@@ -654,17 +643,6 @@ export default function Learning() {
               ],
               correct: 1,
               explication: "Un marché liquide permet d'acheter ou vendre rapidement de gros volumes sans faire bouger significativement les prix grâce à la présence de nombreux participants."
-            },
-            {
-              question: "Quels sont les horaires de trading du NYSE (New York) ?",
-              options: [
-              "24h/24",
-              "9h30-16h00 EST",
-              "8h00-20h00 EST",
-              "Seulement le matin"
-              ],
-              correct: 1,
-              explication: "Le NYSE (New York Stock Exchange) est ouvert de 9h30 à 16h00 heure de New York (soit 15h30-22h00 heure de Paris)."
             },
             {
               question: "Qu'est-ce que le CAC 40 ?",
@@ -709,17 +687,6 @@ export default function Learning() {
               ],
               correct: 1,
               explication: "Un ETF est un panier d'actions qui réplique un indice (comme le S&P 500) et se trade comme une action. C'est une façon simple et peu coûteuse de se diversifier."
-            },
-            {
-              question: "Si vous achetez au prix 'Ask' et vendez au prix 'Bid', que perdez-vous ?",
-              options: [
-              "Rien, c'est pareil",
-              "Le spread (différence bid-ask)",
-              "La commission uniquement",
-              "La volatilité"
-              ],
-              correct: 1,
-              explication: "Vous perdez le spread : vous achetez plus cher (ask) et vendez moins cher (bid). C'est un coût de transaction inhérent au marché."
             },
             {
               question: "Qu'est-ce qui cause une bulle spéculative ?",
@@ -1007,17 +974,6 @@ export default function Learning() {
               explication: "Quand les taux montent, les obligations existantes (à taux fixe plus bas) perdent de la valeur. Inversement, quand les taux baissent, elles prennent de la valeur."
             },
             {
-              question: "Qu'est-ce qu'un ETF ?",
-              options: [
-                "Une action d'une entreprise technologique",
-                "Un fonds qui réplique un indice et se trade en bourse",
-                "Un type d'obligation",
-                "Une devise"
-              ],
-              correct: 1,
-              explication: "Un ETF (Exchange Traded Fund) est un panier d'actifs qui réplique un indice (comme le S&P 500) et se négocie en bourse comme une action."
-            },
-            {
               question: "Quelle catégorie d'actions est généralement la plus risquée mais avec le plus fort potentiel ?",
               options: [
                 "Large caps",
@@ -1071,17 +1027,6 @@ export default function Learning() {
               ],
               correct: 1,
               explication: "Votre obligation à 3% devient moins attractive face aux nouvelles obligations à 5%, donc son prix de marché baisse pour ajuster son rendement effectif."
-            },
-            {
-              question: "Quel droit confère généralement une action ordinaire ?",
-              options: [
-                "Droit à un rendement garanti",
-                "Droit de vote aux assemblées générales",
-                "Droit à un remboursement du capital",
-                "Droit à un coupon fixe"
-              ],
-              correct: 1,
-              explication: "Une action ordinaire donne généralement 1 voix par action aux assemblées générales pour voter sur les décisions importantes de l'entreprise."
             },
             {
               question: "Qu'est-ce qu'une obligation convertible ?",
@@ -1354,17 +1299,6 @@ export default function Learning() {
               explication: "Une barrière est un seuil de prix prédéfini. Si le sous-jacent touche ou franchit cette barrière, cela modifie les caractéristiques du produit (déclenchement autocall, perte de protection, etc.)."
             },
             {
-              question: "Sur 10 000€ investis dans un Capital Garanti, quelle partie est généralement placée en obligation ?",
-              options: [
-              "0€ (tout en options)",
-              "Environ 8 000-9 500€",
-              "10 000€ (tout en obligations)",
-              "5 000€ (moitié-moitié)"
-              ],
-              correct: 1,
-              explication: "La majorité du capital (80-95%) est investie en obligation zero-coupon pour garantir le remboursement du nominal. Le reste (5-20%) achète des options pour la participation."
-            },
-            {
               question: "Qu'est-ce qu'un Warrant ?",
               options: [
               "Un produit à capital garanti",
@@ -1442,17 +1376,6 @@ export default function Learning() {
               explication: "Si le sous-jacent est au-dessus de la barrière autocall à une date d'observation, le produit se termine automatiquement et vous recevez votre capital + tous les coupons (payés et non payés) immédiatement."
             },
             {
-              question: "Quel est l'avantage principal d'un produit structuré vs acheter directement des actions ?",
-              options: [
-              "C'est toujours moins cher",
-              "Personnalisation du profil risque/rendement (protection, coupons, levier)",
-              "Pas de fiscalité",
-              "Rendement garanti"
-              ],
-              correct: 1,
-              explication: "Les produits structurés permettent de personnaliser précisément votre exposition : protection du capital, coupons réguliers, limitation des pertes, effet de levier... impossibles avec de simples actions."
-            },
-            {
               question: "Qu'est-ce qu'un 'sous-jacent' ?",
               options: [
               "La partie obligataire du produit",
@@ -1478,23 +1401,12 @@ export default function Learning() {
               question: "Dans un Reverse Convertible, le coupon élevé compense :",
               options: [
               "L'inflation",
-              "Le risque de recevoir des actions ayant fortement baissé",
               "Les frais bancaires",
-              "La fiscalité"
-              ],
-              correct: 1,
-              explication: "Le coupon élevé (8-15%) rémunère le risque que vous prenez : si le sous-jacent chute fortement sous la barrière, vous recevrez des actions dépréciées au lieu de votre capital."
-            },
-            {
-              question: "Quel produit est le MOINS risqué ?",
-              options: [
-              "Warrant avec levier 10x",
-              "Reverse Convertible",
-              "Autocall",
-              "Capital Garanti"
+              "La fiscalité",
+              "Le risque de recevoir des actions ayant fortement baissé"
               ],
               correct: 3,
-              explication: "Le Capital Garanti est le moins risqué car votre capital est protégé à 100% (à maturité et hors risque de défaut de l'émetteur). Les autres produits exposent votre capital à des pertes potentielles."
+              explication: "Le coupon élevé (8-15%) rémunère le risque que vous prenez : si le sous-jacent chute fortement sous la barrière, vous recevrez des actions dépréciées au lieu de votre capital."
             },
             {
               question: "Si un Autocall offre un coupon de 8% par an sur 3 ans et se déclenche après 1 an, combien recevez-vous de coupons ?",
@@ -1536,20 +1448,292 @@ export default function Learning() {
               ]
             },
             {
+              section: "Mathématiques de l'actualisation",
+              texte: "L'actualisation repose sur une formule mathématique simple mais puissante qui transforme les flux futurs en valeur présente.",
+              formule: "VP = VF / (1 + r)ⁿ",
+              details: [
+                {
+                  type: "Exemple sur 5 ans",
+                  definition: "Calculer la valeur présente de 10 000€ reçus dans 5 ans",
+                  utilisation: "Avec un taux de 6% par an",
+                  exemple: "VP = 10 000 / (1.06)⁵ = 10 000 / 1.338 = 7 473€. Donc 7 473€ aujourd'hui = 10 000€ dans 5 ans à 6%"
+                },
+                {
+                  type: "Flux multiples",
+                  definition: "Pour actualiser plusieurs flux à différentes dates",
+                  utilisation: "Sommer la VP de chaque flux",
+                  exemple: "1000€/an pendant 3 ans à 5% : VP = 1000/1.05 + 1000/1.05² + 1000/1.05³ = 952 + 907 + 864 = 2 723€"
+                }
+              ]
+            },
+            {
               section: "Valorisation d'une action",
               texte: "Deux approches principales pour valoriser une action :",
               methodes: [
                 {
                   nom: "Méthode des flux de trésorerie actualisés (DCF)",
                   description: "On estime tous les flux futurs de l'entreprise (bénéfices, dividendes) et on les actualise à aujourd'hui",
-                  formule: "Valeur = Σ (Flux futurs / (1+r)ⁿ)"
+                  formule: "Valeur = Σ (Flux futurs / (1+r)ⁿ)",
+                  exemple: "Apple génère 100 Mds$ de free cash-flow/an avec croissance 5%/an. En actualisant à 8%, valeur = 100/(0.08-0.05) = 3 333 Mds$"
                 },
                 {
                   nom: "Multiples de valorisation",
-                  description: "On compare avec des entreprises similaires (PER, Price/Book)",
+                  description: "On compare avec des entreprises similaires (PER, Price/Book, EV/EBITDA)",
                   exemple: "Si le secteur tech a un PER de 25 et Apple génère 6$ de bénéfice par action → Prix théorique = 25 × 6 = 150$"
                 }
               ]
+            },
+            {
+              section: "Les principaux multiples de valorisation",
+              texte: "Les multiples permettent de comparer rapidement des entreprises entre elles.",
+              details: [
+                {
+                  type: "PER (Price/Earnings Ratio)",
+                  definition: "Prix de l'action / Bénéfice par action",
+                  utilisation: "Mesure combien on paie pour 1$ de bénéfice",
+                  exemple: "Apple à 150$ avec BPA de 6$ → PER = 150/6 = 25. On paie 25x les bénéfices annuels"
+                },
+                {
+                  type: "Price/Book",
+                  definition: "Capitalisation / Capitaux propres",
+                  utilisation: "Compare le prix de marché à la valeur comptable",
+                  exemple: "P/B = 5 signifie que le marché valorise l'entreprise 5x sa valeur comptable"
+                },
+                {
+                  type: "EV/EBITDA",
+                  definition: "Enterprise Value / Résultat opérationnel",
+                  utilisation: "Valorisation indépendante de la structure financière",
+                  exemple: "EV/EBITDA de 12 est typique pour une entreprise mature. Tech peut être à 20-30"
+                },
+                {
+                  type: "Dividend Yield",
+                  definition: "Dividende annuel / Prix de l'action",
+                  utilisation: "Rendement du dividende en %",
+                  exemple: "Action à 100$ payant 4$/an de dividende → Yield = 4%"
+                }
+              ]
+            },
+            {
+              section: "Le modèle de Gordon (Dividend Discount Model)",
+              texte: "Modèle simple pour valoriser une action basé sur les dividendes futurs avec croissance constante.",
+              formule: "P = D₁ / (r - g)",
+              exemple: "Apple paie 1$ de dividende qui croît de 5%/an. Taux d'actualisation 10%. Valeur = 1 / (0.10 - 0.05) = 20$ par action.",
+              points: [
+                "D₁ = Dividende de l'année prochaine",
+                "r = Taux d'actualisation (rendement exigé)",
+                "g = Taux de croissance perpétuel des dividendes",
+                "Fonctionne bien pour entreprises matures avec dividendes stables"
+              ]
+            },
+            {
+              section: "Valorisation des obligations",
+              texte: "Une obligation vaut la somme actualisée de tous ses flux futurs (coupons + principal).",
+              formule: "P = Σ(C/(1+r)ᵗ) + N/(1+r)ⁿ",
+              exemple: "Obligation 1000€, coupon 5% (50€/an), maturité 3 ans, taux marché 6%. Prix = 50/1.06 + 50/1.06² + 50/1.06³ + 1000/1.06³ = 47.17 + 44.50 + 41.98 + 839.62 = 973€. L'obligation vaut moins que le nominal car le coupon (5%) est inférieur au taux de marché (6%)."
+            },
+            {
+              section: "Yield to Maturity (YTM)",
+              texte: "Le YTM est le taux de rendement total si vous détenez l'obligation jusqu'à l'échéance. C'est le taux qui égalise le prix de marché et la valeur actualisée des flux.",
+              points: [
+                "Si Prix < Nominal → YTM > Coupon (vous achetez avec une décote)",
+                "Si Prix > Nominal → YTM < Coupon (vous achetez avec une prime)",
+                "Si Prix = Nominal → YTM = Coupon",
+                "Le YTM intègre coupons + gain/perte en capital à maturité"
+              ]
+            },
+            {
+              section: "Comparaison DCF vs Multiples",
+              texte: "Chaque méthode a ses avantages et inconvénients.",
+              comparaison: {
+                actions: {
+                  avantages: ["Basée sur les fondamentaux réels", "Flexible, adapté à chaque entreprise", "Capture la valeur intrinsèque"],
+                  inconvenients: ["Très sensible aux hypothèses", "Complexe à calculer", "Nécessite de projeter loin dans le futur"],
+                  profil: "DCF (Discounted Cash Flow)"
+                },
+                obligations: {
+                  avantages: ["Rapide et simple", "Basée sur le marché actuel", "Utile pour comparer des pairs"],
+                  inconvenients: ["Ne capture pas les spécificités", "Sensible aux bulles de marché", "Peut être trompeur si secteur surévalué"],
+                  profil: "Multiples de valorisation"
+                }
+              }
+            }
+          ],
+          quiz: [
+            {
+              question: "Que signifie 'actualiser' un flux futur ?",
+              options: [
+                "L'ajuster à l'inflation",
+                "Calculer sa valeur équivalente aujourd'hui",
+                "Le multiplier par le taux d'intérêt",
+                "Attendre qu'il soit reçu"
+              ],
+              correct: 1,
+              explication: "Actualiser signifie ramener un flux futur à sa valeur présente en tenant compte du taux d'intérêt. 100€ dans 1 an actualisés à 5% valent 95.24€ aujourd'hui."
+            },
+            {
+              question: "Qu'est-ce que le PER (Price/Earnings Ratio) ?",
+              options: [
+                "Prix de l'action / Bénéfice par action",
+                "Bénéfice / Prix",
+                "Prix / Dividende",
+                "Capitalisation / Chiffre d'affaires"
+              ],
+              correct: 0,
+              explication: "Le PER mesure combien d'années de bénéfices il faut pour 'rembourser' le prix de l'action. Un PER de 20 signifie qu'on paie 20 fois les bénéfices annuels."
+            },
+            {
+              question: "Si une action vaut 100$ avec un bénéfice par action de 5$, quel est son PER ?",
+              options: [
+                "5",
+                "20",
+                "100",
+                "500"
+              ],
+              correct: 1,
+              explication: "PER = Prix / BPA = 100 / 5 = 20. L'action se trade à 20 fois les bénéfices."
+            },
+            {
+              question: "Pourquoi un taux d'actualisation élevé diminue-t-il la valeur présente ?",
+              options: [
+                "Parce que l'inflation est forte",
+                "Parce que les flux futurs valent moins comparé à ce qu'on pourrait gagner ailleurs",
+                "Parce que c'est une erreur de calcul",
+                "Ça n'a aucun effet"
+              ],
+              correct: 1,
+              explication: "Un taux d'actualisation élevé signifie que vous pourriez obtenir un bon rendement ailleurs, donc les flux futurs sont moins attractifs en comparaison, diminuant leur valeur présente."
+            },
+            {
+              question: "Qu'est-ce que la méthode DCF (Discounted Cash Flow) ?",
+              options: [
+                "Une méthode basée sur les multiples de marché",
+                "Une méthode valorisant une entreprise en actualisant ses flux futurs",
+                "Un ratio de liquidité",
+                "Un indice boursier"
+              ],
+              correct: 1,
+              explication: "La DCF valorise une entreprise en estimant tous ses flux de trésorerie futurs et en les actualisant au taux de rendement exigé pour obtenir la valeur présente."
+            },
+            {
+              question: "Si le taux d'actualisation augmente, que se passe-t-il pour la valeur d'une action selon le DCF ?",
+              options: [
+                "La valeur augmente",
+                "La valeur diminue",
+                "Aucun effet",
+                "La valeur double"
+              ],
+              correct: 1,
+              explication: "Un taux plus élevé au dénominateur diminue la valeur actualisée des flux futurs, donc la valeur de l'action baisse selon le DCF."
+            },
+            {
+              question: "Qu'est-ce que le Dividend Yield ?",
+              options: [
+                "Le nombre d'actions émises",
+                "Dividende annuel / Prix de l'action en %",
+                "Le PER",
+                "La croissance des bénéfices"
+              ],
+              correct: 1,
+              explication: "Le Dividend Yield mesure le rendement du dividende : si une action à 100$ verse 4$/an, le yield est 4%."
+            },
+            {
+              question: "Une obligation avec un coupon de 4% se trade à 950€ (nominal 1000€). Pourquoi ?",
+              options: [
+                "Parce que l'émetteur est en faillite",
+                "Parce que les taux de marché sont supérieurs à 4%",
+                "C'est une erreur de prix",
+                "Parce que la maturité est très courte"
+              ],
+              correct: 1,
+              explication: "Si les taux de marché sont à 5-6%, une obligation payant seulement 4% vaut moins que le nominal pour offrir un rendement compétitif."
+            },
+            {
+              question: "Que signifie 'zero-coupon' pour une obligation ?",
+              options: [
+                "Elle ne paie aucun coupon mais se rembourse au-dessus du prix d'achat",
+                "Elle paie un coupon de 0%",
+                "Elle n'a aucune valeur",
+                "C'est une obligation gratuite"
+              ],
+              correct: 0,
+              explication: "Une obligation zero-coupon ne verse pas d'intérêts périodiques. Elle s'achète avec une décote et se rembourse au nominal à l'échéance. Exemple : acheter à 750€, recevoir 1000€ dans 5 ans."
+            },
+            {
+              question: "Qu'est-ce que l'EV/EBITDA ?",
+              options: [
+                "Un ratio de liquidité",
+                "Enterprise Value / Résultat opérationnel (multiple de valorisation)",
+                "Un type d'obligation",
+                "Un indice boursier"
+              ],
+              correct: 1,
+              explication: "EV/EBITDA compare la valeur totale de l'entreprise (incluant dette) à son résultat opérationnel. C'est utile pour comparer des entreprises avec différentes structures de capital."
+            },
+            {
+              question: "Quel multiple est le plus approprié pour comparer des banques ?",
+              options: [
+                "PER",
+                "Price/Book",
+                "EV/EBITDA",
+                "Price/Sales"
+              ],
+              correct: 1,
+              explication: "Les banques sont souvent valorisées sur le Price/Book car leurs actifs (prêts, investissements) sont au bilan et leur 'production' est difficile à mesurer avec les métriques traditionnelles."
+            },
+            {
+              question: "Qu'est-ce que le WACC (Weighted Average Cost of Capital) ?",
+              options: [
+                "Le coût moyen pondéré du capital (taux d'actualisation)",
+                "Le prix d'une action",
+                "Un type d'obligation",
+                "Le rendement d'un dividende"
+              ],
+              correct: 0,
+              explication: "Le WACC est le coût moyen du capital de l'entreprise (dette + actions) pondéré par leur proportion. C'est le taux utilisé pour actualiser les flux dans la méthode DCF."
+            },
+            {
+              question: "Si une entreprise a un PER de 30 vs son secteur à PER 20, qu'est-ce que cela peut indiquer ?",
+              options: [
+                "Elle est nécessairement surévaluée",
+                "Le marché anticipe une croissance supérieure à la moyenne du secteur",
+                "Elle va faire faillite",
+                "Son dividende est très élevé"
+              ],
+              correct: 1,
+              explication: "Un PER élevé peut indiquer que le marché anticipe une forte croissance future. Les entreprises tech ont souvent des PER élevés car elles réinvestissent pour croître rapidement."
+            },
+            {
+              question: "Quelle est la valeur présente de 5 000€ reçus dans 3 ans à un taux de 10% ?",
+              options: [
+                "3 756€",
+                "4 545€",
+                "5 000€",
+                "6 655€"
+              ],
+              correct: 0,
+              explication: "VP = 5000 / (1.10)³ = 5000 / 1.331 = 3 756€"
+            },
+            {
+              question: "Qu'est-ce que la 'valeur intrinsèque' d'une entreprise ?",
+              options: [
+                "Son prix actuel en bourse",
+                "Sa vraie valeur économique basée sur ses flux futurs actualisés",
+                "Sa valeur comptable",
+                "Son chiffre d'affaires"
+              ],
+              correct: 1,
+              explication: "La valeur intrinsèque est la 'vraie valeur' théorique calculée par DCF ou autre modèle fondamental, indépendamment du prix de marché qui peut être sur/sous-évalué."
+            },
+            {
+              question: "Pourquoi le taux d'actualisation d'une startup tech est-il plus élevé que celui d'une utility company ?",
+              options: [
+                "Parce que les startups gagnent plus d'argent",
+                "Parce que le risque est plus élevé pour une startup",
+                "Parce que c'est obligatoire par la loi",
+                "Il n'y a pas de différence"
+              ],
+              correct: 1,
+              explication: "Le taux d'actualisation reflète le risque. Une startup tech a plus de chances d'échouer qu'une entreprise de services publics stable, donc exige un taux plus élevé (10-15% vs 6-8%)."
             }
           ]
         },
@@ -1562,10 +1746,87 @@ export default function Learning() {
               citation: "« Le risque vient de ne pas savoir ce que l'on fait » - Warren Buffett"
             },
             {
+              section: "Les différents types de risque",
+              texte: "Il existe plusieurs catégories de risques en finance, chacune nécessitant une approche de gestion différente.",
+              details: [
+                {
+                  type: "Risque de marché",
+                  definition: "Risque lié aux fluctuations générales des marchés",
+                  utilisation: "Mesuré par la volatilité, le bêta",
+                  exemple: "En 2008, presque toutes les actions ont chuté (risque systématique)"
+                },
+                {
+                  type: "Risque spécifique",
+                  definition: "Risque propre à une entreprise ou un secteur",
+                  utilisation: "Peut être éliminé par la diversification",
+                  exemple: "Scandale Volkswagen 2015 : action VW -40% mais marché stable"
+                },
+                {
+                  type: "Risque de crédit",
+                  definition: "Risque qu'un émetteur ne rembourse pas sa dette",
+                  utilisation: "Mesuré par le rating (AAA à D)",
+                  exemple: "Défaut de Lehman Brothers en 2008"
+                },
+                {
+                  type: "Risque de liquidité",
+                  definition: "Risque de ne pas pouvoir vendre rapidement sans perte",
+                  utilisation: "Important pour actifs illiquides",
+                  exemple: "Vendre un immeuble prend des mois vs vendre Apple en 1 seconde"
+                },
+                {
+                  type: "Risque de taux",
+                  definition: "Risque lié aux variations des taux d'intérêt",
+                  utilisation: "Affecte surtout les obligations",
+                  exemple: "Si les taux montent de 2%, une obligation 10 ans peut perdre 15-20%"
+                }
+              ]
+            },
+            {
               section: "La volatilité : mesurer le risque",
               texte: "La volatilité mesure l'ampleur des variations de prix. C'est l'écart-type des rendements. Une volatilité de 20% signifie que le prix peut varier d'environ ±20% sur un an.",
               formule: "σ = √(Σ(rendement - moyenne)² / n) × √252",
               exemple: "Apple a une volatilité de 25% et un prix de 150$. Sur un an, on s'attend à ce qu'Apple soit entre 112$ et 188$ (±25%) avec 68% de probabilité."
+            },
+            {
+              section: "Calcul pratique de la volatilité",
+              texte: "Calculer la volatilité historique pas à pas.",
+              etapes: [
+                {
+                  etape: "1. Collecter les prix",
+                  texte: "Prix de clôture quotidiens sur 30, 60 ou 252 jours (1 an de trading)"
+                },
+                {
+                  etape: "2. Calculer les rendements",
+                  formule: "r = ln(Prix_jour / Prix_jour-1)",
+                  texte: "Rendement logarithmique quotidien"
+                },
+                {
+                  etape: "3. Calculer l'écart-type",
+                  formule: "σ_daily = √(Σ(r - r̄)² / (n-1))",
+                  texte: "Écart-type des rendements quotidiens"
+                },
+                {
+                  etape: "4. Annualiser",
+                  formule: "σ_annual = σ_daily × √252",
+                  texte: "Multiplier par racine carrée de 252 (jours de trading/an)"
+                }
+              ]
+            },
+            {
+              section: "Volatilité historique vs implicite",
+              texte: "Deux mesures complémentaires de la volatilité : ce qui s'est passé vs ce que le marché anticipe.",
+              comparaison: {
+                actions: {
+                  avantages: ["Basée sur les données passées réelles", "Observable et mesurable", "Gratuite à calculer"],
+                  inconvenients: ["Ne prédit pas nécessairement le futur", "Peut être trompeuse en période de changement de régime"],
+                  profil: "Volatilité Historique (réalisée)"
+                },
+                obligations: {
+                  avantages: ["Reflète les attentes du marché", "Forward-looking", "Utilisée pour pricer les options"],
+                  inconvenients: ["Fluctue avec l'offre/demande", "Peut être biaisée par la panique ou l'euphorie"],
+                  profil: "Volatilité Implicite (anticipée)"
+                }
+              }
             },
             {
               section: "Relation Risque-Rendement",
@@ -1573,13 +1834,254 @@ export default function Learning() {
               points: [
                 "**Obligations d'État** : Risque faible → Rendement 3-5%/an",
                 "**Actions grandes capitalisations** : Risque moyen → Rendement 8-10%/an",
-                "**Actions small cap/crypto** : Risque élevé → Rendement potentiel 15-50%/an (mais pertes possibles)"
+                "**Actions small cap** : Risque élevé → Rendement potentiel 12-15%/an",
+                "**Crypto/Startups** : Risque très élevé → Rendement potentiel 20-50%/an (mais pertes totales possibles)"
+              ]
+            },
+            {
+              section: "Le ratio de Sharpe",
+              texte: "Le ratio de Sharpe mesure le rendement excédentaire obtenu par unité de risque pris. C'est la métrique clé pour comparer des investissements.",
+              formule: "Sharpe = (Rendement - Taux sans risque) / Volatilité",
+              exemple: "Portefeuille A : 12% de rendement, 20% de volatilité, taux sans risque 3%. Sharpe = (12-3)/20 = 0.45. Portefeuille B : 10% rendement, 12% volatilité. Sharpe = (10-3)/12 = 0.58. B est meilleur (plus de rendement par unité de risque).",
+              points: [
+                "Sharpe > 1 : Excellent",
+                "Sharpe 0.5-1 : Bon",
+                "Sharpe < 0.5 : Moyen",
+                "Sharpe négatif : Vous gagnez moins que le taux sans risque !"
               ]
             },
             {
               section: "La diversification",
               texte: "« Ne mettez pas tous vos œufs dans le même panier ». En diversifiant vos investissements, vous réduisez le risque global sans nécessairement réduire le rendement.",
               exemple: "Si vous investissez 100% dans une seule action et qu'elle s'effondre (-50%), vous perdez 50%. Si vous investissez dans 10 actions différentes et qu'une seule s'effondre, vous ne perdez que 5%."
+            },
+            {
+              section: "Corrélation et diversification",
+              texte: "La diversification fonctionne grâce à la corrélation imparfaite entre actifs.",
+              points: [
+                "**Corrélation +1** : Actifs bougent exactement ensemble → Diversification inutile",
+                "**Corrélation 0** : Actifs indépendants → Bonne diversification",
+                "**Corrélation -1** : Actifs bougent en sens opposé → Diversification parfaite (rare)",
+                "**Typique** : Actions du même secteur : corrélation 0.6-0.8 | Actions de secteurs différents : 0.3-0.5"
+              ],
+              exemple: "Actions tech et or ont souvent une corrélation négative : quand la tech baisse (crise), l'or monte (valeur refuge)."
+            },
+            {
+              section: "Le bêta (β) : risque systématique",
+              texte: "Le bêta mesure la sensibilité d'une action aux mouvements du marché global.",
+              formule: "β = Cov(Action, Marché) / Var(Marché)",
+              points: [
+                "**β = 1** : L'action bouge comme le marché (ex: ETF S&P 500)",
+                "**β > 1** : L'action amplifie les mouvements du marché (ex: Tesla β = 2)",
+                "**β < 1** : L'action est moins volatile que le marché (ex: utilities β = 0.6)",
+                "**β négatif** : L'action bouge en sens inverse (rare, ex: or β = -0.2)"
+              ],
+              exemple: "Tesla a un β de 2. Si le S&P 500 monte de 10%, Tesla monte en moyenne de 20%. Si le marché baisse de 10%, Tesla baisse de 20%."
+            },
+            {
+              section: "VaR (Value-at-Risk) - Introduction",
+              texte: "La VaR mesure la perte maximale potentielle sur un horizon donné avec un niveau de confiance donné.",
+              formule: "VaR(95%, 1 jour) = μ - 1.65σ",
+              exemple: "Portefeuille de 100 000€, rendement moyen 0.05%/jour, volatilité 1.5%/jour. VaR(95%, 1 jour) = 100 000 × (0.05% - 1.65 × 1.5%) = -2 425€. Il y a 5% de chances de perdre plus de 2 425€ demain.",
+              points: [
+                "VaR 95% → 5% de chances de dépasser cette perte",
+                "VaR 99% → 1% de chances (plus conservateur)",
+                "Horizon typique : 1 jour, 10 jours, 1 mois"
+              ]
+            },
+            {
+              section: "Construire un portefeuille efficient",
+              texte: "Harry Markowitz (Prix Nobel 1990) a montré qu'on peut construire des portefeuilles optimisant le couple rendement/risque.",
+              points: [
+                "**Frontière efficiente** : Ensemble des portefeuilles offrant le meilleur rendement pour un niveau de risque donné",
+                "**Portefeuille optimal** : Selon votre aversion au risque",
+                "**Tangency portfolio** : Portefeuille avec le meilleur ratio de Sharpe",
+                "**Diversification optimale** : Typiquement 15-30 actions suffisent pour éliminer 90% du risque spécifique"
+              ]
+            },
+            {
+              section: "Duration et sensibilité des obligations",
+              texte: "La duration mesure la sensibilité du prix d'une obligation aux variations de taux. Plus la duration est élevée, plus l'obligation est sensible aux taux.",
+              formule: "ΔP/P ≈ -Duration × Δr",
+              exemple: "Obligation avec duration de 7 ans. Si les taux montent de 1% (0.01), le prix baisse d'environ 7% : ΔP/P = -7 × 0.01 = -0.07 = -7%."
+            }
+          ],
+          quiz: [
+            {
+              question: "Qu'est-ce que la volatilité en finance ?",
+              options: [
+                "Le rendement moyen d'un actif",
+                "La mesure de l'ampleur des variations de prix (écart-type)",
+                "Le prix d'une action",
+                "Le dividende versé"
+              ],
+              correct: 1,
+              explication: "La volatilité est l'écart-type des rendements, mesurant l'ampleur et la fréquence des variations de prix. Une volatilité de 20% signifie que le prix peut varier d'environ ±20% sur un an."
+            },
+            {
+              question: "Si une action a une volatilité annuelle de 30%, dans quelle fourchette le prix devrait-il se situer dans 1 an avec 68% de probabilité ?",
+              options: [
+                "±10% du prix actuel",
+                "±30% du prix actuel",
+                "±60% du prix actuel",
+                "Impossible à dire"
+              ],
+              correct: 1,
+              explication: "En statistique, 68% des observations sont à ±1 écart-type de la moyenne. Donc avec une volatilité de 30%, il y a 68% de chances que le prix soit dans la fourchette ±30% dans 1 an."
+            },
+            {
+              question: "Qu'est-ce que le ratio de Sharpe ?",
+              options: [
+                "Prix / Bénéfice",
+                "(Rendement - Taux sans risque) / Volatilité",
+                "Dividende / Prix",
+                "Volatilité / Rendement"
+              ],
+              correct: 1,
+              explication: "Le ratio de Sharpe mesure le rendement excédentaire (au-dessus du taux sans risque) obtenu par unité de risque (volatilité). Plus il est élevé, meilleur est le rapport rendement/risque."
+            },
+            {
+              question: "Qu'est-ce que le bêta (β) d'une action ?",
+              options: [
+                "Son prix de marché",
+                "Sa sensibilité aux mouvements du marché global",
+                "Son dividende",
+                "Sa volatilité absolue"
+              ],
+              correct: 1,
+              explication: "Le bêta mesure comment une action réagit aux mouvements du marché. β=1 signifie qu'elle bouge comme le marché, β=2 qu'elle amplifie×2 les mouvements, β=0.5 qu'elle est deux fois moins volatile."
+            },
+            {
+              question: "Si Tesla a un bêta de 2 et que le S&P 500 monte de 5%, de combien Tesla devrait-elle monter en moyenne ?",
+              options: [
+                "2.5%",
+                "5%",
+                "10%",
+                "20%"
+              ],
+              correct: 2,
+              explication: "Mouvement Tesla ≈ β × Mouvement Marché = 2 × 5% = 10%. Tesla amplifie les mouvements du marché par un facteur 2."
+            },
+            {
+              question: "Quelle est la différence entre volatilité historique et volatilité implicite ?",
+              options: [
+                "Il n'y a aucune différence",
+                "Historique = passé réalisé, Implicite = anticipée par le marché (extraite des prix d'options)",
+                "Historique est toujours plus élevée",
+                "Implicite concerne uniquement les obligations"
+              ],
+              correct: 1,
+              explication: "La volatilité historique se calcule à partir des prix passés. La volatilité implicite est extraite des prix d'options actuels et reflète les attentes du marché pour le futur."
+            },
+            {
+              question: "Pourquoi la diversification réduit-elle le risque ?",
+              options: [
+                "Parce qu'elle élimine complètement le risque",
+                "Parce que les actifs ne bougent pas tous exactement ensemble (corrélation < 1)",
+                "Parce qu'elle augmente le rendement",
+                "Elle ne réduit pas le risque"
+              ],
+              correct: 1,
+              explication: "La diversification réduit le risque spécifique car les actifs ont des corrélations imparfaites : quand l'un baisse, l'autre peut monter ou rester stable, lissant ainsi les variations globales."
+            },
+            {
+              question: "Qu'est-ce que le risque systématique ?",
+              options: [
+                "Le risque propre à une entreprise",
+                "Le risque de marché affectant tous les actifs (non diversifiable)",
+                "Le risque de crédit",
+                "Le risque de change"
+              ],
+              correct: 1,
+              explication: "Le risque systématique (ou de marché) affecte l'ensemble du marché (récession, guerre, hausse de taux). Il ne peut pas être éliminé par la diversification, contrairement au risque spécifique."
+            },
+            {
+              question: "Qu'est-ce que la VaR (Value-at-Risk) ?",
+              options: [
+                "Le rendement espéré",
+                "La perte maximale potentielle sur un horizon donné avec un niveau de confiance donné",
+                "Le prix d'une option",
+                "La volatilité"
+              ],
+              correct: 1,
+              explication: "VaR(95%, 1 jour) = 10 000€ signifie : il y a 5% de chances de perdre plus de 10 000€ demain. C'est une mesure de risque très utilisée en gestion de portefeuille."
+            },
+            {
+              question: "Si deux actifs ont une corrélation de +1, que se passe-t-il ?",
+              options: [
+                "Ils bougent en sens opposé",
+                "Ils bougent exactement ensemble (diversification inutile)",
+                "Ils sont indépendants",
+                "L'un est sans risque"
+              ],
+              correct: 1,
+              explication: "Corrélation +1 signifie qu'ils montent et baissent parfaitement ensemble. Détenir les deux n'apporte aucune diversification. Ex: deux ETF S&P 500 ont une corrélation proche de +1."
+            },
+            {
+              question: "Quelle corrélation offre la meilleure diversification ?",
+              options: [
+                "+1 (parfaitement corrélés)",
+                "0 (non corrélés)",
+                "-1 (parfaitement inversement corrélés)",
+                "Aucune importance"
+              ],
+              correct: 2,
+              explication: "Corrélation -1 est idéale : quand l'un baisse, l'autre monte exactement du même montant, créant une diversification parfaite. C'est rare en pratique (ex: être long et short le même actif)."
+            },
+            {
+              question: "Qu'est-ce que la duration d'une obligation ?",
+              options: [
+                "Sa maturité en années",
+                "Sa sensibilité aux variations de taux d'intérêt",
+                "Son coupon",
+                "Son prix"
+              ],
+              correct: 1,
+              explication: "La duration mesure la sensibilité du prix de l'obligation aux taux. Duration 7 signifie : si les taux montent de 1%, le prix baisse d'environ 7%."
+            },
+            {
+              question: "Quel est le meilleur ratio de Sharpe ?",
+              options: [
+                "0.2",
+                "0.6",
+                "1.5",
+                "-0.5"
+              ],
+              correct: 2,
+              explication: "Plus le Sharpe est élevé, mieux c'est. Sharpe 1.5 est excellent (beaucoup de rendement par unité de risque). Sharpe négatif signifie que vous gagnez moins que le taux sans risque !"
+            },
+            {
+              question: "Qu'est-ce que le risque de liquidité ?",
+              options: [
+                "Le risque de manquer d'eau",
+                "Le risque de ne pas pouvoir vendre rapidement sans perte importante",
+                "Le risque de défaut de l'émetteur",
+                "Le risque de change"
+              ],
+              correct: 1,
+              explication: "Le risque de liquidité est le risque de devoir vendre à perte faute d'acheteurs. Une petite action illiquide peut nécessiter une décote de 10-20% pour trouver un acheteur rapidement."
+            },
+            {
+              question: "Pourquoi les actions small cap ont-elles généralement un rendement espéré plus élevé ?",
+              options: [
+                "Parce qu'elles sont meilleures",
+                "Pour compenser le risque plus élevé (volatilité, liquidité)",
+                "Par chance",
+                "Elles n'ont pas de rendement plus élevé"
+              ],
+              correct: 1,
+              explication: "Les small caps sont plus risquées (volatilité élevée, liquidité faible, risque de faillite). Selon le principe risque-rendement, elles doivent offrir un rendement espéré plus élevé pour attirer les investisseurs."
+            },
+            {
+              question: "Qu'indique le VIX (indice de volatilité du S&P 500) ?",
+              options: [
+                "Le prix du S&P 500",
+                "La volatilité implicite anticipée par le marché (surnommé 'indice de la peur')",
+                "Le rendement du S&P 500",
+                "Le nombre d'actions du S&P 500"
+              ],
+              correct: 1,
+              explication: "Le VIX mesure la volatilité implicite extraite des options sur le S&P 500. VIX élevé (>30) indique de la peur/incertitude. VIX bas (<15) indique de la confiance/complaisance."
             }
           ]
         },
@@ -1592,6 +2094,30 @@ export default function Learning() {
               analogie: "C'est comme parier sur un match de foot sans être joueur : vous ne possédez pas l'équipe, mais vous gagnez ou perdez selon le résultat."
             },
             {
+              section: "Les catégories de produits dérivés",
+              texte: "Il existe trois grandes catégories de dérivés selon leur mode de négociation et leur standardisation.",
+              details: [
+                {
+                  type: "Dérivés listés (Exchange-traded)",
+                  definition: "Négociés sur des bourses organisées avec des caractéristiques standardisées",
+                  utilisation: "Options et futures sur indices, actions, matières premières",
+                  exemple: "Options sur Apple négociées sur le CBOE, Futures S&P 500 sur le CME"
+                },
+                {
+                  type: "Dérivés OTC (Over-The-Counter)",
+                  definition: "Négociés de gré à gré entre deux parties, sur mesure",
+                  utilisation: "Swaps, forwards, options exotiques",
+                  exemple: "Un swap de taux d'intérêt entre une banque et une entreprise"
+                },
+                {
+                  type: "Produits structurés",
+                  definition: "Combinaison d'obligations et de dérivés packagés pour investisseurs retail",
+                  utilisation: "Autocalls, capital garantis, reverse convertibles",
+                  exemple: "Capital garanti 100% + participation 80% à Apple sur 5 ans"
+                }
+              ]
+            },
+            {
               section: "Les Options : Call et Put",
               texte: "Une option donne le DROIT (pas l'obligation) d'acheter (call) ou vendre (put) un actif à un prix fixé (strike) jusqu'à une date donnée.",
               details: [
@@ -1599,37 +2125,358 @@ export default function Learning() {
                   type: "Call (option d'achat)",
                   definition: "Droit d'acheter au prix strike",
                   utilisation: "Vous pensez que le prix va monter",
-                  exemple: "Call Apple strike 150$. Si Apple monte à 180$, vous pouvez acheter à 150$ et revendre à 180$ → Gain de 30$ par action"
+                  exemple: "Call Apple strike 150.Si Apple monte à 180. Si Apple monte à 180, vous pouvez acheter à 150$ et revendre à 180$ → Gain de 30$ par action"
                 },
                 {
                   type: "Put (option de vente)",
                   definition: "Droit de vendre au prix strike",
                   utilisation: "Vous pensez que le prix va baisser OU vous voulez vous protéger",
-                  exemple: "Put Apple strike 150$. Si Apple tombe à 120$, vous vendez à 150$ → Vous évitez la perte de 30$"
+                  exemple: "Put Apple strike 150.SiAppletombe à 120. Si Apple tombe à 120. Si Apple tombe à 120, vous vendez à 150$ → Vous évitez la perte de 30$"
                 }
               ]
             },
             {
+              section: "Options européennes vs américaines",
+              texte: "Deux styles d'exercice avec des implications différentes sur le pricing et la stratégie.",
+              comparaison: {
+                actions: {
+                  avantages: ["Exercice uniquement à l'échéance", "Prix inférieur (moins de flexibilité)", "Pricing plus simple"],
+                  inconvenients: ["Moins de flexibilité", "Pas d'exercice anticipé possible"],
+                  profil: "Options Européennes"
+                },
+                obligations: {
+                  avantages: ["Exercice possible à tout moment jusqu'à l'échéance", "Plus de flexibilité stratégique", "Utile pour capter les dividendes"],
+                  inconvenients: ["Prix supérieur (prime de flexibilité)", "Pricing plus complexe"],
+                  profil: "Options Américaines"
+                }
+              }
+            },
+            {
               section: "Pourquoi les options sont puissantes",
               points: [
-                "**Effet de levier** : Petite mise pour grande exposition (une option coûte 5$ mais contrôle une action à 150$)",
-                "**Risque limité** : Vous ne pouvez perdre que la prime payée (même si l'action s'effondre)",
-                "**Flexibilité** : Vous pouvez parier à la hausse, à la baisse, ou sur la stabilité",
-                "**Protection** : Hedging pour protéger votre portefeuille"
+                "Effet de levier : Petite mise pour grande exposition (une option coûte 5$ mais contrôle une action à 150$)",
+                "Risque limité (acheteur) : Vous ne pouvez perdre que la prime payée (même si l'action s'effondre)",
+                "Flexibilité : Vous pouvez parier à la hausse, à la baisse, ou sur la stabilité",
+                "Protection (hedging) : Assurance pour protéger votre portefeuille",
+                "Asymétrie : Gains potentiellement illimités, pertes limitées à la prime"
+              ]
+            },
+            {
+              section: "Valeur intrinsèque vs valeur temps",
+              texte: "Le prix d'une option se décompose en deux éléments : la valeur intrinsèque (gain si exercée maintenant) et la valeur temps (potentiel de gain futur).",
+              formule: "Prix Option = Valeur Intrinsèque + Valeur Temps",
+              exemple: "Call Apple strike 150, prix spot 170, option vaut 25. Valeur intrinsèque = Max(0, 170-150) = 20. Valeur temps = 25-20 = 5$ (probabilité que Apple monte encore plus).",
+              points: [
+                `À l'échéance :
+              Valeur temps = 0
+              Reste seulement la valeur intrinsèque`,
+                "Loin de l'échéance : Valeur temps élevée (beaucoup de temps pour bouger)",
+                "ATM (At-The-Money) : Valeur temps maximale (plus d'incertitude)",
+                "Deep ITM/OTM : Valeur temps faible"
+              ]
+            },
+            {
+              section: "Moneyness des options",
+              texte: "Le terme 'moneyness' décrit la position du prix spot par rapport au strike.",
+              details: [
+                {
+                  type: "ITM (In-The-Money)",
+                  definition: "Option avec valeur intrinsèque positive",
+                  utilisation: "Call : Spot > Strike | Put : Spot < Strike",
+                  exemple: "Call strike 150$ avec Apple à 170$ → ITM de 20$"
+                },
+                {
+                  type: "ATM (At-The-Money)",
+                  definition: "Strike proche du prix spot",
+                  utilisation: "Maximum d'incertitude, gamma et valeur temps maximaux",
+                  exemple: "Apple à 150, option strike 150 → ATM"
+                },
+                {
+                  type: "OTM (Out-of-The-Money)",
+                  definition: "Option sans valeur intrinsèque",
+                  utilisation: "Call : Spot < Strike | Put : Spot > Strike",
+                  exemple: "Call strike 180$ avec Apple à 150$ → OTM de 30$"
+                }
               ]
             },
             {
               section: "Le modèle de Black-Scholes",
               texte: "C'est LE modèle mathématique qui permet de calculer le prix théorique d'une option. Développé en 1973, il a révolutionné la finance (Prix Nobel 1997).",
               parametres: [
-                "**Prix spot (S)** : Prix actuel de l'actif",
-                "**Strike (K)** : Prix d'exercice de l'option",
-                "**Volatilité (σ)** : Mesure du risque",
-                "**Temps (T)** : Durée jusqu'à l'échéance",
-                "**Taux sans risque (r)** : Taux d'intérêt"
+                `Prix spot (S) :
+              Prix actuel de l'actif`,
+                "Strike (K) : Prix d'exercice de l'option",
+                "Volatilité (σ) : Mesure du risque",
+                "Temps (T) : Durée jusqu'à l'échéance",
+                "Taux sans risque (r) : Taux d'intérêt"
               ],
               formule: "C = S×N(d₁) - K×e⁻ʳᵀ×N(d₂)"
+            },
+            {
+              section: "Hypothèses de Black-Scholes",
+              texte: "Le modèle repose sur des hypothèses simplificatrices qui ne sont pas toujours vérifiées en pratique.",
+              points: [
+              "Volatilité constante : En réalité, elle varie (volatility smile)",
+              "Pas de dividendes : Extension possible pour en tenir compte",
+              "Marchés efficients : Pas de frictions, transactions continues",
+              "Distribution log-normale : Exclut les sauts et crashs brutaux",
+              "Taux sans risque constant : En réalité, la courbe des taux bouge"
+                        ]
+            },
+            {
+              section: "Stratégies de base avec options",
+              texte: "Les options permettent de construire une infinité de stratégies pour différentes vues de marché.",
+              strategies: [
+                {
+                  nom: "Long Call",
+                  composition: "Acheter un call",
+                  pari: "Forte hausse du sous-jacent",
+                  Greeks: "Delta positif, Vega positif, Theta négatif"
+                },
+                {
+                  nom: "Long Put",
+                  composition: "Acheter un put",
+                  pari: "Forte baisse du sous-jacent",
+                  Greeks: "Delta négatif, Vega positif, Theta négatif"
+                },
+                {
+                  nom: "Covered Call",
+                  composition: "Détenir l'action + vendre un call OTM",
+                  pari: "Hausse modérée, générer du revenu",
+                  Greeks: "Gain plafonné au strike, theta positif"
+                },
+                {
+                  nom: "Protective Put",
+                  composition: "Détenir l'action + acheter un put",
+                  pari: "Protection contre la baisse",
+                  Greeks: "Assurance, coûte la prime du put"
+                },
+                {
+                  nom: "Bull Spread",
+                  composition: "Acheter call strike bas, vendre call strike haut",
+                  pari: "Hausse modérée",
+                  Greeks: "Risque et gain limités, coût réduit vs long call simple"
+                }
+              ]
+            },
+            {
+              section: "Forwards et Futures",
+              texte: "Contrats dérivés obligeant (contrairement aux options) à acheter ou vendre à un prix fixé à une date future.",
+              comparaison: {
+                actions: {
+                  avantages: ["Contrat sur mesure entre deux parties", "OTC, non standardisé", "Pas de dépôt de garantie"],
+                  inconvenients: ["Risque de contrepartie élevé", "Peu liquide"],
+                  profil: "Forward"
+                },
+                obligations: {
+                  avantages: ["Standardisé, négocié en bourse", "Chambre de compensation (pas de risque contrepartie)", "Très liquide"],
+                  inconvenients: ["Appels de marge quotidiens", "Tailles de contrat fixes"],
+                  profil: "Future"
+                }
+              }
+            },
+            {
+              section: "Les Swaps",
+              texte: "Contrats OTC d'échange de flux financiers entre deux parties selon des modalités prédéfinies.",
+              details: [
+                {
+                  type: "Interest Rate Swap",
+                  definition: "Échange de taux fixe contre taux variable",
+                  utilisation: "Gestion du risque de taux",
+                  exemple: "Entreprise paie 5% fixe, reçoit Euribor + 1%. Si Euribor > 4%, elle gagne"
+                },
+                {
+                  type: "Currency Swap",
+                  definition: "Échange de flux dans deux devises différentes",
+                  utilisation: "Couverture du risque de change",
+                  exemple: "Entreprise française emprunte en $ mais génère des revenus en €. Swap pour éliminer le risque de change"
+                },
+                {
+                  type: "Commodity Swap",
+                  definition: "Échange de prix fixe contre prix variable d'une matière première",
+                  utilisation: "Stabiliser les coûts/revenus",
+                  exemple: "Compagnie aérienne fixe le prix du kérosène pour se protéger contre la hausse"
+                }
+              ]
             }
+          ],
+          quiz: [
+            {
+              question: "Qu'est-ce qu'un produit dérivé ?",
+              options: [
+                "Une action ordinaire",
+                "Un instrument dont la valeur dérive d'un actif sous-jacent",
+                "Une obligation",
+                "Un compte bancaire"
+              ],
+              correct: 1,
+              explication: "Un dérivé est un contrat dont la valeur dépend d'un actif sous-jacent (action, indice, matière première). Ex: une option sur Apple dérive du prix de l'action Apple."
+            },
+            {
+              question: "Quelle est la différence fondamentale entre une option et un forward/future ?",
+              options: [
+                "Il n'y a pas de différence",
+                "L'option donne un droit, le forward/future une obligation",
+                "L'option est plus chère",
+                "Le forward est standardisé"
+              ],
+              correct: 1,
+              explication: "Une option donne le DROIT (pas l'obligation) d'acheter/vendre. Un forward/future OBLIGE les deux parties à exécuter le contrat à l'échéance."
+            },
+            {
+              question: "Qu'est-ce qu'un call ?",
+              options: [
+                "Option de vente",
+                "Option d'achat",
+                "Un appel téléphonique",
+                "Une obligation"
+              ],
+              correct: 1,
+              explication: "Un call est une option d'achat : elle donne le droit d'acheter le sous-jacent au prix strike. On achète un call si on anticipe une hausse."
+            },
+            {
+              question: "Vous achetez un call Apple strike 150$ pour 10$. Apple finit à 175$. Apple finit à 175$ à l'échéance. Quel est votre profit ?",
+              options: [
+                "10$",
+                "15$",
+                "25$",
+                "175$"
+              ],
+              correct: 1,
+              explication: "Valeur intrinsèque = 175 - 150 = 25. Profit = 25 - 10 (prime payée) = 15. Profit = 25 - 10 (prime payée) = 15 par contrat."
+            },
+            {
+              question: "Qu'est-ce que le strike (prix d'exercice) ?",
+              options: [
+                "Le prix actuel de l'action",
+                "Le prix auquel vous pouvez acheter/vendre via l'option",
+                "La prime de l'option",
+                "Le rendement"
+              ],
+              correct: 1,
+              explication: "Le strike est le prix prédéterminé auquel vous pouvez exercer l'option : acheter (call) ou vendre (put) le sous-jacent."
+            },
+            {
+              question: "Que signifie 'ITM' (In-The-Money) pour un call ?",
+              options: [
+                "Prix spot < Strike",
+                "Prix spot > Strike (l'option a une valeur intrinsèque)",
+                "Prix spot = Strike",
+                "L'option a expiré"
+              ],
+              correct: 1,
+              explication: "Un call est ITM quand le prix spot dépasse le strike. Ex: call strike 150$ avec Apple à 170$ → ITM de 20$ (valeur intrinsèque = 20$)."
+            },
+            {
+              question: "Qu'est-ce que la valeur temps d'une option ?",
+              options: [
+                "Le temps restant jusqu'à l'échéance",
+                "La partie du prix au-delà de la valeur intrinsèque (potentiel de gain futur)",
+                "La valeur totale de l'option",
+                "Le strike"
+              ],
+              correct: 1,
+              explication: "Prix Option = Valeur Intrinsèque + Valeur Temps. La valeur temps reflète la probabilité que l'option gagne encore plus de valeur avant l'échéance. À l'échéance, valeur temps = 0."
+            },
+            {
+              question: "Quel paramètre n'est PAS utilisé dans le modèle de Black-Scholes ?",
+              options: [
+                "Prix spot",
+                "Volatilité",
+                "Dividend yield (dans la version de base)",
+                "Bénéfice de l'entreprise"
+              ],
+              correct: 3,
+              explication: "Black-Scholes utilise: Spot, Strike, Volatilité, Temps, Taux sans risque (+ dividendes dans les extensions). Les bénéfices de l'entreprise n'entrent pas directement dans la formule."
+            },
+            {
+              question: "Pourquoi achèterait-on un put ?",
+              options: [
+                "Pour parier sur la hausse",
+                "Pour se protéger contre une baisse ou parier sur une baisse",
+                "C'est obligatoire",
+                "Pour recevoir un dividende"
+              ],
+              correct: 1,
+              explication: "On achète un put soit pour spéculer sur une baisse (gagner si ça baisse), soit pour se protéger contre une baisse (assurance). Ex: vous détenez Apple et achetez un put pour limiter vos pertes."
+            },
+            {
+              question: "Qu'est-ce qu'un 'Covered Call' ?",
+              options: [
+                "Acheter un call",
+                "Détenir l'action et vendre un call",
+                "Acheter un put",
+                "Vendre l'action"
+              ],
+              correct: 1,
+              explication: "Covered Call = vous détenez l'action ET vendez un call OTM. Vous générez un revenu (prime du call) mais plafonné vos gains au strike. Stratégie populaire pour générer du rendement."
+            },
+            {
+              question: "Quelle est la différence entre un forward et un future ?",
+              options: [
+                "Aucune différence",
+                "Forward = OTC sur mesure, Future = standardisé négocié en bourse",
+                "Forward est toujours plus cher",
+                "Future n'existe pas pour les matières premières"
+              ],
+              correct: 1,
+              explication: "Les forwards sont OTC, personnalisés, avec risque de contrepartie. Les futures sont standardisés, négociés en bourse avec chambre de compensation et appels de marge."
+            },
+            {
+              question: "Quel est le risque maximum pour l'acheteur d'une option ?",
+              options: [
+                "Illimité",
+                "Limité à la prime payée",
+                "Le prix spot",
+                "Le strike"
+              ],
+              correct: 1,
+              explication: "L'acheteur d'une option ne peut perdre au maximum que la prime qu'il a payée. Même si le sous-jacent s'effondre à 0, sa perte est limitée (contrairement à détenir l'action directement)."
+            },
+            {
+              question: "Qu'est-ce qu'un Interest Rate Swap ?",
+              options: [
+                "Échange d'actions contre obligations",
+                "Échange de flux de taux fixe contre taux variable",
+                "Un type d'option",
+                "Un ETF"
+              ],
+              correct: 1,
+              explication: "Un Interest Rate Swap permet d'échanger des paiements à taux fixe contre des paiements à taux variable (ou inverse). Utile pour gérer le risque de taux d'intérêt."
+            },
+            {
+              question: "Qu'est-ce qu'une option européenne ?",
+              options: [
+                "Option négociée uniquement en Europe",
+                "Option exerçable uniquement à l'échéance",
+                "Option sur l'euro",
+                "Option sans valeur"
+              ],
+              correct: 1,
+              explication: "Une option européenne ne peut être exercée qu'à la date d'échéance (pas avant). Une option américaine peut être exercée à tout moment. Le terme n'a rien à voir avec la géographie."
+            },
+            {
+              question: "Si vous vendez (short) un call, quel est votre risque maximum ?",
+              options: [
+                "Limité à la prime reçue",
+                "Illimité (si le sous-jacent monte à l'infini)",
+                "Zéro",
+                "Le strike"
+              ],
+              correct: 1,
+              explication: "Vendre un call nu (sans détenir le sous-jacent) expose à un risque théoriquement illimité : si le sous-jacent monte à l'infini, vos pertes aussi. C'est pourquoi c'est très risqué !"
+            },
+            {
+              question: "Quelle stratégie utilise-t-on pour générer du revenu sur des actions qu'on détient déjà ?",
+              options: [
+                "Long Call",
+                "Covered Call (vendre des calls)",
+                "Long Put",
+                "Acheter plus d'actions"
+              ],
+              correct: 1,
+              explication: "Le Covered Call permet de générer un revenu régulier en vendant des calls sur des actions qu'on détient. On encaisse la prime mais on plafonne le gain potentiel au strike."
+            },
           ]
         },
         {
@@ -1639,6 +2486,17 @@ export default function Learning() {
               section: "Pourquoi les Greeks ?",
               texte: "Les Greeks mesurent comment le prix d'une option réagit aux changements de paramètres. C'est essentiel pour gérer le risque et comprendre votre exposition.",
               analogie: "Les Greeks sont comme le tableau de bord d'une voiture : ils vous indiquent votre vitesse (delta), accélération (gamma), consommation (theta), etc."
+            },
+            {
+              section: "Introduction aux sensibilités",
+              texte: "Le prix d'une option dépend de 5 paramètres principaux. Chaque Greek mesure la sensibilité à l'un de ces paramètres.",
+              points: [
+                "**Delta (Δ)** : Sensibilité au prix spot du sous-jacent",
+                "**Gamma (Γ)** : Sensibilité du delta (dérivée seconde)",
+                "**Vega (ν)** : Sensibilité à la volatilité implicite",
+                "**Theta (Θ)** : Sensibilité au passage du temps (érosion)",
+                "**Rho (ρ)** : Sensibilité aux taux d'intérêt"
+              ]
             },
             {
               section: "Les 5 Greeks principaux",
@@ -1676,11 +2534,291 @@ export default function Learning() {
               ]
             },
             {
+              section: "Delta en détail",
+              texte: "Le delta est probablement le Greek le plus important. Il représente la pente de la courbe prix de l'option vs prix spot.",
+              points: [
+                "**Call ATM** : Delta ≈ 0.50 (50% de chances de finir ITM)",
+                "**Call deep ITM** : Delta → 1 (bouge presque comme l'action)",
+                "**Call deep OTM** : Delta → 0 (presque aucune chance de finir ITM)",
+                "**Put ATM** : Delta ≈ -0.50",
+                "**Somme Call + Put même strike** : Delta ≈ -1 (put-call parity)"
+              ],
+              exemple: "Option call delta 0.7 signifie : probabilité ~70% de finir ITM ET si l'action monte de 1$, l'option monte de 0.70$."
+            },
+            {
+              section: "Gamma : le risque de convexité",
+              texte: "Le gamma mesure combien le delta change quand le prix bouge. C'est crucial pour les grandes variations de prix.",
+              exemple: "Call ATM avec delta 0.5 et gamma 0.05. Si l'action monte de 10$, le delta devient 0.5 + (0.05×10) = 1.0. L'option est maintenant deep ITM et bouge comme l'action.",
+              points: [
+                "**Gamma positif (long options)** : Bon pour vous si gros mouvements",
+                "**Gamma négatif (short options)** : Dangereux si gros mouvements",
+                "**Maximum ATM** : Options at-the-money ont le gamma le plus élevé",
+                "**Décroît** : Plus on s'éloigne de ATM, plus gamma diminue"
+              ]
+            },
+            {
+              section: "Vega et trading de volatilité",
+              texte: "Le vega mesure combien l'option gagne ou perd quand la volatilité implicite change.",
+              points: [
+                "**Acheteur d'options** : Vega positif (gagne si volatilité monte)",
+                "**Vendeur d'options** : Vega négatif (gagne si volatilité baisse)",
+                "**Long-dated options** : Vega élevé (plus de temps = plus sensible à vol)",
+                "**Options ATM** : Vega maximum"
+              ],
+              exemple: "Vous achetez un call avec vega 20. La volatilité implicite passe de 25% à 30% (+5 points). Votre option gagne 20 × 5 = 100$.",
+              strategie: "Traders sophistiqués tradent la volatilité : acheter quand vol implicite < vol historique, vendre l'inverse"
+            },
+            {
+              section: "Theta : l'ennemi du temps",
+              texte: "Chaque jour qui passe, les options perdent de la valeur (valeur temps) car il reste moins de temps pour que le sous-jacent bouge favorablement.",
+              points: [
+                "**Theta négatif** : Pour acheteurs (vous perdez de l'argent chaque jour)",
+                "**Theta positif** : Pour vendeurs (vous gagnez de l'argent chaque jour)",
+                "**Accélération** : Theta s'accélère dans les dernières semaines",
+                "**Maximum ATM** : Options at-the-money perdent le plus de valeur temps"
+              ],
+              exemple: "Option ATM à 30 jours : theta = -0.05$/jour. À 5 jours : theta = -0.30$/jour. L'érosion s'accélère dramatiquement.",
+              strategie: "Vendre des options = capturer le theta (stratégie income). Acheter des options = parier sur un gros mouvement rapide avant que theta ne vous tue."
+            },
+            {
               section: "Utiliser les Greeks en pratique",
               strategie: "Delta Hedging",
               texte: "Les traders professionnels utilisent les Greeks pour neutraliser certains risques. Par exemple, si vous vendez des calls (delta négatif), vous achetez des actions (delta positif) pour être delta-neutre.",
               exemple: "Vous vendez 10 calls delta 0.6 → Delta total = -6. Vous achetez 6 actions → Delta net = 0. Vous êtes protégé contre les petits mouvements du marché."
+            },
+            {
+              section: "Delta-Gamma Hedging",
+              texte: "Le delta hedging simple ne protège que contre de petits mouvements. Pour les gros mouvements, il faut aussi neutraliser le gamma.",
+              etapes: [
+                {
+                  etape: "Neutraliser le delta",
+                  texte: "Acheter/vendre des actions pour avoir delta net = 0"
+                },
+                {
+                  etape: "Neutraliser le gamma",
+                  texte: "Acheter/vendre d'autres options pour avoir gamma net = 0",
+                  role: "Protection contre les gros mouvements"
+                },
+                {
+                  etape: "Rééquilibrer",
+                  texte: "Ajuster quotidiennement (ou plus souvent) car delta et gamma changent"
+                }
+              ],
+              exemple: "Market maker : vend 100 calls delta 0.5, gamma 0.03 → Achète 50 actions (delta neutre) + achète des puts pour neutraliser gamma."
+            },
+            {
+              section: "Position Greeks : vue globale du portefeuille",
+              texte: "Les Greeks se somment. Vous pouvez calculer les Greeks totaux de votre portefeuille pour voir votre exposition globale.",
+              exemple: "Portefeuille : +10 calls delta 0.6 + 5 puts delta -0.4 - 2 actions delta 1. Delta total = (10×0.6) + (5×-0.4) + (-2×1) = 6 - 2 - 2 = +2. Vous êtes long de 2 deltas = exposition équivalente à détenir 2 actions.",
+              points: [
+                "**Delta portfolio** : Exposition directionnelle nette",
+                "**Gamma portfolio** : Risque de convexité global",
+                "**Vega portfolio** : Exposition nette à la volatilité",
+                "**Theta portfolio** : Érosion temporelle nette quotidienne"
+              ]
+            },
+            {
+              section: "Greeks et stratégies d'options",
+              texte: "Chaque stratégie a un profil de Greeks spécifique.",
+              strategies: [
+                {
+                  nom: "Long Straddle (long call + long put même strike)",
+                  composition: "Acheter Call ATM + Put ATM",
+                  pari: "Gros mouvement (dans un sens ou l'autre)",
+                  Greeks: "Delta ≈ 0, Gamma positif élevé, Vega positif, Theta négatif fort"
+                },
+                {
+                  nom: "Short Straddle (short call + short put)",
+                  composition: "Vendre Call ATM + Put ATM",
+                  pari: "Stabilité, pas de gros mouvement",
+                  Greeks: "Delta ≈ 0, Gamma négatif (danger!), Vega négatif, Theta positif (on encaisse)"
+                },
+                {
+                  nom: "Iron Condor",
+                  composition: "Vendre call/put proches, acheter call/put éloignés",
+                  pari: "Prix reste dans une fourchette",
+                  Greeks: "Delta ≈ 0, Gamma négatif (limité), Vega négatif, Theta positif"
+                }
+              ]
             }
+          ],
+          quiz: [
+            {
+              question: "Que mesure le Delta ?",
+              options: [
+                "La volatilité",
+                "La sensibilité du prix de l'option au prix du sous-jacent",
+                "Le temps restant",
+                "Le taux d'intérêt"
+              ],
+              correct: 1,
+              explication: "Le delta mesure de combien le prix de l'option change quand le prix du sous-jacent change de 1$. Delta 0.5 signifie : spot +1$ → option +0.50$."
+            },
+            {
+              question: "Quelle est la plage de valeurs du delta pour un call ?",
+              options: [
+                "-1 à 0",
+                "0 à 1",
+                "0 à 100",
+                "Illimité"
+              ],
+              correct: 1,
+              explication: "Le delta d'un call varie de 0 (deep OTM, aucune sensibilité) à 1 (deep ITM, bouge exactement comme le sous-jacent). Un call ATM a généralement un delta autour de 0.50."
+            },
+            {
+              question: "Vous vendez 20 calls avec un delta de 0.4. Combien d'actions devez-vous acheter pour être delta-neutre ?",
+              options: [
+                "4 actions",
+                "8 actions",
+                "20 actions",
+                "40 actions"
+              ],
+              correct: 1,
+              explication: "Delta des calls vendus = -20 × 0.4 = -8. Pour neutraliser, acheter 8 actions (delta +8). Delta net = -8 + 8 = 0."
+            },
+            {
+              question: "Qu'est-ce que le Gamma ?",
+              options: [
+                "Le prix de l'option",
+                "La variation du delta quand le prix change (dérivée seconde)",
+                "La volatilité",
+                "Le rendement"
+              ],
+              correct: 1,
+              explication: "Le gamma mesure combien le delta change quand le sous-jacent bouge. Gamma élevé signifie que votre delta (donc votre exposition) change rapidement."
+            },
+            {
+              question: "Pourquoi un gamma élevé est-il risqué pour un vendeur d'options ?",
+              options: [
+                "Parce qu'il gagne moins",
+                "Parce que son delta change rapidement, nécessitant un rehedging constant",
+                "Ce n'est pas risqué",
+                "Parce que la volatilité baisse"
+              ],
+              correct: 1,
+              explication: "Gamma élevé signifie que le delta change vite. Un vendeur d'option avec gamma négatif doit constamment ajuster sa couverture (acheter/vendre des actions), créant des coûts de transaction et du risque."
+            },
+            {
+              question: "Que mesure le Vega ?",
+              options: [
+                "Sensibilité au temps",
+                "Sensibilité à la volatilité implicite",
+                "Sensibilité au prix spot",
+                "Sensibilité aux dividendes"
+              ],
+              correct: 1,
+              explication: "Le vega mesure de combien le prix de l'option change si la volatilité implicite change de 1 point de pourcentage. Vega 15 signifie : vol +1% → option +15$."
+            },
+            {
+              question: "Si vous achetez une option, votre vega est :",
+              options: [
+                "Toujours négatif",
+                "Toujours positif (vous gagnez si la volatilité monte)",
+                "Peut être positif ou négatif",
+                "Toujours zéro"
+              ],
+              correct: 1,
+              explication: "Les acheteurs d'options ont toujours un vega positif : ils bénéficient d'une hausse de la volatilité car l'option vaut plus cher. Les vendeurs ont vega négatif."
+            },
+            {
+              question: "Qu'est-ce que le Theta ?",
+              options: [
+                "La valeur intrinsèque",
+                "L'érosion temporelle (perte de valeur chaque jour)",
+                "Le strike",
+                "Le delta"
+              ],
+              correct: 1,
+              explication: "Le theta mesure combien l'option perd de valeur chaque jour qui passe (toutes choses égales). Theta = -0.10$ signifie : l'option perd 0.10$ par jour."
+            },
+            {
+              question: "Pour quelle type d'option le theta est-il le plus élevé (en valeur absolue) ?",
+              options: [
+                "Deep ITM",
+                "ATM (at-the-money)",
+                "Deep OTM",
+                "Toutes ont le même theta"
+              ],
+              correct: 1,
+              explication: "Les options ATM ont le theta le plus élevé car elles ont le plus de valeur temps à perdre. Une option deep ITM n'a presque que de la valeur intrinsèque (peu de valeur temps)."
+            },
+            {
+              question: "Si vous vendez des options, que voulez-vous concernant le theta ?",
+              options: [
+                "Theta négatif",
+                "Theta positif (vous gagnez chaque jour qui passe)",
+                "Theta nul",
+                "Le theta n'importe pas"
+              ],
+              correct: 1,
+              explication: "Les vendeurs d'options ont theta positif : chaque jour qui passe, les options qu'ils ont vendues perdent de la valeur (ce qui est bon pour eux). C'est la stratégie 'collecter le theta'."
+            },
+            {
+              question: "Quel Greek est généralement le moins important en pratique ?",
+              options: [
+                "Delta",
+                "Gamma",
+                "Vega",
+                "Rho"
+              ],
+              correct: 3,
+              explication: "Le rho (sensibilité aux taux) est souvent négligeable car les taux d'intérêt changent lentement et l'impact est faible sauf pour les options très long terme (>2 ans)."
+            },
+            {
+              question: "Qu'est-ce que le delta hedging ?",
+              options: [
+                "Vendre toutes ses options",
+                "Ajuster sa position en actions pour neutraliser le delta",
+                "Acheter uniquement des calls",
+                "Ignorer le delta"
+              ],
+              correct: 1,
+              explication: "Delta hedging consiste à prendre une position opposée dans le sous-jacent pour avoir un delta net de zéro. Position delta-neutre = insensible aux petits mouvements du marché."
+            },
+            {
+              question: "Pourquoi le gamma est-il maximum pour les options ATM ?",
+              options: [
+                "Par hasard",
+                "Parce que c'est là où l'incertitude est maximale (50% de chances ITM/OTM)",
+                "Parce que le prix est le plus élevé",
+                "Parce que le theta est minimum"
+              ],
+              correct: 1,
+              explication: "ATM = maximum d'incertitude. Un petit mouvement du spot peut faire basculer l'option de OTM à ITM (delta passe de 0.4 à 0.6), d'où un gamma élevé."
+            },
+            {
+              question: "Une option proche de l'échéance a généralement :",
+              options: [
+                "Theta élevé, gamma élevé (surtout si ATM)",
+                "Theta faible, gamma faible",
+                "Theta positif",
+                "Vega très élevé"
+              ],
+              correct: 0,
+              explication: "Près de l'échéance, theta s'accélère (valeur temps fond rapidement) et gamma explose pour les options ATM (le delta passe de 0 à 1 ou de 1 à 0 très vite)."
+            },
+            {
+              question: "Quel Greek bénéficie le plus de la volatilité implicite élevée ?",
+              options: [
+                "Delta",
+                "Theta",
+                "Vega (acheteurs d'options profitent)",
+                "Rho"
+              ],
+              correct: 2,
+              explication: "Le vega mesure l'exposition à la volatilité. Les acheteurs d'options (vega positif) profitent quand la volatilité implicite monte car leurs options valent plus cher."
+            },
+            {
+              question: "Si vous êtes delta-neutre, êtes-vous totalement protégé contre tous les mouvements de prix ?",
+              options: [
+                "Oui, complètement protégé",
+                "Non, seulement contre les petits mouvements (gamma et autres Greeks restent)",
+                "Oui mais seulement à court terme",
+                "La neutralité delta n'existe pas"
+              ],
+              correct: 1,
+              explication: "Delta-neutre protège seulement contre les petits mouvements linéaires. Les gros mouvements vous exposent via le gamma. Vous restez aussi exposé à la volatilité (vega) et au temps (theta)."
+            },
           ]
         },
         {
@@ -1701,48 +2839,104 @@ export default function Learning() {
               }
             },
             {
+              section: "Ingénierie financière : les blocs de construction",
+              texte: "Les produits structurés utilisent des 'building blocks' standardisés qu'on combine de différentes façons.",
+              points: [
+                "**Zero-coupon bond** : Protection du capital (acheter à 950€, recevoir 1000€ dans X ans)",
+                "**Call options** : Participation à la hausse",
+                "**Put options** : Protection contre la baisse ou génération de prime",
+                "**Digital options** : Paiements conditionnels (si condition X → payer Y)",
+                "**Barrier options** : Activation/désactivation selon niveaux de prix"
+              ]
+            },
+            {
               section: "Exemple : Construction d'un Capital Garanti",
               etapes: [
                 {
-                  etape: "Capital initial",
-                  montant: "10 000€"
+                  etape: "1. Capital initial",
+                  montant: "10 000€",
+                  texte: "Montant investi par le client"
                 },
                 {
-                  etape: "Obligation zero-coupon",
+                  etape: "2. Obligation zero-coupon",
                   montant: "9 524€ (pour récupérer 10 000€ dans 1 an à 5%)",
-                  role: "Garantit le capital"
+                  role: "Garantit le capital",
+                  texte: "10 000 / (1.05)¹ = 9 524€"
                 },
                 {
-                  etape: "Call options",
+                  etape: "3. Call options",
                   montant: "476€ (le reste)",
-                  role: "Participation à la hausse"
+                  role: "Participation à la hausse",
+                  texte: "Budget pour acheter des calls sur Apple"
                 },
                 {
-                  etape: "Résultat",
-                  texte: "Capital protégé à 100% + participation à la hausse via les options"
+                  etape: "4. Calcul de la participation",
+                  texte: "Avec 476€, combien de calls peut-on acheter ?",
+                  montant: "Si 1 call ATM coûte 12€ → 476/12 ≈ 40 calls → Participation ≈ 40%"
+                },
+                {
+                  etape: "5. Résultat final",
+                  texte: "Capital protégé à 100% + participation de 40% à la hausse d'Apple"
                 }
-              ]
+              ],
+              exemple: "Si Apple monte de 50%, vous gagnez 40% × 50% = 20%. Si Apple baisse de 30%, vous récupérez vos 10 000€ (0% de perte)."
             },
             {
               section: "Exemple : Construction d'un Reverse Convertible",
               etapes: [
                 {
-                  etape: "Capital initial",
+                  etape: "1. Capital initial",
                   montant: "10 000€"
                 },
                 {
-                  etape: "Obligation",
-                  montant: "10 000€ qui paie un coupon élevé (8%)",
-                  role: "Génère le rendement"
+                  etape: "2. Obligation classique",
+                  montant: "10 000€ investis en obligation",
+                  role: "Base du produit"
                 },
                 {
-                  etape: "Put vendu",
-                  montant: "Prime encaissée pour vendre un put barrière 60%",
-                  role: "Finance le coupon élevé mais crée le risque"
+                  etape: "3. Vente de put barrière 60%",
+                  montant: "Prime encaissée ≈ 500€",
+                  role: "Finance le coupon élevé mais crée le risque",
+                  texte: "En vendant un put strike 60%, on encaisse une prime qui permet de payer un coupon > marché"
                 },
                 {
-                  etape: "Résultat",
-                  texte: "Coupon élevé mais risque de recevoir des actions si baisse > 40%"
+                  etape: "4. Calcul du coupon",
+                  texte: "Rendement obligation 4% + Prime put 5% = Coupon total 9%",
+                  montant: "Le client reçoit 900€/an au lieu de 400€"
+                },
+                {
+                  etape: "5. Risque",
+                  texte: "Si l'action chute sous 60%, le client reçoit des actions dépréciées au lieu du capital",
+                  role: "Coupon élevé mais risque de perte en capital si baisse > 40%"
+                }
+              ]
+            },
+            {
+              section: "Construction d'un Autocall",
+              texte: "L'autocall est plus complexe car il utilise des observations périodiques et des digitales.",
+              etapes: [
+                {
+                  etape: "1. Obligation zero-coupon",
+                  montant: "≈ 9 200€ (selon maturité et taux)",
+                  role: "Protège une partie du capital"
+                },
+                {
+                  etape: "2. Digital options (coupons)",
+                  montant: "≈ 400€",
+                  role: "Paiement de 8% si spot > 70% à chaque observation",
+                  texte: "Options digitales : si condition remplie → payer coupon, sinon 0"
+                },
+                {
+                  etape: "3. Barrier call (autocall)",
+                  montant: "≈ 300€",
+                  role: "Remboursement automatique si spot > 100%",
+                  texte: "Option knock-out : si barrière touchée → payer 100% + coupons et terminer"
+                },
+                {
+                  etape: "4. Put down-and-in",
+                  montant: "≈ 100€",
+                  role: "Risque de perte si touche barrière basse",
+                  texte: "Put qui s'active seulement si le spot touche 60%"
                 }
               ]
             },
@@ -1770,6 +2964,269 @@ export default function Learning() {
                   impact: "Plus long = plus d'incertitude mais plus de potentiel"
                 }
               ]
+            },
+            {
+              section: "Trade-offs dans la construction",
+              texte: "Lors de la structuration, il y a toujours des arbitrages à faire entre protection, participation et rendement.",
+              points: [
+                "**Plus de protection → Moins de participation** : Capital garanti 100% limite le budget pour les options",
+                "**Coupon élevé → Plus de risque** : Il faut vendre des puts pour financer les coupons",
+                "**Barrière basse → Coupon plus faible** : Moins de risque = moins de rendement",
+                "**Maturité longue → Meilleure participation** : Plus de temps pour que l'obligation arrive à maturité = plus de budget options"
+              ],
+              exemple: "Capital garanti 5 ans vs 3 ans sur Apple : maturité 5 ans permet participation 80%, maturité 3 ans seulement 50% (car l'obligation doit croître plus vite → moins de budget pour options)."
+            },
+            {
+              section: "Pricing et Fair Value",
+              texte: "Comment savoir si un produit structuré est à un prix juste ?",
+              etapes: [
+                {
+                  etape: "1. Décomposer le produit",
+                  texte: "Identifier chaque composante (obligation + options)"
+                },
+                {
+                  etape: "2. Pricer chaque élément",
+                  texte: "Obligation : actualisation. Options : Black-Scholes ou Monte Carlo"
+                },
+                {
+                  etape: "3. Sommer les valeurs",
+                  texte: "Fair Value = Σ (valeurs des composantes)"
+                },
+                {
+                  etape: "4. Comparer au prix proposé",
+                  texte: "Spread = Prix vendu - Fair Value. Typique : 1-3% de spread"
+                }
+              ],
+              exemple: "Capital Garanti 10 000€ : ZC bond vaut 9 500€, calls valent 300€. Fair value = 9 800€. Vendu à 10 000€ → Spread de 200€ (2%)."
+            },
+            {
+              section: "Risques spécifiques aux produits structurés",
+              texte: "Au-delà des risques de marché classiques, les produits structurés ont des risques additionnels.",
+              details: [
+                {
+                  type: "Risque de contrepartie",
+                  definition: "Risque que l'émetteur fasse défaut",
+                  utilisation: "Vérifier le rating de l'émetteur",
+                  exemple: "Si la banque émettrice fait faillite, vous pouvez perdre votre capital même sur un produit 'garanti'"
+                },
+                {
+                  type: "Risque de liquidité",
+                  definition: "Difficulté de revendre avant l'échéance",
+                  utilisation: "Marché secondaire peu liquide, décotes importantes",
+                  exemple: "Produit à 10 000€, si vous voulez sortir après 6 mois, rachat possible à 8 500€ seulement"
+                },
+                {
+                  type: "Risque de complexité",
+                  definition: "Ne pas comprendre exactement ce qu'on achète",
+                  utilisation: "Lire attentivement le termsheet, simuler différents scénarios",
+                  exemple: "Autocall avec barrière descendante + coupon conditionnel + protection partielle → très complexe"
+                },
+                {
+                  type: "Risque de modèle",
+                  definition: "Le modèle de pricing peut être incorrect",
+                  utilisation: "Black-Scholes a des hypothèses simplificatrices",
+                  exemple: "Si un krach survient (saut brutal), Black-Scholes sous-estime le risque"
+                }
+              ]
+            },
+            {
+              section: "Optimisation de produits",
+              texte: "Comment créer le meilleur produit pour un profil donné ?",
+              points: [
+              "Définir les objectifs : Rendement cible (ex: 8%/an), risque maximum acceptable (ex: max 20% de perte)",
+              "Contraintes : Budget, horizon (3 ans), fiscalité",
+              "Optimisation mathématique : Maximiser rendement sous contrainte de risque",
+              "Backtesting : Simuler la performance sur données historiques",
+              "Stress testing : Tester sur scénarios extrêmes (krach 2008, covid 2020)"
+              ]
+            },
+            {
+              section: "Le rôle de la volatilité dans le pricing",
+              texte: "La volatilité est LE paramètre clé influençant le prix des options et donc la structure des produits.",
+              exemple: "Même produit sur Apple : Volatilité 20% → Participation 90%. Volatilité 40% → Participation 60%. Plus la volatilité est élevée, plus les options coûtent cher, réduisant le budget disponible.",
+              points: [
+              "Vol basse : Options cheap → Meilleure participation",
+              "Vol haute : Options chères → Participation réduite OU coupons plus faibles",
+              "Vol implicite vs réalisée : Si vol implicite trop haute par rapport à la vol réalisée future, le produit est cher"
+                        ]
+            }
+          ],
+          quiz: [
+            {
+              question: "Quels sont les deux composantes principales d'un produit structuré ?",
+              options: [
+                "Actions et devises",
+                "Obligation (sécurité) et Options (performance)",
+                "Cash et immobilier",
+                "Uniquement des obligations"
+              ],
+              correct: 1,
+              explication: "Un produit structuré typique combine une obligation (pour protéger/générer du rendement fixe) et des options (pour créer le profil de performance désiré)."
+            },
+            {
+              question: "Dans un Capital Garanti sur 5 ans, pourquoi utilise-t-on une obligation zero-coupon ?",
+              options: [
+                "Parce que c'est obligatoire par la loi",
+                "Pour garantir le remboursement du capital à l'échéance",
+                "Pour payer des coupons",
+                "Pour augmenter le risque"
+              ],
+              correct: 1,
+              explication: "On achète une obligation zero-coupon à prix décoté qui vaudra exactement le nominal à l'échéance, garantissant ainsi le capital. Le reste du budget sert à acheter des options."
+            },
+            {
+              question: "Si vous avez 10 000€ et que vous devez garantir 100% dans 5 ans avec un taux de 6%, combien investissez-vous en obligation ?",
+              options: [
+                "10 000€",
+                "7 473€",
+                "5 000€",
+                "9 000€"
+              ],
+              correct: 1,
+              explication: "10 000 / (1.06)⁵ = 10 000 / 1.338 = 7 473€. Il vous reste donc 2 527€ pour acheter des options et créer la participation."
+            },
+            {
+              question: "Pourquoi un Reverse Convertible paie-t-il un coupon élevé (8-12%) ?",
+              options: [
+                "Par générosité de la banque",
+                "Pour compenser le risque de recevoir des actions dépréciées",
+                "Parce que c'est sans risque",
+                "Pour attirer les clients naïfs"
+              ],
+              correct: 1,
+              explication: "Le coupon élevé compense le risque : si le sous-jacent chute fortement sous la barrière, vous recevez des actions ayant perdu de la valeur au lieu de votre capital."
+            },
+            {
+              question: "Comment finance-t-on le coupon élevé d'un Reverse Convertible ?",
+              options: [
+                "Par magie",
+                "En vendant un put (encaisser la prime)",
+                "En achetant des calls",
+                "Avec les frais bancaires"
+              ],
+              correct: 1,
+              explication: "En vendant un put down-and-in (barrière basse), on encaisse une prime importante qui finance le coupon élevé. Mais on prend le risque de devoir acheter l'action si elle chute."
+            },
+            {
+              question: "Qu'est-ce qu'une barrière autocall ?",
+              options: [
+                "Le prix d'achat",
+                "Le niveau qui déclenche le remboursement anticipé automatique",
+                "Le coupon minimum",
+                "La volatilité"
+              ],
+              correct: 1,
+              explication: "Si le sous-jacent atteint ou dépasse la barrière autocall à une date d'observation, le produit se rembourse automatiquement : capital + tous les coupons (payés et à venir)."
+            },
+            {
+              question: "Pourquoi une volatilité implicite élevée réduit-elle la participation dans un Capital Garanti ?",
+              options: [
+                "Ce n'est pas vrai",
+                "Parce que les options coûtent plus cher (moins de budget pour en acheter)",
+                "Parce que le taux sans risque monte",
+                "Parce que l'obligation vaut moins"
+              ],
+              correct: 1,
+              explication: "Volatilité élevée → Options chères. Avec le même budget options (ex: 2 000€), on peut acheter moins de calls, donc participation plus faible. Vol 20% → 90% participation. Vol 40% → 50% participation."
+            },
+            {
+              question: "Qu'est-ce qu'une option digitale (binary) ?",
+              options: [
+                "Une option sur la crypto",
+                "Une option payant un montant fixe si condition remplie, 0 sinon",
+                "Une option sur ordinateur",
+                "Une option call normale"
+              ],
+              correct: 1,
+              explication: "Option digitale = paiement tout-ou-rien. Ex: 'si Apple > 160$ à l'échéance → 1000, sinon 0, sinon0'. Utilisée dans les autocalls pour les coupons conditionnels."
+            },
+            {
+              question: "Dans un Autocall, qu'est-ce qu'un 'coupon mémoire' ?",
+              options: [
+                "Un coupon qui se souvient du passé",
+                "Si le coupon n'est pas payé, il s'accumule pour être payé plus tard si conditions remplies",
+                "Un coupon garanti",
+                "Un coupon variable"
+              ],
+              correct: 1,
+              explication: "Avec effet mémoire : si le coupon n'est pas payé au trimestre 1 (condition non remplie), il s'accumule. Si au trimestre 3 la condition est remplie, vous recevez les 3 coupons."
+            },
+            {
+              question: "Quel est le spread typique (marge de la banque) sur un produit structuré ?",
+              options: [
+                "0.1-0.5%",
+                "1-3%",
+                "10-15%",
+                "50%"
+              ],
+              correct: 1,
+              explication: "Les banques prélèvent généralement 1-3% de spread (différence entre fair value et prix de vente). Sur 10 000€, cela représente 100-300€ de marge."
+            },
+            {
+              question: "Qu'est-ce qu'une obligation zero-coupon ?",
+              options: [
+                "Une obligation qui ne paie rien",
+                "Une obligation sans coupons périodiques, achetée à prix décoté et remboursée au pair",
+                "Une obligation gratuite",
+                "Une obligation à 0% de rendement"
+              ],
+              correct: 1,
+              explication: "Une ZC bond ne verse pas d'intérêts périodiques. Vous l'achetez avec une décote (ex: 750€) et recevez le nominal (1000€) à l'échéance. Le rendement vient de la différence."
+            },
+            {
+              question: "Dans un Capital Garanti, si la maturité passe de 3 à 5 ans (taux 5%), que se passe-t-il ?",
+              options: [
+                "La participation diminue",
+                "La participation augmente (plus de budget pour les options)",
+                "Aucun changement",
+                "Le produit devient risqué"
+              ],
+              correct: 1,
+              explication: "Maturité 3 ans : ZC bond = 10 000/(1.05)³ = 8 638€ → Budget options 1 362€. Maturité 5 ans : ZC = 7 835€ → Budget 2 165€. Plus de budget = meilleure participation !"
+            },
+            {
+              question: "Qu'est-ce qu'un put down-and-in ?",
+              options: [
+                "Un call classique",
+                "Un put qui s'active seulement si le sous-jacent touche une barrière basse",
+                "Un put normal",
+                "Une obligation"
+              ],
+              correct: 1,
+              explication: "Le put down-and-in ne s'active que si le sous-jacent touche la barrière basse pendant la vie du produit. Moins cher qu'un put vanilla car il peut ne jamais s'activer."
+            },
+            {
+              question: "Dans un Autocall, pourquoi la barrière autocall peut-elle être descendante (100%, 95%, 90%...) ?",
+              options: [
+                "C'est une erreur",
+                "Pour augmenter les chances de remboursement anticipé au fil du temps",
+                "Pour diminuer le coupon",
+                "Par obligation légale"
+              ],
+              correct: 1,
+              explication: "Une barrière descendante rend le remboursement de plus en plus facile à déclencher : si l'action stagne ou baisse légèrement, elle finira par toucher une barrière et rembourser le produit."
+            },
+            {
+              question: "Quel est l'avantage principal des options barrier vs options vanilla ?",
+              options: [
+                "Elles sont plus complexes",
+                "Elles coûtent moins cher (knock-out peut disparaître)",
+                "Elles rapportent toujours plus",
+                "Elles n'ont aucun avantage"
+              ],
+              correct: 1,
+              explication: "Les options à barrière sont moins chères car elles comportent une condition supplémentaire (peuvent disparaître ou ne jamais s'activer). On les utilise pour réduire les coûts dans les produits structurés."
+            },
+            {
+              question: "Qu'est-ce que le 'funding level' dans un warrant à levier ?",
+              options: [
+                "Le prix d'achat",
+                "Le niveau de financement (emprunt) intégré créant le levier",
+                "Le strike",
+                "Le coupon"
+              ],
+              correct: 1,
+              explication: "Le funding level représente la dette intégrée dans le warrant. La différence entre spot et funding level crée l'effet de levier. Plus le funding est proche du spot, plus le levier est élevé."
             }
           ]
         }
@@ -2711,7 +4168,7 @@ export default function Learning() {
       }
     });
     
-    const score = (correct / module.quiz.length) * 20;
+    const score = Math.min(correct, module.quiz.length);
     
     // Sauvegarder le score
     setQuizScores(prev => ({
@@ -2724,8 +4181,8 @@ export default function Learning() {
       [key]: true
     }));
 
-    // Valider le module si score >= 16/20
-    if (score >= 16) {
+    // Valider le module si score >= 13/16
+    if (score >= 13) {
       toggleModuleCompletion(level, moduleIdx);
       
       // ✅ FERMER LE MODULE AUTOMATIQUEMENT après 5 secondes
@@ -3105,7 +4562,7 @@ export default function Learning() {
                                     Quiz de validation
                                   </h3>
                                   <span className="text-sm font-normal text-gray-400">
-                                    (Score requis : 16/20)
+                                    (Score requis : 13/16)
                                   </span>
                                 </div>
                                 <span className="text-xl transition-transform" style={{ transform: openQuizzes[moduleKey] ? 'rotate(90deg)' : 'rotate(0deg)' }}>
@@ -3189,20 +4646,20 @@ export default function Learning() {
                                       ) : (
                                         <>
                                           <div className={`text-center p-6 rounded-lg border-2 ${
-                                            score.score >= 16
+                                            score.score >= 13
                                               ? 'border-green-500 bg-green-500/10'
                                               : 'border-orange-500 bg-orange-500/10'
                                           }`}>
                                             <p className="text-3xl font-bold text-white mb-2">
-                                              {score.score.toFixed(1)}/20
+                                              {score.score}/16
                                             </p>
                                             <p className="text-gray-300 mb-2">
-                                              {score.correct}/{score.total} bonnes réponses
+                                              bonnes réponses
                                             </p>
                                             <p className={`font-bold ${
-                                              score.score >= 16 ? 'text-green-400' : 'text-orange-400'
+                                              score.score >= 13 ? 'text-green-400' : 'text-orange-400'
                                             }`}>
-                                              {score.score >= 16
+                                              {score.score >= 13
                                                 ? '🎉 Module validé ! Excellent travail !'
                                                 : '📚 Révisez et réessayez pour valider le module'}
                                             </p>
