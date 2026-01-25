@@ -45,7 +45,9 @@ export default function Learning() {
   const [quizScores, setQuizScores] = useState({}); // Stocke les scores
   const [showLevelTest, setShowLevelTest] = useState(false); // Pour le popup de test de niveau
   const [openQuizzes, setOpenQuizzes] = useState({}); // Pour savoir quels quiz sont ouverts
-  const [openModules, setOpenModules] = useState({}); // Pour savoir quels modules sont ouverts
+  const [openModules, setOpenModules] = useState(() => { // Par défaut, tous les modules sont FERMÉS (false)
+    return {};
+  }); // Pour savoir quels modules sont ouverts
 
   useEffect(() => {
   const handleClickOutside = (event) => {
@@ -118,7 +120,7 @@ export default function Learning() {
   const isModuleFullyCompleted = (level, moduleIdx) => {
     const key = `${level}-${moduleIdx}`;
     const score = quizScores[key];
-    return score && score.score >= 16;
+    return score && score.score >= 13; // 13/16 ou plus pour valider
   };
 
   const cours = {
@@ -272,17 +274,6 @@ export default function Learning() {
               explication: "La finance permet de faire circuler l'argent entre ceux qui épargnent et ceux qui ont besoin de financement."
             },
             {
-              question: "Quelle affirmation est VRAIE sur la gestion des risques ?",
-              options: [
-                "C'est uniquement pour les grandes entreprises",
-                "Elle permet de se protéger contre les pertes potentielles",
-                "Elle garantit de ne jamais perdre d'argent",
-                "Elle n'est pas importante en finance"
-              ],
-              correct: 1,
-              explication: "La gestion des risques vise à se protéger contre les pertes, mais ne les élimine pas complètement."
-            },
-            {
               question: "Parmi ces activités, laquelle N'est PAS une fonction principale de la finance ?",
               options: [
                 "Investir",
@@ -336,17 +327,6 @@ export default function Learning() {
               ],
               correct: 2,
               explication: "Les principes fondamentaux sont les mêmes (investir, financer, gérer les risques) mais les échelles, objectifs et instruments utilisés diffèrent."
-            },
-            {
-              question: "Qu'est-ce que BlackRock ?",
-              options: [
-                "Une banque centrale",
-                "Un investisseur institutionnel gérant des trillions de dollars",
-                "Une crypto-monnaie",
-                "Une bourse d'échange"
-              ],
-              correct: 1,
-              explication: "BlackRock est le plus grand gestionnaire d'actifs au monde, avec plus de 10 000 milliards de dollars sous gestion."
             },
             {
               question: "Comment un État finance-t-il ses dépenses publiques ?",
@@ -413,28 +393,6 @@ export default function Learning() {
               ],
               correct: 1,
               explication: "La levée de fonds correspond à la fonction de financement : obtenir des ressources pour réaliser un projet."
-            },
-            {
-              question: "Quelle est la principale différence entre un courtier et une banque ?",
-              options: [
-                "Il n'y a aucune différence",
-                "Le courtier facilite les transactions mais ne prête pas d'argent comme une banque",
-                "Le courtier ne peut travailler qu'avec des particuliers",
-                "La banque ne peut pas acheter d'actions"
-              ],
-              correct: 1,
-              explication: "Un courtier met en relation acheteurs et vendeurs et exécute des ordres, tandis qu'une banque collecte l'épargne et octroie des prêts."
-            },
-            {
-              question: "Pourquoi dit-on que la finance 'alloue efficacement les ressources' ?",
-              options: [
-                "Parce qu'elle permet de diriger l'argent vers les projets les plus rentables",
-                "Parce qu'elle garantit que tout le monde gagne de l'argent",
-                "Parce qu'elle élimine tous les risques",
-                "Parce qu'elle distribue l'argent de manière égale"
-              ],
-              correct: 0,
-              explication: "La finance dirige les capitaux vers les projets offrant le meilleur rapport rendement/risque, optimisant ainsi l'utilisation des ressources."
             },
             {
               question: "Qu'est-ce qu'un PEA (Plan d'Épargne en Actions) ?",
@@ -674,17 +632,6 @@ export default function Learning() {
               ],
               correct: 1,
               explication: "Le prix monte quand la demande (acheteurs) dépasse l'offre (vendeurs). C'est le mécanisme de l'offre et de la demande."
-           },
-           {
-              question: "Qu'est-ce qu'une IPO ?",
-              options: [
-                "Un type d'obligation",
-                "Introduction en Bourse d'une entreprise",
-                "Un indice boursier",
-                "Une stratégie d'investissement"
-              ],
-              correct: 1,
-              explication: "IPO (Initial Public Offering) est le processus par lequel une entreprise privée vend ses actions au public pour la première fois."
             },
             {
               question: "Sur quel marché s'échange principalement le pétrole ?",
@@ -779,7 +726,7 @@ export default function Learning() {
               options: [
               "Les taux d'intérêt élevés",
               "Une hausse irrationnelle des prix déconnectée de la réalité économique",
-              "La diversification",
+              "La diversification des actifs financiers dans un portefeuille",
               "Les dividendes élevés"
               ],
               correct: 1,
@@ -1137,17 +1084,6 @@ export default function Learning() {
               explication: "Une action ordinaire donne généralement 1 voix par action aux assemblées générales pour voter sur les décisions importantes de l'entreprise."
             },
             {
-              question: "Quelle est la différence principale entre actions et obligations ?",
-              options: [
-                "Les actions représentent la propriété, les obligations une dette",
-                "Les actions sont toujours plus rentables",
-                "Les obligations sont toujours sans risque",
-                "Il n'y a aucune différence"
-              ],
-              correct: 0,
-              explication: "Les actions font de vous un propriétaire (actionnaire), les obligations font de vous un créancier (prêteur). Deux positions juridiques et financières très différentes."
-            },
-            {
               question: "Qu'est-ce qu'une obligation convertible ?",
               options: [
                 "Une obligation qui peut être échangée contre de l'or",
@@ -1179,17 +1115,6 @@ export default function Learning() {
               ],
               correct: 1,
               explication: "Un fonds mutuel (OPCVM) est un portefeuille d'actions et/ou obligations géré par des professionnels, permettant la diversification même avec un petit capital."
-            },
-            {
-              question: "Pourquoi réinvestir les dividendes est-il important ?",
-              options: [
-                "Pour payer moins d'impôts",
-                "Pour bénéficier de l'effet des intérêts composés",
-                "C'est obligatoire",
-                "Pour réduire le risque"
-              ],
-              correct: 1,
-              explication: "Réinvestir les dividendes permet d'acheter plus d'actions qui généreront elles-mêmes des dividendes, créant un effet boule de neige (intérêts composés) très puissant sur le long terme."
             },
             {
               question: "Qu'est-ce qu'une 'Blue Chip' ?",
@@ -1559,17 +1484,6 @@ export default function Learning() {
               ],
               correct: 1,
               explication: "Le coupon élevé (8-15%) rémunère le risque que vous prenez : si le sous-jacent chute fortement sous la barrière, vous recevrez des actions dépréciées au lieu de votre capital."
-            },
-            {
-              question: "Combien d'effet de levier peut avoir un Warrant typique ?",
-              options: [
-              "0x (pas de levier)",
-              "1.5x",
-              "3x à 10x",
-              "Toujours exactement 2x"
-              ],
-              correct: 2,
-              explication: "Les Warrants ont généralement un levier entre 3x et 10x, parfois plus. Cela signifie qu'un mouvement de 1% du sous-jacent entraîne un mouvement de 3-10% du Warrant."
             },
             {
               question: "Quel produit est le MOINS risqué ?",
@@ -2809,12 +2723,12 @@ export default function Learning() {
       ...prev,
       [key]: true
     }));
-    
-    // Valider le module si score >= 16
+
+    // Valider le module si score >= 16/20
     if (score >= 16) {
       toggleModuleCompletion(level, moduleIdx);
       
-      // ✅ FERMER LE MODULE AUTOMATIQUEMENT après 2 secondes
+      // ✅ FERMER LE MODULE AUTOMATIQUEMENT après 5 secondes
       setTimeout(() => {
         setOpenModules(prev => ({
           ...prev,
@@ -2912,7 +2826,7 @@ export default function Learning() {
               <div className="space-y-6">
                 {cours[selectedLevel].modules.map((module, moduleIdx) => {
                   const moduleKey = `${selectedLevel}-${moduleIdx}`;
-                  const isOpen = openModules[moduleKey] !== false; // Ouvert par défaut
+                  const isOpen = openModules[moduleKey] === true; // Fermé par défaut
                   const isFullyCompleted = isModuleFullyCompleted(selectedLevel, moduleIdx);
                   
                   return (
