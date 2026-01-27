@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { createClient } from '@supabase/supabase-js'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
@@ -8,6 +9,11 @@ const api = axios.create({
     'Content-Type': 'application/json',
   },
 })
+
+// ===== SUPABASE CLIENT =====
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+const supabase = createClient(supabaseUrl, supabaseKey)
 
 // ===== MARKET DATA =====
 
@@ -120,5 +126,94 @@ export const saveSimulation = (data) => api.post('/api/simulations/save', data)
 export const getUserSimulations = (userId) => api.get(`/api/simulations/user/${userId}`)
 
 export const deleteSimulation = (simulationId) => api.delete(`/api/simulations/${simulationId}`)
+
+// ===== QUIZ SCORES (Supabase direct) =====
+
+/**
+ * Sauvegarder un score de quiz
+ */
+export const saveQuizScore = async (userId, level, moduleIndex, score, totalQuestions) => {
+  const { data, error } = await supabase
+    .from('quiz_scores')
+    .insert([
+      {
+        user_id: userId,
+        level: level,
+        module_index: moduleIndex,
+        score: score,
+        total_questions: totalQuestions
+      }
+    ])
+    .select()
+  
+  if (error) throw error
+  return data
+}
+
+/**
+ * Récupérer tous les scores d'un utilisateur
+ */
+export const getUserQuizScores = async (userId) => {
+  const { data, error } = await supabase
+    .from('quiz_scores')
+    .select('*')
+    .eq('user_id', userId)
+    .order('completed_at', { ascending: false })
+  
+  if (error) throw error
+  return data
+}
+
+/**
+ * Récupérer le meilleur score pour un module spécifique
+ */
+export const getBestScore = async (userId, level, moduleIndex) => {
+  const { data, error } = await supabase
+    .from('quiz_scores')
+    .select('*')
+    .eq('user_id', userId)
+    .eq('level', level)
+    .eq('module_index', moduleIndex)
+    .order('score', { ascending: false })
+    .limit(1)
+    .single()
+  
+  if (error && error.code !== 'PGRST116') throw error // PGRST116 = no rows
+  return data
+}
+
+/**
+ * Récupérer les scores d'un utilisateur pour un niveau donné
+ */
+export const getUserQuizScoresByLevel = async (userId, level) => {
+  const { data, error } = await supabase
+    .from('quiz_scores')
+    .select('*')
+    .eq('user_id', userId)
+    .eq('level', level)
+    .order('module_index', { ascending: true })
+    .order('completed_at', { ascending: false })
+  
+  if (error) throw error
+  return data
+}
+
+/**
+ * Mettre à jour le nombre de tentatives pour un module
+ */
+export const incrementQuizAttempts = async (userId, level, moduleIndex) => {
+  // Récupérer le score existant
+  const { data: existing } = await supabase
+    .from('quiz_scores')
+    .select('attempts')
+    .eq('user_id', userId)
+    .eq('level', level)
+    .eq('module_index', moduleIndex)
+    .order('completed_at', { ascending: false })
+    .limit(1)
+    .single()
+  
+  return existing ? existing.attempts + 1 : 1
+}
 
 export default api

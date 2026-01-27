@@ -1,8 +1,24 @@
 import { useState, useMemo, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { saveQuizScore } from '../services/api'
+import { createClient } from '@supabase/supabase-js'
+
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+const supabase = createClient(supabaseUrl, supabaseKey)
 
 export default function Learning() {
-    // ⭐ Modules lus (persistants)
+  const navigate = useNavigate()
+  const [user, setUser] = useState(null)
+  
+  // Récupérer l'utilisateur Supabase
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user)
+    })
+  }, [])
+  
+  // ⭐ Modules lus (persistants)
   const [completedModules, setCompletedModules] = useState(() => {
     const saved = localStorage.getItem('completedModules')
     return saved ? JSON.parse(saved) : {}
@@ -30,7 +46,6 @@ export default function Learning() {
   const isModuleCompleted = (level, moduleIdx) =>
     completedModules[level]?.includes(moduleIdx)
 
-  const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState('tutorials')
   const [selectedProduct, setSelectedProduct] = useState('reverse_convertible')
   const [searchTerm, setSearchTerm] = useState("")
@@ -4154,8 +4169,8 @@ export default function Learning() {
     }));
   };
 
-  // Fonction pour soumettre le quiz
-  const submitQuiz = (level, moduleIdx) => {
+  // Fonction pour soumettre le quiz (MODIFIÉE avec Supabase)
+  const submitQuiz = async (level, moduleIdx) => {
     const key = `${level}-${moduleIdx}`;
     const module = cours[level].modules[moduleIdx];
     const userAnswers = quizAnswers[key] || {};
@@ -4170,7 +4185,7 @@ export default function Learning() {
     
     const score = Math.min(correct, module.quiz.length);
     
-    // Sauvegarder le score
+    // Sauvegarder le score localement
     setQuizScores(prev => ({
       ...prev,
       [key]: { score, correct, total: module.quiz.length }
@@ -4181,11 +4196,22 @@ export default function Learning() {
       [key]: true
     }));
 
+    // 🆕 SAUVEGARDER DANS SUPABASE
+    if (user?.id) {
+      try {
+        await saveQuizScore(user.id, level, moduleIdx, score, module.quiz.length);
+        console.log('✅ Score sauvegardé dans Supabase');
+      } catch (error) {
+        console.error('❌ Erreur sauvegarde quiz:', error);
+        // Ne pas bloquer l'UX même si la sauvegarde échoue
+      }
+    }
+
     // Valider le module si score >= 13/16
     if (score >= 13) {
       toggleModuleCompletion(level, moduleIdx);
       
-      // ✅ FERMER LE MODULE AUTOMATIQUEMENT après 5 secondes
+      // ✅ FERMER LE MODULE AUTOMATIQUEMENT après 10 secondes
       setTimeout(() => {
         setOpenModules(prev => ({
           ...prev,
