@@ -118,7 +118,7 @@ async def get_volatility(ticker: str, period: str = "1y"):
 
 @router.get("/trending")
 async def get_trending_stocks():
-    """Get trending stocks with mini historical data - Mix US + European"""
+    """Get trending stocks with intraday sparklines (1 jour)"""
     try:
         tickers = [
             'AAPL', 'MSFT', 'GOOGL', 'TSLA', 'NVDA',
@@ -137,8 +137,16 @@ async def get_trending_stocks():
                     change = current_price - previous_close
                     change_percent = (change / previous_close) * 100
                     
-                    hist = stock.history(period="1y")
-                    sparkline_data = [{"price": float(price)} for price in hist['Close'].tail(60)]
+                    # MODIFICATION ICI: Données intraday sur 1 jour avec intervalle de 5 minutes
+                    hist = stock.history(period="1d", interval="5m")
+                    
+                    # Prendre tous les points disponibles (environ 78 points pour une journée avec intervalle de 5min)
+                    sparkline_data = [{"price": float(price)} for price in hist['Close'] if price > 0]
+                    
+                    # Si pas de données intraday (marché fermé), utiliser les 5 derniers jours
+                    if len(sparkline_data) < 10:
+                        hist = stock.history(period="5d", interval="1h")
+                        sparkline_data = [{"price": float(price)} for price in hist['Close'] if price > 0]
                     
                     stocks_data.append({
                         "ticker": ticker,
