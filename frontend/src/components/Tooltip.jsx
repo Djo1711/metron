@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 /**
- * Composant Tooltip réutilisable avec style glassmorphism amélioré
+ * Composant Tooltip réutilisable avec style glassmorphism
  * Usage: <Tooltip content="Explication ici">Terme financier</Tooltip>
  */
 export default function Tooltip({ children, content, position = 'top' }) {
@@ -15,10 +15,10 @@ export default function Tooltip({ children, content, position = 'top' }) {
   }
 
   const arrowClasses = {
-    top: 'top-full left-1/2 -translate-x-1/2 border-t-gray-900/95 border-l-transparent border-r-transparent border-b-transparent',
-    bottom: 'bottom-full left-1/2 -translate-x-1/2 border-b-gray-900/95 border-l-transparent border-r-transparent border-t-transparent',
-    left: 'left-full top-1/2 -translate-y-1/2 border-l-gray-900/95 border-t-transparent border-b-transparent border-r-transparent',
-    right: 'right-full top-1/2 -translate-y-1/2 border-r-gray-900/95 border-t-transparent border-b-transparent border-l-transparent'
+    top: 'top-full left-1/2 -translate-x-1/2 border-t-white/90 border-l-transparent border-r-transparent border-b-transparent',
+    bottom: 'bottom-full left-1/2 -translate-x-1/2 border-b-white/90 border-l-transparent border-r-transparent border-t-transparent',
+    left: 'left-full top-1/2 -translate-y-1/2 border-l-white/90 border-t-transparent border-b-transparent border-r-transparent',
+    right: 'right-full top-1/2 -translate-y-1/2 border-r-white/90 border-t-transparent border-b-transparent border-l-transparent'
   }
 
   return (
@@ -33,8 +33,8 @@ export default function Tooltip({ children, content, position = 'top' }) {
       
       {isVisible && (
         <div className={`absolute z-50 ${positionClasses[position]} animate-fadeIn`}>
-          <div className="bg-gray-900/95 backdrop-blur-xl px-5 py-4 rounded-xl border border-metron-purple/40 shadow-2xl shadow-metron-purple/20 min-w-[280px] max-w-md">
-            <p className="text-sm text-gray-100 leading-relaxed whitespace-pre-line">
+          <div className="glass-card px-4 py-3 max-w-xs shadow-neon-purple">
+            <p className="text-sm text-gray-200 leading-relaxed whitespace-pre-line">
               {content}
             </p>
           </div>
@@ -57,7 +57,6 @@ export function InfoIcon({ content, className = "" }) {
   return (
     <div className="relative inline-block">
       <button
-        type="button"
         className={`text-metron-purple/60 hover:text-metron-purple transition-colors ${className}`}
         onMouseEnter={() => setIsVisible(true)}
         onMouseLeave={() => setIsVisible(false)}
@@ -69,12 +68,12 @@ export function InfoIcon({ content, className = "" }) {
 
       {isVisible && (
         <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50 animate-fadeIn">
-          <div className="bg-gray-900/95 backdrop-blur-xl px-5 py-4 rounded-xl border border-metron-purple/40 shadow-2xl shadow-metron-purple/20 min-w-[280px] max-w-md">
-            <p className="text-sm text-gray-100 leading-relaxed whitespace-pre-line">
+          <div className="glass-card px-4 py-3 max-w-xs shadow-neon-purple">
+            <p className="text-xs text-gray-200 leading-relaxed whitespace-pre-line">
               {content}
             </p>
           </div>
-          <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-8 border-t-gray-900/95 border-l-transparent border-r-transparent border-b-transparent" />
+          <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-8 border-t-white/90 border-l-transparent border-r-transparent border-b-transparent" />
         </div>
       )}
     </div>
