@@ -15,7 +15,7 @@ class SupabaseClient:
                 )
             cls._instance = create_client(
                 settings.SUPABASE_URL,
-                settings.SUPABASE_KEY
+                settings.SUPABASE_SERVICE_KEY
             )
         return cls._instance
 

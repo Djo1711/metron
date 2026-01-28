@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Area, AreaChart } from 'recharts'
-import { priceProduct, saveSimulation, getQuickPricingData, getUserSimulations, deleteSimulation } from '../services/api'
+import { priceProduct, saveSimulation, getQuickPricingData, getUserSimulations, deleteSimulation, getLeaderboard } from '../services/api'
 import { supabase } from '../services/supabase'
 
 export default function Simulation({ isGuest }) {
@@ -43,6 +43,14 @@ export default function Simulation({ isGuest }) {
   // États pour Mes Simulations
   const [simulations, setSimulations] = useState([])
   const [loadingSimulations, setLoadingSimulations] = useState(false)
+  
+  // États pour le Leaderboard
+  const [leaderboard, setLeaderboard] = useState([])
+  const [loadingLeaderboard, setLoadingLeaderboard] = useState(false)
+  const [leaderboardFilter, setLeaderboardFilter] = useState({
+    product: null, // null = tous les produits
+    metric: 'max_gain' // max_gain, probability_profit, sharpe_ratio
+  })
 
   const products = {
     autocall: {
@@ -91,7 +99,7 @@ export default function Simulation({ isGuest }) {
       const { data: { user } } = await supabase.auth.getUser()
       if (user) {
         const response = await getUserSimulations(user.id)
-        setSimulations(response.data || [])
+        setSimulations(response.data?.data || [])
       }
     } catch (error) {
       console.error('Erreur lors du chargement des simulations:', error)
@@ -112,6 +120,30 @@ export default function Simulation({ isGuest }) {
       alert('Erreur lors de la suppression de la simulation')
     }
   }
+
+  const loadLeaderboard = async () => {
+    setLoadingLeaderboard(true)
+    try {
+      const response = await getLeaderboard(
+        leaderboardFilter.product, 
+        leaderboardFilter.metric, 
+        50
+      )
+      setLeaderboard(response.data || [])
+    } catch (error) {
+      console.error('Erreur lors du chargement du leaderboard:', error)
+      setLeaderboard([])
+    } finally {
+      setLoadingLeaderboard(false)
+    }
+  }
+
+  // Charger le leaderboard quand on change d'onglet ou de filtre
+  useEffect(() => {
+    if (activeTab === 'leaderboard') {
+      loadLeaderboard()
+    }
+  }, [activeTab, leaderboardFilter])
 
   // Scroll au top et sélectionner le produit de l'URL
   useEffect(() => {
@@ -305,6 +337,16 @@ export default function Simulation({ isGuest }) {
             }`}
           >
             📊 Mes Simulations {!isGuest && simulations.length > 0 && `(${simulations.length})`}
+          </button>
+          <button
+            onClick={() => setActiveTab('leaderboard')}
+            className={`px-8 py-3 rounded-xl font-semibold transition-all ${
+              activeTab === 'leaderboard'
+                ? 'bg-gradient-metron shadow-neon-purple text-white'
+                : 'glass-card text-gray-400 hover:text-white border border-white/10'
+            }`}
+          >
+            🏆 Classement
           </button>
         </div>
 
@@ -736,6 +778,208 @@ export default function Simulation({ isGuest }) {
             )}
           </div>
         )}
+
+        {/* Onglet Classement */}
+        {activeTab === 'leaderboard' && (
+          <div>
+            {/* Filtres */}
+            <div className="glass-card p-6 mb-6 border border-metron-purple/30">
+              <h2 className="text-2xl font-bold text-white mb-4">🎯 Filtres</h2>
+              
+              <div className="grid md:grid-cols-2 gap-4">
+                {/* Filtre par produit */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Type de produit</label>
+                  <select
+                    value={leaderboardFilter.product || ''}
+                    onChange={(e) => setLeaderboardFilter({
+                      ...leaderboardFilter,
+                      product: e.target.value || null
+                    })}
+                    className="input-futuristic w-full"
+                  >
+                    <option value="">🌐 Tous les produits</option>
+                    <option value="autocall">📈 Autocall</option>
+                    <option value="reverse_convertible">🔄 Reverse Convertible</option>
+                    <option value="capital_protected">🛡️ Capital Garanti</option>
+                    <option value="warrant">🚀 Warrant</option>
+                  </select>
+                </div>
+
+                {/* Filtre par métrique */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Classement par</label>
+                  <select
+                    value={leaderboardFilter.metric}
+                    onChange={(e) => setLeaderboardFilter({
+                      ...leaderboardFilter,
+                      metric: e.target.value
+                    })}
+                    className="input-futuristic w-full"
+                  >
+                    <option value="max_gain">💰 Meilleur gain potentiel</option>
+                    <option value="probability_profit">📊 Meilleure probabilité de profit</option>
+                    <option value="sharpe_ratio">⚖️ Meilleur ratio rendement/risque</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* Leaderboard */}
+            {loadingLeaderboard ? (
+              <div className="glass-card p-16 text-center border border-white/10">
+                <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-metron-purple mb-4"></div>
+                <p className="text-gray-400">Chargement du classement...</p>
+              </div>
+            ) : leaderboard.length === 0 ? (
+              <div className="glass-card p-16 text-center border border-white/10">
+                <div className="text-6xl mb-4">🏆</div>
+                <p className="text-gray-400 text-xl mb-2">Aucune simulation dans ce classement</p>
+                <p className="text-gray-500">Soyez le premier à apparaître !</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {/* Podium Top 3 */}
+                {leaderboard.slice(0, 3).length > 0 && (
+                  <div className="grid md:grid-cols-3 gap-4 mb-8">
+                    {/* 2ème place */}
+                    {leaderboard[1] && (
+                      <div className="glass-card p-6 border-2 border-gray-400/50 bg-gradient-to-br from-gray-400/10 to-transparent order-2 md:order-1">
+                        <div className="text-center mb-4">
+                          <div className="text-5xl mb-2">🥈</div>
+                          <div className="text-2xl font-bold text-gray-300">#2</div>
+                        </div>
+                        <LeaderboardCard sim={leaderboard[1]} rank={2} metric={leaderboardFilter.metric} products={products} />
+                      </div>
+                    )}
+
+                    {/* 1ère place */}
+                    {leaderboard[0] && (
+                      <div className="glass-card p-6 border-2 border-yellow-400/50 bg-gradient-to-br from-yellow-400/20 to-transparent shadow-neon-yellow order-1 md:order-2">
+                        <div className="text-center mb-4">
+                          <div className="text-6xl mb-2">🥇</div>
+                          <div className="text-3xl font-bold text-yellow-400">#1</div>
+                        </div>
+                        <LeaderboardCard sim={leaderboard[0]} rank={1} metric={leaderboardFilter.metric} products={products} />
+                      </div>
+                    )}
+
+                    {/* 3ème place */}
+                    {leaderboard[2] && (
+                      <div className="glass-card p-6 border-2 border-orange-600/50 bg-gradient-to-br from-orange-600/10 to-transparent order-3">
+                        <div className="text-center mb-4">
+                          <div className="text-5xl mb-2">🥉</div>
+                          <div className="text-2xl font-bold text-orange-400">#3</div>
+                        </div>
+                        <LeaderboardCard sim={leaderboard[2]} rank={3} metric={leaderboardFilter.metric} products={products} />
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Reste du classement */}
+                {leaderboard.slice(3).map((sim, index) => (
+                  <div key={sim.id} className="glass-card p-5 border border-white/10 card-hover">
+                    <div className="flex items-center gap-4">
+                      <div className="text-2xl font-bold text-gray-500 w-12 text-center">
+                        #{index + 4}
+                      </div>
+                      <div className="flex-1">
+                        <LeaderboardCard sim={sim} rank={index + 4} metric={leaderboardFilter.metric} products={products} />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+function LeaderboardCard({ sim, rank, metric, products }) {
+  const getMetricValue = () => {
+    const results = sim.results || {}
+    
+    switch(metric) {
+      case 'max_gain':
+        const maxGain = results.max_gain || 0
+        return maxGain > 0 ? `$${maxGain.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '$0.00'
+      
+      case 'probability_profit':
+        const prob = results.probability_profit || 0
+        return `${prob.toFixed(1)}%`
+      
+      case 'sharpe_ratio':
+        const gain = results.max_gain || 0
+        const risk = Math.max(results.risk_level || 1, 1)
+        const ratio = gain / risk
+        return ratio.toFixed(2)
+      
+      default:
+        return 'N/A'
+    }
+  }
+
+  const getMetricLabel = () => {
+    switch(metric) {
+      case 'max_gain':
+        return 'Gain Max'
+      case 'probability_profit':
+        return 'Prob. Profit'
+      case 'sharpe_ratio':
+        return 'Ratio R/R'
+      default:
+        return 'Métrique'
+    }
+  }
+
+  const getDisplayName = () => {
+  // Priorité : username > email anonymisé
+  if (sim.users?.username) {
+    return sim.users.username
+  }
+  
+  const email = sim.users?.email
+  if (!email) return 'Anonyme'
+  
+  const [username, domain] = email.split('@')
+  if (!username || !domain) return 'Anonyme'
+  return `${username.substring(0, 3)}***@${domain}`
+}
+
+  const anonymizeEmail = (email) => {
+    if (!email) return 'Anonyme'
+    const [username, domain] = email.split('@')
+    if (!username || !domain) return 'Anonyme'
+    return `${username.substring(0, 3)}***@${domain}`
+  }
+
+  return (
+    <div className="relative">
+      {/* Date en haut à droite */}
+      <div className="absolute top-0 right-0 text-xs text-gray-500">
+        📅 {new Date(sim.created_at).toLocaleDateString('fr-FR')}
+      </div>
+      
+      {/* Contenu principal sur 3 colonnes */}
+      <div className="grid md:grid-cols-3 gap-4 items-center pt-4">
+        <div>
+          <p className="text-xs text-gray-400">Utilisateur</p>
+          <p className="text-white font-semibold">{getDisplayName()}</p>
+        </div>
+        <div>
+          <p className="text-xs text-gray-400">Produit / Ticker</p>
+          <p className="text-white font-semibold">
+            {products[sim.product_type]?.icon || '📊'} {sim.ticker}
+          </p>
+        </div>
+        <div>
+          <p className="text-xs text-gray-400">{getMetricLabel()}</p>
+          <p className="text-2xl font-bold text-metron-purple">{getMetricValue()}</p>
+        </div>
       </div>
     </div>
   )

@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import { supabase } from '../services/supabase'
+import { updateUsername } from '../services/api'
 import { useNavigate } from 'react-router-dom'
 
 export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [username, setUsername] = useState('')  // 🆕 Pseudo
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [isSignUp, setIsSignUp] = useState(false)
@@ -16,9 +18,29 @@ export default function Login() {
 
     try {
       if (isSignUp) {
-        const { error } = await supabase.auth.signUp({ email, password })
+        // Vérifier que le username est renseigné
+        if (!username || username.length < 3) {
+          alert('⚠️ Le pseudo doit contenir au moins 3 caractères')
+          setLoading(false)
+          return
+        }
+
+        // Créer le compte
+        const { data, error } = await supabase.auth.signUp({ email, password })
         if (error) throw error
-        alert('Vérifiez votre email pour le lien de vérification !')
+
+        // 🆕 Sauvegarder le username dans public.users
+        if (data.user) {
+          try {
+            await updateUsername(data.user.id, username)
+            console.log('✅ Username sauvegardé:', username)
+          } catch (usernameError) {
+            console.error('❌ Erreur sauvegarde username:', usernameError)
+            // On continue même si la sauvegarde du username échoue
+          }
+        }
+
+        alert('✅ Compte créé ! Vérifiez votre email pour le lien de vérification.')
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password })
         if (error) throw error
@@ -55,6 +77,28 @@ export default function Login() {
         </div>
 
         <form onSubmit={handleAuth} className="space-y-6">
+          {/* 🆕 CHAMP USERNAME (uniquement en mode inscription) */}
+          {isSignUp && (
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Pseudo public
+              </label>
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="input-futuristic w-full"
+                placeholder="VotrePseudo"
+                minLength={3}
+                maxLength={20}
+                required
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                Visible dans les classements (3-20 caractères)
+              </p>
+            </div>
+          )}
+
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
               Email
@@ -132,7 +176,10 @@ export default function Login() {
             {isSignUp ? 'Vous avez déjà un compte ?' : "Vous n'avez pas de compte ?"}
           </p>
           <button
-            onClick={() => setIsSignUp(!isSignUp)}
+            onClick={() => {
+              setIsSignUp(!isSignUp)
+              setUsername('')  // 🆕 Reset username when switching
+            }}
             className="text-metron-purple hover:text-metron-pink font-semibold mt-2 hover:underline transition-colors"
           >
             {isSignUp ? 'Se connecter' : 'Créer un compte'}

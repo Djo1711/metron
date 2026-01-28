@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../services/supabase'
+import { updateUsername, getUserProfile } from '../services/api'
 
 export default function MyAccount() {
   const [user, setUser] = useState(null)
+  const [profile, setProfile] = useState(null)  // 🆕 Profil depuis public.users
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [tab, setTab] = useState('profile')
@@ -22,6 +24,18 @@ export default function MyAccount() {
       }
       
       setUser(user)
+      
+      // 🆕 Charger le profil depuis public.users
+      if (user) {
+        try {
+          const profileData = await getUserProfile(user.id)
+          setProfile(profileData.data)
+        } catch (profileError) {
+          console.error('Erreur chargement profil:', profileError)
+          // Si le profil n'existe pas, on continue quand même
+          setProfile({ username: null })
+        }
+      }
     } catch (error) {
       console.error('Erreur lors du chargement des données:', error)
       setError('Erreur : ' + error.message)
@@ -93,6 +107,9 @@ export default function MyAccount() {
             <h2 className="text-2xl font-bold text-white mb-6">Informations du profil</h2>
             
             <div className="space-y-6">
+              {/* 🆕 USERNAME SECTION */}
+              <UsernameEditor user={user} profile={profile} onUpdate={loadUserData} />
+              
               <div className="bg-white/5 p-6 rounded-xl border border-white/10">
                 <label className="block text-sm font-medium text-gray-400 mb-2">Email</label>
                 <p className="text-2xl font-semibold text-white">{user.email}</p>
@@ -190,6 +207,93 @@ export default function MyAccount() {
           </div>
         )}
       </div>
+    </div>
+  )
+}
+
+// Composant pour éditer le username
+function UsernameEditor({ user, profile, onUpdate }) {
+  const [isEditing, setIsEditing] = useState(false)
+  const [username, setUsername] = useState(profile?.username || '')
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState(null)
+
+  // Mettre à jour le username local quand le profile change
+  useEffect(() => {
+    if (profile?.username) {
+      setUsername(profile.username)
+    }
+  }, [profile])
+
+  const handleSave = async () => {
+    if (!username || username.length < 3) {
+      setError('Le pseudo doit contenir au moins 3 caractères')
+      return
+    }
+
+    setSaving(true)
+    setError(null)
+
+    try {
+      await updateUsername(user.id, username)
+      alert('✅ Pseudo mis à jour avec succès !')
+      setIsEditing(false)
+      if (onUpdate) onUpdate()
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Erreur lors de la mise à jour')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return (
+    <div className="bg-gradient-to-r from-metron-purple/20 to-metron-blue/20 p-6 rounded-xl border border-metron-purple/50">
+      <label className="block text-sm font-medium text-gray-400 mb-2">Pseudo public</label>
+      
+      {isEditing ? (
+        <div className="space-y-3">
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Votre pseudo..."
+            className="input-futuristic w-full"
+            maxLength={20}
+          />
+          {error && <p className="text-red-400 text-sm">{error}</p>}
+          <div className="flex gap-2">
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="btn-neon flex-1"
+            >
+              {saving ? '⏳ Sauvegarde...' : '✅ Sauvegarder'}
+            </button>
+            <button
+              onClick={() => {
+                setIsEditing(false)
+                setError(null)
+                setUsername(profile?.username || '')
+              }}
+              className="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg border border-white/10 text-gray-300 transition-all"
+            >
+              Annuler
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="flex items-center justify-between">
+          <p className="text-2xl font-semibold text-white">
+            {profile?.username || 'Aucun pseudo défini'}
+          </p>
+          <button
+            onClick={() => setIsEditing(true)}
+            className="px-4 py-2 bg-metron-purple hover:bg-metron-purple/80 rounded-lg text-white transition-all"
+          >
+            ✏️ Modifier
+          </button>
+        </div>
+      )}
     </div>
   )
 }

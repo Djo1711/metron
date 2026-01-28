@@ -33,6 +33,7 @@ class Settings(BaseSettings):
     # ==================== DATABASE ====================
     DATABASE_URL: str = ""  # Supabase PostgreSQL connection string
     
+    
     # ==================== MONTE CARLO SETTINGS ====================
     MC_DEFAULT_SIMULATIONS: int = 10000
     MC_SEED: int = 42  # For reproducibility in tests

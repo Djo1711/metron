@@ -127,6 +127,12 @@ export const getUserSimulations = (userId) => api.get(`/api/simulations/user/${u
 
 export const deleteSimulation = (simulationId) => api.delete(`/api/simulations/${simulationId}`)
 
+export const getLeaderboard = (productType = null, metric = 'max_gain', limit = 50) => {
+  const params = { metric, limit }
+  if (productType) params.product_type = productType
+  
+  return api.get('/api/simulations/leaderboard', { params })
+}
 // ===== QUIZ SCORES (Supabase direct) =====
 
 /**
@@ -181,6 +187,13 @@ export const getBestScore = async (userId, level, moduleIndex) => {
   if (error && error.code !== 'PGRST116') throw error // PGRST116 = no rows
   return data
 }
+
+// Users
+export const updateUsername = (userId, username) => 
+  api.put('/api/users/username', { user_id: userId, username })
+
+export const getUserProfile = (userId) => 
+  api.get(`/api/users/profile/${userId}`)
 
 /**
  * Récupérer les scores d'un utilisateur pour un niveau donné

@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
-from app.api import pricing, market_data, simulations, search
+from app.api import pricing, market_data, simulations, search, users  # 🆕 Ajoute users
 
 app = FastAPI(
     title="Metron API",
@@ -22,7 +22,8 @@ app.add_middleware(
 app.include_router(pricing.router, prefix="/api/pricing", tags=["Pricing"])
 app.include_router(market_data.router, prefix="/api/market", tags=["market"])
 app.include_router(simulations.router, prefix="/api/simulations", tags=["simulations"])
-app.include_router(search.router, prefix="/api/search", tags=["search"])  # Ajoute ça
+app.include_router(search.router, prefix="/api/search", tags=["search"])
+app.include_router(users.router, prefix="/api/users", tags=["users"])  # 🆕 Ajoute cette ligne
 
 
 @app.get("/")
