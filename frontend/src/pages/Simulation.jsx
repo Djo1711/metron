@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Area, AreaChart } from 'recharts'
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer, Area, AreaChart } from 'recharts'
 import { priceProduct, saveSimulation, getQuickPricingData, getUserSimulations, deleteSimulation, getLeaderboard } from '../services/api'
 import { supabase } from '../services/supabase'
+import Tooltip, { InfoIcon } from '../components/Tooltip'
 
 export default function Simulation({ isGuest }) {
   const [searchParams] = useSearchParams()
@@ -48,8 +49,8 @@ export default function Simulation({ isGuest }) {
   const [leaderboard, setLeaderboard] = useState([])
   const [loadingLeaderboard, setLoadingLeaderboard] = useState(false)
   const [leaderboardFilter, setLeaderboardFilter] = useState({
-    product: null, // null = tous les produits
-    metric: 'max_gain' // max_gain, probability_profit, sharpe_ratio
+    product: null,
+    metric: 'max_gain'
   })
 
   const products = {
@@ -86,7 +87,6 @@ export default function Simulation({ isGuest }) {
     { id: 'volatile', name: '⚡ Volatile', multiplier: 1.0, volMultiplier: 1.5 }
   ]
 
-  // Charger les simulations quand on passe sur l'onglet
   useEffect(() => {
     if (activeTab === 'simulations' && !isGuest) {
       loadUserSimulations()
@@ -138,14 +138,12 @@ export default function Simulation({ isGuest }) {
     }
   }
 
-  // Charger le leaderboard quand on change d'onglet ou de filtre
   useEffect(() => {
     if (activeTab === 'leaderboard') {
       loadLeaderboard()
     }
   }, [activeTab, leaderboardFilter])
 
-  // Scroll au top et sélectionner le produit de l'URL
   useEffect(() => {
     if (productFromUrl && products[productFromUrl]) {
       setSelectedProduct(productFromUrl)
@@ -216,7 +214,6 @@ export default function Simulation({ isGuest }) {
       })
 
       alert('✅ Simulation sauvegardée !')
-      // Recharger les simulations si on est sur cet onglet
       if (activeTab === 'simulations') {
         loadUserSimulations()
       }
@@ -312,7 +309,14 @@ export default function Simulation({ isGuest }) {
             <span className="gradient-text">Simulateur de Produits Structurés</span>
           </h1>
           <p className="text-gray-400 text-lg">
-            Pricing Black-Scholes et Monte Carlo en temps réel
+            <Tooltip content="Modèle mathématique permettant de calculer le prix théorique d'options et de produits dérivés en fonction de la volatilité et du temps">
+              Pricing Black-Scholes
+            </Tooltip>
+            {' '}et{' '}
+            <Tooltip content="Méthode de simulation statistique qui génère des milliers de scénarios aléatoires pour estimer la valeur d'un produit financier complexe">
+              Monte Carlo
+            </Tooltip>
+            {' '}en temps réel
           </p>
         </div>
 
@@ -396,7 +400,11 @@ export default function Simulation({ isGuest }) {
                     
                     <div className="space-y-3">
                       <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">Ticker</label>
+                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                          <Tooltip content="Symbole boursier de l'action (ex: AAPL pour Apple, MSFT pour Microsoft)">
+                            Ticker
+                          </Tooltip>
+                        </label>
                         <div className="flex gap-2">
                           <input
                             type="text"
@@ -417,7 +425,11 @@ export default function Simulation({ isGuest }) {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">Prix Spot ($)</label>
+                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                          <Tooltip content="Prix actuel de l'action sur le marché. C'est le point de départ pour tous les calculs de pricing.">
+                            Prix Spot ($)
+                          </Tooltip>
+                        </label>
                         <input
                           type="number"
                           step="0.01"
@@ -429,7 +441,11 @@ export default function Simulation({ isGuest }) {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">Volatilité (σ)</label>
+                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                          <Tooltip content="Mesure de l'amplitude des variations du prix de l'action (σ). Plus elle est élevée, plus le risque et le potentiel de gain sont importants. Valeur typique: 0.15 à 0.40">
+                            Volatilité (σ)
+                          </Tooltip>
+                        </label>
                         <input
                           type="number"
                           step="0.01"
@@ -441,7 +457,11 @@ export default function Simulation({ isGuest }) {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">Taux sans risque (r)</label>
+                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                          <Tooltip content="Taux d'intérêt sans risque (r), généralement basé sur les obligations d'État. Utilisé pour actualiser les flux futurs. Valeur actuelle: ~4%">
+                            Taux sans risque (r)
+                          </Tooltip>
+                        </label>
                         <input
                           type="number"
                           step="0.01"
@@ -453,7 +473,11 @@ export default function Simulation({ isGuest }) {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">Maturité (années)</label>
+                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                          <Tooltip content="Durée de vie du produit en années. Plus la maturité est longue, plus l'incertitude et la prime de temps sont élevées.">
+                            Maturité (années)
+                          </Tooltip>
+                        </label>
                         <input
                           type="number"
                           step="0.1"
@@ -465,7 +489,11 @@ export default function Simulation({ isGuest }) {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">Principal ($)</label>
+                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                          <Tooltip content="Capital initial investi dans le produit structuré. C'est le montant que vous investissez.">
+                            Principal ($)
+                          </Tooltip>
+                        </label>
                         <input
                           type="number"
                           name="principal"
@@ -487,15 +515,27 @@ export default function Simulation({ isGuest }) {
                       {selectedProduct === 'autocall' && (
                         <>
                           <div>
-                            <label className="block text-sm font-medium text-gray-300 mb-2">Barrière Autocall (%)</label>
+                            <label className="block text-sm font-medium text-gray-300 mb-2">
+                              <Tooltip content="Seuil de déclenchement du remboursement anticipé. Si le prix dépasse ce niveau à une date d'observation, le produit est remboursé avec le coupon. Valeur typique: 100%">
+                                Barrière Autocall (%)
+                              </Tooltip>
+                            </label>
                             <input type="number" name="autocall_barrier" value={formData.autocall_barrier} onChange={handleChange} className="input-futuristic w-full" />
                           </div>
                           <div>
-                            <label className="block text-sm font-medium text-gray-300 mb-2">Coupon (%)</label>
+                            <label className="block text-sm font-medium text-gray-300 mb-2">
+                              <Tooltip content="Rendement annuel garanti si le produit n'est pas autocallé ou si la barrière n'est pas cassée. Généralement entre 5% et 15%.">
+                                Coupon (%)
+                              </Tooltip>
+                            </label>
                             <input type="number" step="0.1" name="coupon_rate" value={formData.coupon_rate} onChange={handleChange} className="input-futuristic w-full" />
                           </div>
                           <div>
-                            <label className="block text-sm font-medium text-gray-300 mb-2">Barrière de protection (%)</label>
+                            <label className="block text-sm font-medium text-gray-300 mb-2">
+                              <Tooltip content="Seuil de protection du capital. Si le prix final est en dessous, vous subissez la perte de l'action. Sinon, vous récupérez votre capital + coupon. Valeur typique: 60-70%">
+                                Barrière de protection (%)
+                              </Tooltip>
+                            </label>
                             <input type="number" name="barrier_level" value={formData.barrier_level} onChange={handleChange} className="input-futuristic w-full" />
                           </div>
                         </>
@@ -504,11 +544,19 @@ export default function Simulation({ isGuest }) {
                       {selectedProduct === 'reverse_convertible' && (
                         <>
                           <div>
-                            <label className="block text-sm font-medium text-gray-300 mb-2">Coupon (%)</label>
+                            <label className="block text-sm font-medium text-gray-300 mb-2">
+                              <Tooltip content="Rendement annuel garanti versé périodiquement. Plus il est élevé, plus le risque de conversion est important. Typique: 8-15%">
+                                Coupon (%)
+                              </Tooltip>
+                            </label>
                             <input type="number" step="0.1" name="coupon_rate" value={formData.coupon_rate} onChange={handleChange} className="input-futuristic w-full" />
                           </div>
                           <div>
-                            <label className="block text-sm font-medium text-gray-300 mb-2">Barrière (%)</label>
+                            <label className="block text-sm font-medium text-gray-300 mb-2">
+                              <Tooltip content="Seuil en dessous duquel vous recevez des actions au lieu du cash à maturité. Vous encaissez alors la perte de l'action. Typique: 60-80%">
+                                Barrière (%)
+                              </Tooltip>
+                            </label>
                             <input type="number" name="barrier_level" value={formData.barrier_level} onChange={handleChange} className="input-futuristic w-full" />
                           </div>
                         </>
@@ -517,11 +565,19 @@ export default function Simulation({ isGuest }) {
                       {selectedProduct === 'capital_protected' && (
                         <>
                           <div>
-                            <label className="block text-sm font-medium text-gray-300 mb-2">Protection du capital (%)</label>
+                            <label className="block text-sm font-medium text-gray-300 mb-2">
+                              <Tooltip content="Pourcentage du capital garanti à maturité. 100% = capital totalement protégé. Peut être inférieur pour augmenter la participation.">
+                                Protection du capital (%)
+                              </Tooltip>
+                            </label>
                             <input type="number" name="protection_level" value={formData.protection_level} onChange={handleChange} className="input-futuristic w-full" />
                           </div>
                           <div>
-                            <label className="block text-sm font-medium text-gray-300 mb-2">Taux de participation (%)</label>
+                            <label className="block text-sm font-medium text-gray-300 mb-2">
+                              <Tooltip content="Pourcentage de la hausse du sous-jacent que vous captez. 80% = vous gagnez 80% de la performance positive de l'action. Plus c'est élevé, mieux c'est.">
+                                Taux de participation (%)
+                              </Tooltip>
+                            </label>
                             <input type="number" name="participation_rate" value={formData.participation_rate} onChange={handleChange} className="input-futuristic w-full" />
                           </div>
                         </>
@@ -530,18 +586,30 @@ export default function Simulation({ isGuest }) {
                       {selectedProduct === 'warrant' && (
                         <>
                           <div>
-                            <label className="block text-sm font-medium text-gray-300 mb-2">Strike ($)</label>
+                            <label className="block text-sm font-medium text-gray-300 mb-2">
+                              <Tooltip content="Prix d'exercice de l'option. Pour un Call: vous gagnez si le prix dépasse le strike. Pour un Put: vous gagnez si le prix tombe sous le strike.">
+                                Strike ($)
+                              </Tooltip>
+                            </label>
                             <input type="number" step="0.01" name="strike_price" value={formData.strike_price} onChange={handleChange} className="input-futuristic w-full" />
                           </div>
                           <div>
-                            <label className="block text-sm font-medium text-gray-300 mb-2">Type</label>
+                            <label className="block text-sm font-medium text-gray-300 mb-2">
+                              <Tooltip content="Call = parie sur la hausse | Put = parie sur la baisse">
+                                Type
+                              </Tooltip>
+                            </label>
                             <select name="warrant_type" value={formData.warrant_type} onChange={handleChange} className="input-futuristic w-full">
                               <option value="call">Call</option>
                               <option value="put">Put</option>
                             </select>
                           </div>
                           <div>
-                            <label className="block text-sm font-medium text-gray-300 mb-2">Effet de levier</label>
+                            <label className="block text-sm font-medium text-gray-300 mb-2">
+                              <Tooltip content="Multiplicateur de performance. Un levier de 5 signifie que pour 1% de mouvement de l'action, le warrant bouge de 5%. Amplifie les gains ET les pertes.">
+                                Effet de levier
+                              </Tooltip>
+                            </label>
                             <input type="number" name="leverage" value={formData.leverage} onChange={handleChange} className="input-futuristic w-full" />
                           </div>
                         </>
@@ -563,7 +631,12 @@ export default function Simulation({ isGuest }) {
                     
                     <div className="space-y-6">
                       <div className="bg-gradient-to-br from-metron-purple/20 to-metron-blue/20 p-6 rounded-xl border border-metron-purple/50 shadow-neon-purple">
-                        <p className="text-sm text-gray-400 mb-1">Valeur Théorique</p>
+                        <p className="text-sm text-gray-400 mb-1 flex items-center gap-2">
+                          <Tooltip content="Prix théorique du produit calculé par le modèle Black-Scholes et/ou Monte Carlo. C'est la valeur juste du produit selon les conditions de marché actuelles.">
+                            Valeur Théorique
+                          </Tooltip>
+                          <InfoIcon content="Prix théorique du produit calculé par le modèle Black-Scholes et/ou Monte Carlo" />
+                        </p>
                         <p className="text-4xl font-bold text-white">
                           ${result.fair_value?.toLocaleString(undefined, {minimumFractionDigits: 2})}
                         </p>
@@ -572,15 +645,30 @@ export default function Simulation({ isGuest }) {
 
                       <div className="grid grid-cols-2 gap-4">
                         <div className="bg-white/5 p-4 rounded-lg border border-white/10">
-                          <p className="text-xs text-gray-400 mb-1">Gain Maximum</p>
+                          <p className="text-xs text-gray-400 mb-1 flex items-center gap-1">
+                            <Tooltip content="Gain maximum possible si le scénario le plus favorable se réalise (généralement forte hausse du sous-jacent)">
+                              Gain Maximum
+                            </Tooltip>
+                            <InfoIcon content="Meilleur scénario possible" />
+                          </p>
                           <p className="text-xl font-bold text-green-400">+${result.max_gain?.toFixed(2)}</p>
                         </div>
                         <div className="bg-white/5 p-4 rounded-lg border border-white/10">
-                          <p className="text-xs text-gray-400 mb-1">Perte Maximum</p>
+                          <p className="text-xs text-gray-400 mb-1 flex items-center gap-1">
+                            <Tooltip content="Perte maximum possible si le pire scénario se réalise (généralement forte baisse du sous-jacent)">
+                              Perte Maximum
+                            </Tooltip>
+                            <InfoIcon content="Pire scénario possible" />
+                          </p>
                           <p className="text-xl font-bold text-red-400">-${result.max_loss?.toFixed(2)}</p>
                         </div>
                         <div className="bg-white/5 p-4 rounded-lg border border-white/10">
-                          <p className="text-xs text-gray-400 mb-1">Niveau de Risque</p>
+                          <p className="text-xs text-gray-400 mb-1 flex items-center gap-1">
+                            <Tooltip content="Score de risque de 0 à 100. Plus il est élevé, plus le produit est risqué. Basé sur la volatilité et les barrières.">
+                              Niveau de Risque
+                            </Tooltip>
+                            <InfoIcon content="Score de 0 à 100" />
+                          </p>
                           <div className="flex items-center gap-2">
                             <div className="flex-1 bg-gray-700 rounded-full h-2">
                               <div className="bg-metron-purple h-2 rounded-full" style={{width: `${result.risk_level}%`}} />
@@ -589,28 +677,54 @@ export default function Simulation({ isGuest }) {
                           </div>
                         </div>
                         <div className="bg-white/5 p-4 rounded-lg border border-white/10">
-                          <p className="text-xs text-gray-400 mb-1">Prob. de Profit</p>
+                          <p className="text-xs text-gray-400 mb-1 flex items-center gap-1">
+                            <Tooltip content="Probabilité estimée que le produit génère un profit positif à maturité (calculée par simulations Monte Carlo)">
+                              Prob. de Profit
+                            </Tooltip>
+                            <InfoIcon content="Probabilité de gain positif" />
+                          </p>
                           <p className="text-xl font-bold text-blue-400">{result.probability_profit?.toFixed(1)}%</p>
                         </div>
                       </div>
 
                       <div>
-                        <h3 className="text-lg font-semibold text-white mb-3">Greeks</h3>
+                        <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+                          <Tooltip content="Les 'Greeks' mesurent la sensibilité du prix du produit aux différents facteurs de marché. Ce sont des outils essentiels pour gérer le risque.">
+                            Greeks
+                          </Tooltip>
+                          <InfoIcon content="Sensibilités du produit aux facteurs de marché" />
+                        </h3>
                         <div className="grid grid-cols-2 gap-3">
                           <div className="bg-white/5 p-3 rounded-lg border border-white/10 text-center">
-                            <p className="text-xs text-gray-400 mb-1">Delta (Δ)</p>
+                            <p className="text-xs text-gray-400 mb-1">
+                              <Tooltip content="Sensibilité au prix du sous-jacent. Un delta de 0.5 signifie que si l'action monte de 1$, le produit gagne 0.50$. Entre 0 et 1 pour les Calls, -1 et 0 pour les Puts.">
+                                Delta (Δ)
+                              </Tooltip>
+                            </p>
                             <p className="text-sm font-semibold text-white">{result.delta?.toFixed(4)}</p>
                           </div>
                           <div className="bg-white/5 p-3 rounded-lg border border-white/10 text-center">
-                            <p className="text-xs text-gray-400 mb-1">Gamma (Γ)</p>
+                            <p className="text-xs text-gray-400 mb-1">
+                              <Tooltip content="Taux de variation du Delta. Mesure la courbure du prix. Un gamma élevé signifie que le delta change rapidement avec le prix.">
+                                Gamma (Γ)
+                              </Tooltip>
+                            </p>
                             <p className="text-sm font-semibold text-white">{result.gamma?.toFixed(6)}</p>
                           </div>
                           <div className="bg-white/5 p-3 rounded-lg border border-white/10 text-center">
-                            <p className="text-xs text-gray-400 mb-1">Vega (ν)</p>
+                            <p className="text-xs text-gray-400 mb-1">
+                              <Tooltip content="Sensibilité à la volatilité. Indique combien le produit gagne si la volatilité augmente de 1%. Vega élevé = très sensible aux variations d'incertitude du marché.">
+                                Vega (ν)
+                              </Tooltip>
+                            </p>
                             <p className="text-sm font-semibold text-white">{result.vega?.toFixed(2)}</p>
                           </div>
                           <div className="bg-white/5 p-3 rounded-lg border border-white/10 text-center">
-                            <p className="text-xs text-gray-400 mb-1">Theta (Θ)</p>
+                            <p className="text-xs text-gray-400 mb-1">
+                              <Tooltip content="Érosion temporelle. Indique combien le produit perd de valeur chaque jour qui passe (toutes choses égales par ailleurs). Généralement négatif pour les options longues.">
+                                Theta (Θ)
+                              </Tooltip>
+                            </p>
                             <p className="text-sm font-semibold text-white">{result.theta?.toFixed(2)}</p>
                           </div>
                         </div>
@@ -624,13 +738,18 @@ export default function Simulation({ isGuest }) {
 
                   {/* Graphique Payoff */}
                   <div className="glass-card p-6 border border-metron-blue/30">
-                    <h2 className="text-xl font-bold text-white mb-4">📊 Diagramme de Payoff</h2>
+                    <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                      <Tooltip content="Représentation graphique du gain/perte en fonction du prix final du sous-jacent. Permet de visualiser le profil de risque du produit.">
+                        📊 Diagramme de Payoff
+                      </Tooltip>
+                      <InfoIcon content="Gain/Perte selon le prix final de l'action" />
+                    </h2>
                     <ResponsiveContainer width="100%" height={300}>
                       <AreaChart data={payoffData}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
                         <XAxis dataKey="spot" stroke="#9ca3af" tickFormatter={(val) => `$${val.toFixed(0)}`} />
                         <YAxis stroke="#9ca3af" tickFormatter={(val) => `$${val.toFixed(0)}`} />
-                        <Tooltip contentStyle={{backgroundColor: '#1f2937', border: '1px solid #374151'}} labelStyle={{color: '#fff'}} />
+                        <RechartsTooltip contentStyle={{backgroundColor: '#1f2937', border: '1px solid #374151'}} labelStyle={{color: '#fff'}} />
                         <Area type="monotone" dataKey="payoff" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.3} />
                         <Line type="monotone" dataKey="profit" stroke="#10b981" strokeWidth={2} dot={false} />
                       </AreaChart>
@@ -639,7 +758,12 @@ export default function Simulation({ isGuest }) {
 
                   {/* Simulation de scénarios */}
                   <div className="glass-card p-6 border border-metron-blue/30">
-                    <h2 className="text-xl font-bold text-white mb-4">🎲 Simulation de Scénarios</h2>
+                    <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                      <Tooltip content="Simulation du comportement du prix de l'action selon différents scénarios de marché. Aide à comprendre comment le produit se comporte dans diverses conditions.">
+                        🎲 Simulation de Scénarios
+                      </Tooltip>
+                      <InfoIcon content="Évolution du prix selon différents scénarios" />
+                    </h2>
                     
                     <div className="mb-4 grid grid-cols-2 gap-2">
                       {scenarios.map((s) => (
@@ -654,7 +778,7 @@ export default function Simulation({ isGuest }) {
                         <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
                         <XAxis dataKey="day" stroke="#9ca3af" />
                         <YAxis stroke="#9ca3af" tickFormatter={(val) => `$${val.toFixed(0)}`} />
-                        <Tooltip contentStyle={{backgroundColor: '#1f2937', border: '1px solid #374151'}} />
+                        <RechartsTooltip contentStyle={{backgroundColor: '#1f2937', border: '1px solid #374151'}} />
                         <Legend />
                         <Line type="monotone" dataKey="price" stroke="#3b82f6" strokeWidth={2} dot={false} name="Prix simulé" />
                         <Line type="monotone" dataKey="barrier" stroke="#ef4444" strokeWidth={2} strokeDasharray="5 5" dot={false} name="Barrière protection" />
@@ -937,21 +1061,13 @@ function LeaderboardCard({ sim, rank, metric, products }) {
   }
 
   const getDisplayName = () => {
-  // Priorité : username > email anonymisé
-  if (sim.users?.username) {
-    return sim.users.username
-  }
-  
-  const email = sim.users?.email
-  if (!email) return 'Anonyme'
-  
-  const [username, domain] = email.split('@')
-  if (!username || !domain) return 'Anonyme'
-  return `${username.substring(0, 3)}***@${domain}`
-}
-
-  const anonymizeEmail = (email) => {
+    if (sim.users?.username) {
+      return sim.users.username
+    }
+    
+    const email = sim.users?.email
     if (!email) return 'Anonyme'
+    
     const [username, domain] = email.split('@')
     if (!username || !domain) return 'Anonyme'
     return `${username.substring(0, 3)}***@${domain}`
