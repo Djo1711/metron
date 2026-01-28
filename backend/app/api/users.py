@@ -6,6 +6,7 @@ Gestion des profils utilisateurs
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from app.database import get_supabase
+from app.utils.username_validator import validate_username  # 🆕 Import
 
 router = APIRouter()
 
@@ -16,44 +17,37 @@ class UsernameUpdate(BaseModel):
 
 @router.put("/username")
 async def update_username(data: UsernameUpdate):
-    """Mettre à jour le pseudo de l'utilisateur"""
+    """
+    Mettre à jour le pseudo de l'utilisateur avec validation stricte
+    """
     print(f"🔍 Tentative de mise à jour username pour user_id: {data.user_id}")
     print(f"🔍 Nouveau username: {data.username}")
     
     try:
         supabase = get_supabase()
-        print("✅ Supabase client obtenu")
         
-        # Vérifier que le username n'est pas vide
-        if not data.username or len(data.username.strip()) < 3:
-            print("❌ Username trop court")
-            raise HTTPException(
-                status_code=400,
-                detail="Le pseudo doit contenir au moins 3 caractères"
-            )
+        # 🆕 VALIDATION COMPLÈTE DU USERNAME
+        is_valid, error_message = validate_username(data.username)
+        if not is_valid:
+            print(f"❌ Username invalide: {error_message}")
+            raise HTTPException(status_code=400, detail=error_message)
         
         # Vérifier que l'utilisateur existe
-        print(f"🔍 Vérification si user {data.user_id} existe...")
         check_user = supabase.table('users').select('id').eq('id', data.user_id).execute()
-        print(f"✅ Résultat de la recherche: {check_user.data}")
         
         if not check_user.data:
-            print(f"❌ Utilisateur {data.user_id} non trouvé dans public.users")
             raise HTTPException(
                 status_code=404,
-                detail="Utilisateur non trouvé. Veuillez contacter le support."
+                detail="Utilisateur non trouvé"
             )
         
         # Mettre à jour le username
-        print(f"🔍 Mise à jour du username vers: {data.username.strip()}")
+        username_clean = data.username.strip()
         response = supabase.table('users').update({
-            'username': data.username.strip()
+            'username': username_clean
         }).eq('id', data.user_id).execute()
         
-        print(f"✅ Réponse de la mise à jour: {response.data}")
-        
         if not response.data:
-            print("❌ Aucune donnée retournée après update")
             raise HTTPException(
                 status_code=500,
                 detail="Erreur lors de la mise à jour"
@@ -62,14 +56,13 @@ async def update_username(data: UsernameUpdate):
         print("✅ Username mis à jour avec succès!")
         return {
             "message": "Pseudo mis à jour avec succès",
-            "username": data.username.strip()
+            "username": username_clean
         }
         
     except HTTPException:
         raise
     except Exception as e:
-        print(f"❌ ERREUR CRITIQUE: {str(e)}")
-        print(f"❌ Type d'erreur: {type(e).__name__}")
+        print(f"❌ ERREUR: {str(e)}")
         import traceback
         traceback.print_exc()
         raise HTTPException(
@@ -80,15 +73,7 @@ async def update_username(data: UsernameUpdate):
 
 @router.get("/profile/{user_id}")
 async def get_user_profile(user_id: str):
-    """
-    Récupérer le profil complet d'un utilisateur
-    
-    Args:
-        user_id: ID de l'utilisateur
-    
-    Returns:
-        Profil utilisateur (email, username, etc.)
-    """
+    """Récupérer le profil complet d'un utilisateur"""
     try:
         supabase = get_supabase()
         
