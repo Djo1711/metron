@@ -15,10 +15,10 @@ export default function Tooltip({ children, content, position = 'top' }) {
   }
 
   const arrowClasses = {
-    top: 'top-full left-1/2 -translate-x-1/2 border-t-white/90 border-l-transparent border-r-transparent border-b-transparent',
-    bottom: 'bottom-full left-1/2 -translate-x-1/2 border-b-white/90 border-l-transparent border-r-transparent border-t-transparent',
-    left: 'left-full top-1/2 -translate-y-1/2 border-l-white/90 border-t-transparent border-b-transparent border-r-transparent',
-    right: 'right-full top-1/2 -translate-y-1/2 border-r-white/90 border-t-transparent border-b-transparent border-l-transparent'
+    top: 'top-full left-1/2 -translate-x-1/2 border-t-gray-900 border-l-transparent border-r-transparent border-b-transparent',
+    bottom: 'bottom-full left-1/2 -translate-x-1/2 border-b-gray-900 border-l-transparent border-r-transparent border-t-transparent',
+    left: 'left-full top-1/2 -translate-y-1/2 border-l-gray-900 border-t-transparent border-b-transparent border-r-transparent',
+    right: 'right-full top-1/2 -translate-y-1/2 border-r-gray-900 border-t-transparent border-b-transparent border-l-transparent'
   }
 
   return (
@@ -33,8 +33,8 @@ export default function Tooltip({ children, content, position = 'top' }) {
       
       {isVisible && (
         <div className={`absolute z-50 ${positionClasses[position]} animate-fadeIn`}>
-          <div className="glass-card px-4 py-3 max-w-xs shadow-neon-purple">
-            <p className="text-sm text-gray-200 leading-relaxed whitespace-pre-line">
+          <div className="bg-gray-900 border-2 border-metron-purple/50 rounded-xl px-5 py-4 shadow-2xl w-80">
+            <p className="text-sm text-white leading-relaxed">
               {content}
             </p>
           </div>
@@ -68,12 +68,12 @@ export function InfoIcon({ content, className = "" }) {
 
       {isVisible && (
         <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50 animate-fadeIn">
-          <div className="glass-card px-4 py-3 max-w-xs shadow-neon-purple">
-            <p className="text-xs text-gray-200 leading-relaxed whitespace-pre-line">
+          <div className="bg-gray-900 border-2 border-metron-purple/50 rounded-xl px-5 py-4 shadow-2xl w-72">
+            <p className="text-xs text-white leading-relaxed">
               {content}
             </p>
           </div>
-          <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-8 border-t-white/90 border-l-transparent border-r-transparent border-b-transparent" />
+          <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-8 border-t-gray-900 border-l-transparent border-r-transparent border-b-transparent" />
         </div>
       )}
     </div>
