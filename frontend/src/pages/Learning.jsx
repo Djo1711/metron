@@ -43,10 +43,11 @@ export default function Learning() {
     })
   }
 
-  const isModuleCompleted = (level, moduleIdx) =>
+ const isModuleCompleted = (level, moduleIdx) =>
     completedModules[level]?.includes(moduleIdx)
 
-  const [activeTab, setActiveTab] = useState('tutorials')
+  // 🔵 TOUS LES USESTATE (bien structurés)
+  const [activeTab, setActiveTab] = useState('cours')
   const [selectedProduct, setSelectedProduct] = useState('reverse_convertible')
   const [searchTerm, setSearchTerm] = useState("")
   const [suggestions, setSuggestions] = useState([])
@@ -54,15 +55,19 @@ export default function Learning() {
   const [searchLoading, setSearchLoading] = useState(false)
   const searchRef = useRef(null)
   const [selectedLevel, setSelectedLevel] = useState('debutant')
-  // ✅ NOUVEAUX ÉTATS POUR LES QCM
-  const [quizAnswers, setQuizAnswers] = useState({}); // Stocke les réponses de l'utilisateur
-  const [quizSubmitted, setQuizSubmitted] = useState({}); // Sait si le quiz a été soumis
-  const [quizScores, setQuizScores] = useState({}); // Stocke les scores
-  const [showLevelTest, setShowLevelTest] = useState(false); // Pour le popup de test de niveau
-  const [openQuizzes, setOpenQuizzes] = useState({}); // Pour savoir quels quiz sont ouverts
-  const [openModules, setOpenModules] = useState(() => { // Par défaut, tous les modules sont FERMÉS (false)
-    return {};
-  }); // Pour savoir quels modules sont ouverts
+  
+  // États pour les QCM des modules
+  const [quizAnswers, setQuizAnswers] = useState({})
+  const [quizSubmitted, setQuizSubmitted] = useState({})
+  const [quizScores, setQuizScores] = useState({})
+  const [openQuizzes, setOpenQuizzes] = useState({})
+  const [openModules, setOpenModules] = useState({})
+  
+  // 🆕 États pour le quiz d'auto-évaluation
+  const [showLevelQuiz, setShowLevelQuiz] = useState(false)
+  const [quizStep, setQuizStep] = useState(0)
+  const [levelQuizAnswers, setLevelQuizAnswers] = useState([])
+  const [quizResult, setQuizResult] = useState(null)
 
   useEffect(() => {
   const handleClickOutside = (event) => {
@@ -137,6 +142,115 @@ export default function Learning() {
     const score = quizScores[key];
     return score && score.score >= 13; // 13/16 ou plus pour valider
   };
+// 🆕 Quiz d'auto-évaluation basé sur l'expérience personnelle
+const levelQuiz = [
+  {
+    question: "Avez-vous déjà investi dans des produits financiers (actions, obligations, fonds) ?",
+    options: [
+      "Oui, régulièrement depuis plusieurs années",
+      "Oui, j'ai déjà fait quelques investissements",
+      "Non, mais je connais les concepts de base",
+      "Non, je débute complètement"
+    ],
+    correct: null, // Pas de "bonne" réponse, c'est subjectif
+    points: { 0: 3, 1: 2, 2: 1, 3: 0 }
+  },
+  {
+    question: "Quelle est votre compréhension des options financières (call, put) ?",
+    options: [
+      "Je comprends le pricing et les Greeks (delta, gamma, vega...)",
+      "Je sais ce qu'est un call et un put, et comment ça fonctionne",
+      "J'ai entendu parler mais je ne sais pas vraiment comment ça marche",
+      "Je ne sais pas ce que c'est"
+    ],
+    correct: null,
+    points: { 0: 3, 1: 2, 2: 1, 3: 0 }
+  },
+  {
+    question: "Connaissez-vous la différence entre un produit à capital garanti et un Reverse Convertible ?",
+    options: [
+      "Oui, je comprends les mécanismes et les risques de chacun",
+      "J'ai une idée générale mais pas tous les détails",
+      "J'ai entendu ces termes mais je ne connais pas la différence",
+      "Non, je ne connais ni l'un ni l'autre"
+    ],
+    correct: null,
+    points: { 0: 3, 1: 2, 2: 1, 3: 0 }
+  },
+  {
+    question: "Que représente la volatilité pour vous ?",
+    options: [
+      "Je sais calculer la volatilité historique et implicite, et l'utiliser dans le pricing",
+      "Je sais que c'est une mesure du risque et des fluctuations de prix",
+      "J'ai entendu le terme mais je ne sais pas vraiment ce que c'est",
+      "Je ne sais pas"
+    ],
+    correct: null,
+    points: { 0: 3, 1: 2, 2: 1, 3: 0 }
+  },
+  {
+    question: "Quel est votre niveau en mathématiques financières ?",
+    options: [
+      "À l'aise avec Black-Scholes, actualisation, probabilités, intégrales",
+      "Je comprends les formules de base (actualisation, rendement, taux)",
+      "J'ai des bases en maths mais pas en finance",
+      "Les mathématiques ne sont pas mon fort"
+    ],
+    correct: null,
+    points: { 0: 3, 1: 2, 2: 1, 3: 0 }
+  }
+]
+
+// 🆕 Gestion du quiz d'auto-évaluation
+const handleLevelQuizAnswer = (answerIndex) => {
+  const newAnswers = [...levelQuizAnswers, answerIndex]
+  setLevelQuizAnswers(newAnswers)
+  
+  if (quizStep < levelQuiz.length - 1) {
+    setQuizStep(quizStep + 1)
+  } else {
+    calculateQuizResult(newAnswers)
+  }
+}
+
+const calculateQuizResult = (answers) => {
+  let totalScore = 0
+  
+  answers.forEach((answer, index) => {
+    totalScore += levelQuiz[index].points[answer]
+  })
+  
+  let recommendedLevel = 'debutant'
+  let message = ''
+  
+  if (totalScore >= 12) {
+    recommendedLevel = 'avance'
+    message = "Excellent ! Vous avez de solides connaissances en produits structurés. Commencez par le niveau avancé pour approfondir."
+  } else if (totalScore >= 7) {
+    recommendedLevel = 'intermediaire'
+    message = "Bien ! Vous avez des bases solides. Le niveau intermédiaire est parfait pour vous."
+  } else {
+    recommendedLevel = 'debutant'
+    message = "Pas de soucis ! Commençons par les bases. Le niveau débutant vous aidera à construire des fondations solides."
+  }
+  
+  setQuizResult({ score: totalScore, level: recommendedLevel, message })
+}
+
+const resetLevelQuiz = () => {
+  setShowLevelQuiz(false)
+  setQuizStep(0)
+  setLevelQuizAnswers([])
+  setQuizResult(null)
+}
+
+const startAtRecommendedLevel = () => {
+  if (quizResult) {
+    setSelectedLevel(quizResult.level)
+    resetLevelQuiz()
+    window.scrollTo({ top: 600, behavior: 'smooth' })
+  }
+}
 
   const cours = {
     debutant: {
@@ -4280,6 +4394,18 @@ export default function Learning() {
         {/* Cours */}
         {activeTab === 'cours' && (
           <div>
+            {/* 🆕 Bouton Quiz d'auto-évaluation */}
+    <div className="text-center mb-8">
+      <button
+        onClick={() => setShowLevelQuiz(true)}
+        className="btn-neon px-8 py-4"
+      >
+        🎯 Quel niveau j'ai ?
+      </button>
+      <p className="text-gray-500 text-sm mt-2">
+        Quiz rapide de 5 questions pour évaluer votre niveau
+      </p>
+    </div>
             {/* Sélection du niveau */}
             <div className="glass-card p-6 mb-8 border border-metron-purple/30">
               <h2 className="text-2xl font-bold text-white mb-4 text-center">
@@ -4999,7 +5125,7 @@ export default function Learning() {
               ))
             ) : (
               <div className="text-center py-12">
-                <p className="text-gray-400 text-lg">Aucun terme trouvé pour "{searchTerm}"</p>
+                <p className="text-gray-400 text-lg">Auculan terme trouvé pour "{searchTerm}"</p>
               </div>
             )}
           </div>
@@ -5015,6 +5141,99 @@ export default function Learning() {
             Aller à la Simulation →
           </button>
         </div>
+        {/* 🆕 Modal Quiz d'auto-évaluation */}
+        {showLevelQuiz && (
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="glass-card max-w-2xl w-full p-8 border border-metron-purple/50 relative">
+              <button
+                onClick={resetLevelQuiz}
+                className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+
+              {!quizResult ? (
+                <>
+                  <div className="mb-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <h2 className="text-2xl font-bold text-white">Quiz d'auto-évaluation</h2>
+                      <span className="text-metron-purple font-semibold">
+                        {quizStep + 1} / {levelQuiz.length}
+                      </span>
+                    </div>
+                    
+                    <div className="w-full bg-gray-700 rounded-full h-2 mb-6">
+                      <div
+                        className="bg-gradient-metron h-2 rounded-full transition-all duration-300"
+                        style={{ width: `${((quizStep + 1) / levelQuiz.length) * 100}%` }}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="mb-8">
+                    <h3 className="text-xl font-semibold text-white mb-6">
+                      {levelQuiz[quizStep].question}
+                    </h3>
+                    
+                    <div className="space-y-3">
+                      {levelQuiz[quizStep].options.map((option, index) => (
+                        <button
+                          key={index}
+                          onClick={() => handleLevelQuizAnswer(index)}
+                          className="w-full p-4 text-left rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 hover:border-metron-purple/50 transition-all text-white"
+                        >
+                          <span className="font-semibold text-metron-purple mr-3">
+                            {String.fromCharCode(65 + index)}.
+                          </span>
+                          {option}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="text-center">
+                    <div className="text-6xl mb-4">
+                      {quizResult.level === 'avance' ? '🏆' : quizResult.level === 'intermediaire' ? '⭐' : '🌱'}
+                    </div>
+                    
+                    <h2 className="text-3xl font-bold text-white mb-3">
+                      Résultat : {quizResult.score} / 15 points
+                    </h2>
+                    
+                    <div className="inline-block px-6 py-2 rounded-full bg-metron-purple/20 border border-metron-purple/50 mb-6">
+                      <span className="text-metron-purple font-semibold text-lg capitalize">
+                        Niveau {quizResult.level}
+                      </span>
+                    </div>
+                    
+                    <p className="text-gray-300 text-lg mb-8 leading-relaxed">
+                      {quizResult.message}
+                    </p>
+                    
+                    <div className="flex gap-4 justify-center">
+                      <button
+                        onClick={startAtRecommendedLevel}
+                        className="btn-neon px-8 py-3"
+                      >
+                        🚀 Commencer au niveau {quizResult.level}
+                      </button>
+                      <button
+                        onClick={resetLevelQuiz}
+                        className="px-8 py-3 rounded-xl bg-white/5 hover:bg-white/10 text-white border border-white/10 transition-all"
+                      >
+                        Refaire le quiz
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
