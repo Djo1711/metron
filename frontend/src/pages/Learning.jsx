@@ -3372,10 +3372,36 @@ const startAtRecommendedLevel = () => {
             {
               section: "Au-delà de Black-Scholes",
               texte: "Le modèle de Black-Scholes pose des hypothèses simplificatrices : volatilité constante, pas de sauts, distribution log-normale. Dans la réalité, ces hypothèses sont violées. D'où le besoin de modèles plus sophistiqués.",
-              limites: [
+              points: [
                 "**Volatilité smile** : La volatilité implicite varie selon le strike",
                 "**Queues épaisses** : Les crashs sont plus fréquents que prédit par la loi normale",
-                "**Volatilité stochastique** : La volatilité elle-même varie de façon aléatoire"
+                "**Volatilité stochastique** : La volatilité elle-même varie de façon aléatoire",
+                "**Sauts** : Les prix peuvent faire des bonds discrets (ex: annonces de résultats)",
+                "**Coûts de transaction** : Frictions ignorées par Black-Scholes"
+              ]
+            },
+            {
+              section: "Les limites empiriques de Black-Scholes",
+              texte: "En observant les marchés réels, plusieurs anomalies apparaissent qui violent les hypothèses du modèle.",
+              details: [
+                {
+                  type: "Le krach 1987",
+                  definition: "Chute de 22% en une journée - probabilité quasi-nulle selon loi normale",
+                  utilisation: "A révélé l'existence de queues épaisses (fat tails)",
+                  exemple: "Selon Black-Scholes, un tel événement devrait arriver une fois tous les 10^50 ans. Il est arrivé."
+                },
+                {
+                  type: "Volatility clustering",
+                  definition: "Périodes de forte volatilité suivies d'autres périodes volatiles",
+                  utilisation: "Modèles GARCH pour capturer ce phénomène",
+                  exemple: "Mars 2020 (Covid) : volatilité quotidienne de 5-8% pendant des semaines"
+                },
+                {
+                  type: "Mean reversion de la volatilité",
+                  definition: "La volatilité tend à revenir vers une moyenne long terme",
+                  utilisation: "Justifie les modèles à volatilité stochastique",
+                  exemple: "VIX à 80 en mars 2020, retour à 15 en juillet 2020"
+                }
               ]
             },
             {
@@ -3383,36 +3409,319 @@ const startAtRecommendedLevel = () => {
               texte: "Le modèle de Heston assume que la volatilité suit elle-même un processus stochastique. C'est plus réaliste car la volatilité n'est pas constante.",
               formules: [
                 "dS = μS dt + √(v) S dW₁",
-                "dv = κ(θ - v) dt + σ √(v) dW₂"
+                "dv = κ(θ - v) dt + σ √(v) dW₂",
+                "Corr(dW₁, dW₂) = ρ dt"
               ],
               parametres: [
-                "v : variance instantanée",
-                "κ : vitesse de retour à la moyenne",
-                "θ : variance long terme",
-                "σ : volatilité de la volatilité",
-                "ρ : corrélation entre S et v"
+                "v : variance instantanée (v₀ = variance initiale)",
+                "κ : vitesse de retour à la moyenne (typique : 1-5)",
+                "θ : variance long terme (niveau d'équilibre)",
+                "σ : volatilité de la volatilité (vol of vol)",
+                "ρ : corrélation entre S et v (souvent négative : -0.7)"
+              ],
+              exemple: "ρ négatif signifie : quand les prix baissent, la volatilité monte (effet de levier). Typique des marchés actions."
+            },
+            {
+              section: "Calibration du modèle de Heston",
+              texte: "Pour utiliser Heston, il faut calibrer les 5 paramètres (v₀, κ, θ, σ, ρ) aux prix d'options observés sur le marché.",
+              etapes: [
+                {
+                  etape: "1. Collecter les prix d'options",
+                  texte: "Prix de marché pour différents strikes et maturités"
+                },
+                {
+                  etape: "2. Fonction objectif",
+                  texte: "Minimiser l'écart entre prix marché et prix modèle Heston",
+                  formule: "Min Σ (Prix_marché - Prix_Heston)²"
+                },
+                {
+                  etape: "3. Optimisation numérique",
+                  texte: "Utiliser Levenberg-Marquardt ou algorithmes génétiques"
+                },
+                {
+                  etape: "4. Validation",
+                  texte: "Vérifier que le modèle reproduit bien le smile observé"
+                }
               ]
             },
             {
               section: "Simulations Monte Carlo",
               texte: "Méthode numérique qui simule des milliers de scénarios possibles pour estimer la valeur d'un produit complexe. Particulièrement utile pour les produits path-dependent.",
               algorithme: [
-                "1. Générer N trajectoires aléatoires du sous-jacent",
-                "2. Pour chaque trajectoire, calculer le payoff final",
-                "3. Faire la moyenne des payoffs",
-                "4. Actualiser au taux sans risque",
-                "5. C'est votre prix !"
+                "1. Générer N trajectoires aléatoires du sous-jacent (N = 10 000 à 1 000 000)",
+                "2. Pour chaque trajectoire, calculer le payoff final selon les règles du produit",
+                "3. Faire la moyenne des payoffs obtenus",
+                "4. Actualiser au taux sans risque : Prix = e^(-rT) × Moyenne(Payoffs)",
+                "5. Calculer l'erreur standard : σ_MC = σ_payoffs / √N"
               ],
-              exemple: "Pour un autocall, on simule 100 000 trajectoires. Pour chaque trajectoire, on vérifie si l'autocall se déclenche, sinon on calcule le payoff à maturité. Prix = moyenne actualisée."
+              exemple: "Pour un autocall, on simule 100 000 trajectoires. Pour chaque trajectoire, on vérifie si l'autocall se déclenche à chaque date d'observation, sinon on calcule le payoff à maturité. Prix = moyenne actualisée.",
+              points: [
+                "**Avantage** : Fonctionne pour n'importe quel payoff complexe",
+                "**Inconvénient** : Lent (besoin de beaucoup de simulations)",
+                "**Variance Reduction** : Techniques pour accélérer (antithetic variates, control variates)"
+              ]
+            },
+            {
+              section: "Techniques de réduction de variance",
+              texte: "Pour améliorer l'efficacité de Monte Carlo sans augmenter le nombre de simulations.",
+              details: [
+                {
+                  type: "Antithetic Variates",
+                  definition: "Pour chaque trajectoire, simuler aussi son opposé",
+                  utilisation: "Réduit la variance par facteur 2",
+                  exemple: "Si Z ~ N(0,1), simuler trajectoire avec Z et avec -Z"
+                },
+                {
+                  type: "Control Variates",
+                  definition: "Utiliser un produit simple dont on connaît le prix analytique",
+                  utilisation: "Corriger le biais",
+                  exemple: "Pricer une asiatique et un call vanilla ensemble pour réduire l'erreur"
+                },
+                {
+                  type: "Importance Sampling",
+                  definition: "Concentrer les simulations sur les zones importantes",
+                  utilisation: "Utile pour événements rares (queues de distribution)",
+                  exemple: "Pour VaR 99%, sur-échantillonner les scénarios de perte extrême"
+                }
+              ]
             },
             {
               section: "Arbres binomiaux",
               texte: "Méthode discrète qui modélise l'évolution du prix comme une succession de mouvements up/down. Utile pour les options américaines (exercice anticipé possible).",
-              avantages: [
+              points: [
                 "Simple à comprendre et implémenter",
-                "Gère naturellement l'exercice anticipé",
+                "Gère naturellement l'exercice anticipé (backward induction)",
                 "Converge vers Black-Scholes quand on augmente le nombre de pas"
+              ],
+              formule: "u = e^(σ√Δt), d = 1/u, p = (e^(rΔt) - d) / (u - d)"
+            },
+            {
+              section: "Construction d'un arbre binomial",
+              texte: "Algorithme pas à pas pour construire et évaluer une option américaine.",
+              etapes: [
+                {
+                  etape: "1. Forward pass : construire l'arbre",
+                  texte: "Partir de S₀, construire tous les nœuds S_up = S×u, S_down = S×d"
+                },
+                {
+                  etape: "2. Payoffs terminaux",
+                  texte: "À T, calculer valeur intrinsèque à chaque nœud",
+                  formule: "Call : Max(0, S_T - K) | Put : Max(0, K - S_T)"
+                },
+                {
+                  etape: "3. Backward induction",
+                  texte: "Remonter l'arbre en actualisant et en vérifiant exercice anticipé"
+                },
+                {
+                  etape: "4. À chaque nœud",
+                  formule: "V = Max(Exercice, e^(-rΔt) × (p×V_up + (1-p)×V_down))"
+                }
+              ],
+              exemple: "Put américain Apple strike 150$, spot 150$, σ=25%, r=5%, T=1 an, 50 pas. Arbre donne prix = 12.45$ vs 11.80$ pour put européen (valeur d'exercice anticipé = 0.65$)."
+            },
+            {
+              section: "Modèles à sauts (Jump Diffusion)",
+              texte: "Ajoutent des sauts discrets au processus de diffusion classique pour capturer les crashs soudains.",
+              formule: "dS/S = μ dt + σ dW + J dN",
+              points: [
+                "dW : diffusion brownienne standard",
+                "dN : processus de Poisson (sauts aléatoires)",
+                "J : amplitude du saut (souvent log-normale)",
+                "λ : intensité des sauts (ex: 1 saut par an en moyenne)"
+              ],
+              exemple: "Modèle de Merton (1976) : ajoute des sauts log-normaux. Permet de capturer les crashs type 1987."
+            },
+            {
+              section: "Méthodes des différences finies",
+              texte: "Résolution numérique de l'EDP de Black-Scholes en discrétisant temps et espace.",
+              points: [
+                "**Explicite** : Simple mais instable si pas fin assez",
+                "**Implicite** : Plus stable, nécessite inversion de matrice",
+                "**Crank-Nicolson** : Compromis optimal (moyenne explicite/implicite)"
+              ],
+              avantages: [
+                "Très rapide une fois grille construite",
+                "Gère bien les conditions de barrière",
+                "Calcule tous les Greeks simultanément"
               ]
+            }
+          ],
+          quiz: [
+            {
+              question: "Quelle est la principale limite du modèle de Black-Scholes ?",
+              options: [
+                "Il est trop complexe",
+                "Il assume une volatilité constante alors qu'elle varie dans la réalité",
+                "Il ne fonctionne que pour les puts",
+                "Il ignore les taux d'intérêt"
+              ],
+              correct: 1,
+              explication: "Black-Scholes assume une volatilité constante, mais en réalité la volatilité varie dans le temps (stochastique) et selon le strike (smile). D'où le besoin de modèles plus sophistiqués."
+            },
+            {
+              question: "Qu'est-ce qu'une 'queue épaisse' (fat tail) ?",
+              options: [
+                "Une option très chère",
+                "Des événements extrêmes plus fréquents que prédit par la loi normale",
+                "Un type d'obligation",
+                "Une stratégie d'options"
+              ],
+              correct: 1,
+              explication: "Les queues épaisses signifient que les crashs/rallyes extrêmes (>3σ) arrivent beaucoup plus souvent que la loi normale ne le prédit. Le krach 1987 (-22% en 1 jour) est un exemple classique."
+            },
+            {
+              question: "Dans le modèle de Heston, que représente le paramètre κ (kappa) ?",
+              options: [
+                "La volatilité initiale",
+                "La vitesse de retour à la moyenne de la volatilité",
+                "Le prix de l'action",
+                "Le taux sans risque"
+              ],
+              correct: 1,
+              explication: "κ mesure la vitesse à laquelle la volatilité revient vers son niveau d'équilibre θ. κ élevé (ex: 5) = retour rapide, κ faible (ex: 0.5) = retour lent."
+            },
+            {
+              question: "Pourquoi la corrélation ρ dans Heston est-elle souvent négative pour les actions ?",
+              options: [
+                "Par erreur de calcul",
+                "Effet de levier : quand les prix baissent, la volatilité monte",
+                "Pour simplifier le modèle",
+                "Elle est toujours positive"
+              ],
+              correct: 1,
+              explication: "ρ négatif (typiquement -0.7) capture l'effet de levier : quand les actions baissent, l'endettement relatif augmente, donc le risque et la volatilité montent."
+            },
+            {
+              question: "Qu'est-ce qu'une simulation Monte Carlo ?",
+              options: [
+                "Un jeu de casino",
+                "Simuler des milliers de trajectoires aléatoires pour estimer un prix",
+                "Un type d'option",
+                "Une stratégie de hedging"
+              ],
+              correct: 1,
+              explication: "Monte Carlo simule un grand nombre de scénarios aléatoires (ex: 100 000 trajectoires), calcule le payoff pour chacun, puis fait la moyenne actualisée. Universel mais gourmand en calcul."
+            },
+            {
+              question: "Combien de simulations Monte Carlo sont généralement nécessaires pour une précision raisonnable ?",
+              options: [
+                "10-100",
+                "100-1 000",
+                "10 000-100 000",
+                "1 million-10 millions"
+              ],
+              correct: 2,
+              explication: "Typiquement 10 000 à 100 000 simulations pour une bonne précision. L'erreur diminue en 1/√N, donc passer de 10k à 100k simulations divise l'erreur par √10 ≈ 3."
+            },
+            {
+              question: "Qu'est-ce que la technique 'Antithetic Variates' ?",
+              options: [
+                "Un type d'option exotique",
+                "Simuler aussi la trajectoire opposée pour réduire la variance",
+                "Une méthode de hedging",
+                "Un Greek"
+              ],
+              correct: 1,
+              explication: "Pour chaque tirage aléatoire Z, on simule aussi -Z. Les deux trajectoires se compensent partiellement, réduisant la variance de l'estimateur (facteur 2 d'amélioration typique)."
+            },
+            {
+              question: "Quel est l'avantage principal des arbres binomiaux ?",
+              options: [
+                "Très rapides",
+                "Gèrent naturellement l'exercice anticipé (options américaines)",
+                "Plus précis que Black-Scholes",
+                "Ne nécessitent aucun calcul"
+              ],
+              correct: 1,
+              explication: "Les arbres binomiaux permettent de vérifier à chaque nœud si exercer l'option est optimal, gérant ainsi naturellement les options américaines via backward induction."
+            },
+            {
+              question: "Dans un arbre binomial, que signifie u (facteur de hausse) ?",
+              options: [
+                "Le prix initial",
+                "Le multiplicateur quand le prix monte : S_up = S × u",
+                "La volatilité",
+                "Le temps"
+              ],
+              correct: 1,
+              explication: "u = e^(σ√Δt) est le facteur multiplicatif quand le prix monte. Si u=1.1, le prix monte de 10% à chaque pas. d=1/u pour la baisse."
+            },
+            {
+              question: "Qu'est-ce qu'un modèle à sauts (Jump Diffusion) ?",
+              options: [
+                "Un modèle sans volatilité",
+                "Un modèle ajoutant des sauts discrets au processus de diffusion",
+                "Un arbre binomial",
+                "Une option barrière"
+              ],
+              correct: 1,
+              explication: "Les modèles à sauts (Merton 1976) ajoutent un processus de Poisson pour capturer les crashs soudains que la diffusion brownienne ne peut modéliser (ex: krach 1987)."
+            },
+            {
+              question: "Quelle méthode numérique résout directement l'EDP de Black-Scholes ?",
+              options: [
+                "Monte Carlo",
+                "Arbres binomiaux",
+                "Différences finies",
+                "Simulation historique"
+              ],
+              correct: 2,
+              explication: "Les méthodes de différences finies discrétisent l'EDP de Black-Scholes sur une grille (temps × prix) et résolvent numériquement. Très rapides et donnent tous les Greeks."
+            },
+            {
+              question: "Qu'est-ce que le 'volatility clustering' ?",
+              options: [
+                "Des options groupées",
+                "Périodes de forte volatilité suivies d'autres périodes volatiles",
+                "Une stratégie d'options",
+                "Un type d'obligation"
+              ],
+              correct: 1,
+              explication: "Volatility clustering : les périodes de forte volatilité tendent à persister. Mars 2020 (Covid) a vu 3 semaines de volatilité 5-8%/jour. Capturé par modèles GARCH."
+            },
+            {
+              question: "Pourquoi calibrer un modèle de Heston ?",
+              options: [
+                "Pour faire plaisir au régulateur",
+                "Pour ajuster les 5 paramètres aux prix d'options observés sur le marché",
+                "Ce n'est pas nécessaire",
+                "Pour calculer le VIX"
+              ],
+              correct: 1,
+              explication: "On calibre Heston en trouvant les paramètres (v₀, κ, θ, σ, ρ) qui minimisent l'écart entre les prix d'options du modèle et les prix de marché observés."
+            },
+            {
+              question: "Quel est l'inconvénient principal de Monte Carlo ?",
+              options: [
+                "Trop simple",
+                "Lent et gourmand en calcul (besoin de beaucoup de simulations)",
+                "Ne fonctionne que pour les calls",
+                "Impossible à implémenter"
+              ],
+              correct: 1,
+              explication: "Monte Carlo est universel mais très lent : besoin de 10k-100k simulations. Pour un book de 1000 produits à revaluer en temps réel, c'est prohibitif sans optimisations."
+            },
+            {
+              question: "Qu'est-ce que la méthode de Crank-Nicolson ?",
+              options: [
+                "Un type d'option",
+                "Une méthode de différences finies (moyenne explicite/implicite)",
+                "Une stratégie de trading",
+                "Un modèle de volatilité"
+              ],
+              correct: 1,
+              explication: "Crank-Nicolson est une méthode de différences finies qui moyenne les schémas explicite et implicite, offrant un excellent compromis stabilité/précision pour résoudre l'EDP de Black-Scholes."
+            },
+            {
+              question: "Dans quel cas les arbres binomiaux convergent-ils vers Black-Scholes ?",
+              options: [
+                "Jamais",
+                "Quand on augmente le nombre de pas (N → ∞)",
+                "Seulement pour les calls",
+                "Quand la volatilité est nulle"
+              ],
+              correct: 1,
+              explication: "Avec un nombre de pas infini, l'arbre binomial discret converge vers le processus continu de Black-Scholes. En pratique, 50-100 pas suffisent pour une bonne précision."
             }
           ]
         },
@@ -3423,36 +3732,337 @@ const startAtRecommendedLevel = () => {
               section: "Value-at-Risk (VaR)",
               texte: "La VaR mesure la perte maximale potentielle sur un horizon donné avec un niveau de confiance donné. C'est LA métrique de risque en finance.",
               definition: "VaR(95%, 1 jour) = 100 000€ signifie : Il y a 5% de chances de perdre plus de 100 000€ demain",
-              methodes: [
-                "**Méthode paramétrique** : Assume normalité, utilise moyenne et écart-type",
-                "**Simulation historique** : Utilise les rendements passés",
-                "**Monte Carlo** : Simule l'avenir avec des modèles stochastiques"
+              formule: "VaR(α) = -Quantile_α(Distribution des P&L)"
+            },
+            {
+              section: "Les trois méthodes de calcul de la VaR",
+              details: [
+                {
+                  type: "Méthode paramétrique (Variance-Covariance)",
+                  definition: "Assume que les rendements suivent une loi normale",
+                  utilisation: "Rapide mais suppose normalité",
+                  exemple: "VaR = -(μ - z_α × σ) × Valeur. Pour 95%, z_α = 1.65. Portfolio 1M€, μ=0.1%/jour, σ=2%/jour → VaR = -(-0.1% - 1.65×2%)×1M = 33k€",
+                  formule: "VaR = Valeur × σ × z_α × √T"
+                },
+                {
+                  type: "Simulation historique",
+                  definition: "Utilise les rendements passés observés (ex: 250 derniers jours)",
+                  utilisation: "Aucune hypothèse de distribution",
+                  exemple: "Reprendre les 250 derniers rendements, les appliquer au portfolio actuel, prendre le 5ème percentile. Si 95% VaR, c'est le 13ème pire scénario sur 250."
+                },
+                {
+                  type: "Monte Carlo",
+                  definition: "Simule l'avenir avec un modèle stochastique (Heston, GARCH)",
+                  utilisation: "Plus réaliste mais plus lent",
+                  exemple: "Simuler 10 000 scénarios futurs avec volatilité stochastique, calculer P&L pour chacun, prendre le 5ème percentile"
+                }
+              ]
+            },
+            {
+              section: "Limites de la VaR",
+              texte: "Bien que très utilisée, la VaR présente des faiblesses importantes.",
+              points: [
+                "**Ne dit rien sur l'ampleur** : VaR = -100k ne dit pas si la perte moyenne est -110k ou -1M quand dépassée",
+                "**Non sub-additive** : VaR(A+B) peut être > VaR(A) + VaR(B), violant la diversification !",
+                "**Sensible au choix de α** : VaR 95% vs 99% donne des résultats très différents",
+                "**Ignore les queues épaisses** : Sous-estime le risque si méthode paramétrique",
+                "**Window dressing** : Traders peuvent optimiser pour réduire VaR sans réduire le vrai risque"
               ]
             },
             {
               section: "Expected Shortfall (ES / CVaR)",
               texte: "L'ES va plus loin que la VaR : elle mesure la perte moyenne SI vous dépassez la VaR. C'est important car la VaR ne dit rien sur l'ampleur des pertes extrêmes.",
-              exemple: "VaR = -100k, mais si ça arrive, vous perdez en moyenne 150k (ES = -150k)"
+              formule: "ES(α) = E[Perte | Perte > VaR(α)]",
+              exemple: "VaR 95% = -100k, mais si ça arrive (5% des cas), vous perdez en moyenne -150k. ES = -150k. L'ES est toujours ≥ VaR.",
+              points: [
+                "**Sub-additive** : ES(A+B) ≤ ES(A) + ES(B) → Cohérent avec diversification",
+                "**Mesure de risque cohérente** : Satisfait les axiomes mathématiques",
+                "**Basel III** : Régulateur bancaire préfère maintenant ES à VaR"
+              ]
             },
             {
               section: "Hedging dynamique",
               texte: "Le hedging dynamique consiste à ajuster continuellement votre portefeuille pour maintenir une exposition neutre. C'est ce que font les market makers.",
-              strategie: {
-                nom: "Delta-Gamma Hedging",
-                principe: "Neutraliser à la fois le delta (risque directionnel) et le gamma (risque de convexité)",
-                instruments: "Actions (pour le delta) + Options (pour le gamma)",
-                frequence: "Rééquilibrage quotidien ou intraday selon la volatilité"
-              }
+              exemple: "Vous vendez 1000 calls delta 0.5. Delta total = -500. Vous achetez 500 actions → Delta neutre. Demain, si le spot monte, delta des calls passe à 0.55 → vous devez acheter 50 actions de plus."
+            },
+            {
+              section: "Delta-Gamma Hedging",
+              texte: "Neutraliser simultanément delta ET gamma pour se protéger contre les gros mouvements.",
+              etapes: [
+                {
+                  etape: "1. Calculer Delta et Gamma du portfolio",
+                  texte: "Sommer les Greeks de toutes les positions"
+                },
+                {
+                  etape: "2. Neutraliser Gamma avec des options",
+                  texte: "Acheter/vendre options pour Gamma_total = 0",
+                  role: "Les actions ont gamma=0, donc on doit utiliser d'autres options"
+                },
+                {
+                  etape: "3. Neutraliser Delta avec des actions",
+                  texte: "Ajuster position en actions pour Delta_total = 0"
+                },
+                {
+                  etape: "4. Rééquilibrer régulièrement",
+                  texte: "Quotidien ou intraday selon volatilité et taille du book"
+                }
+              ],
+              exemple: "Book : short 1000 calls delta 0.5, gamma 0.02. Acheter 200 calls delta 0.3, gamma 0.03 pour neutraliser gamma : 200×0.03 = 6, compense 1000×0.02/3 ≈ 7. Puis ajuster actions pour delta."
+            },
+            {
+              section: "Vega Hedging",
+              texte: "Gérer l'exposition à la volatilité implicite. Crucial pour les desks d'options.",
+              points: [
+                "**Vega long** : Vous gagnez si vol implicite monte (acheteurs d'options)",
+                "**Vega short** : Vous gagnez si vol implicite baisse (vendeurs d'options)",
+                "**Hedging** : Acheter/vendre options de maturité différente pour neutraliser",
+                "**Volatility surface** : Gérer l'exposition par strike ET maturité"
+              ],
+              exemple: "Vous avez vendu des straddles ATM 1 mois (vega short). Pour hedger, acheter des straddles 3 mois (vega long) en quantité appropriée."
             },
             {
               section: "Stress Testing",
               texte: "Le stress testing consiste à évaluer comment votre portefeuille réagirait à des scénarios extrêmes (krach, crise de liquidité, hausse violente des taux).",
               scenarios: [
-                "**Krach 2008** : Baisse de 50% des marchés actions",
-                "**Hausse des taux** : +300 points de base",
-                "**Volatilité extrême** : Doublement de la volatilité implicite",
-                "**Crise de liquidité** : Spreads bid-ask × 10"
+                "**Krach 2008** : Baisse de 50% des marchés actions + écartement des spreads",
+                "**Hausse des taux** : +300 points de base en 6 mois",
+                "**Volatilité extrême** : Doublement de la volatilité implicite (VIX 15 → 30)",
+                "**Crise de liquidité** : Spreads bid-ask × 10, impossibilité de hedger"
+              ],
+              exemple: "Portfolio : 100M€ long actions tech. Scénario krach : actions -50%, vol ×2, corrélations → 1. Perte simulée : 55M€ (pire que -50% car effets secondaires)."
+            },
+            {
+              section: "Backtesting de la VaR",
+              texte: "Valider que votre modèle de VaR est correct en comparant prédictions vs réalisations.",
+              methode: "Sur 250 jours avec VaR 95%, vous devriez dépasser la VaR environ 5% × 250 = 12-13 fois. Si dépassé 5 fois → modèle trop conservateur. Si dépassé 30 fois → modèle sous-estime le risque.",
+              points: [
+                "**Test de Kupiec** : Test statistique de la fréquence de dépassement",
+                "**Christoffersen test** : Vérifie aussi l'indépendance des dépassements",
+                "**Régulateur** : Exige backtesting sur 250 jours minimum"
               ]
+            },
+            {
+              section: "Risque de modèle",
+              texte: "Le risque que votre modèle de pricing ou de risque soit incorrect.",
+              exemples: [
+                {
+                  nom: "Krach 2008 : Modèles de corrélation",
+                  principe: "Les CDO assumaient que les défauts étaient peu corrélés",
+                  exemple: "En réalité, corrélation → 1 en crise → pertes massives"
+                },
+                {
+                  nom: "Flash Crash 2010",
+                  principe: "Algorithmes avec mêmes hypothèses ont amplifié la baisse",
+                  exemple: "-10% sur S&P en 5 minutes avant rebond"
+                },
+                {
+                  nom: "Vol locale vs Vol stochastique",
+                  principe: "Vol locale (Dupire) suppose que smile est déterministe",
+                  risque: "Sous-estime le risque de changement de régime de volatilité"
+                }
+              ]
+            },
+            {
+              section: "Mesures de risque alternatives",
+              texte: "Au-delà de VaR et ES, d'autres métriques existent.",
+              details: [
+                {
+                  type: "Maximum Drawdown",
+                  definition: "Perte maximale depuis un pic historique",
+                  utilisation: "Mesure la résistance psychologique",
+                  exemple: "Portfolio fait +50% puis -40% → Drawdown = 40% depuis le pic"
+                },
+                {
+                  type: "Omega Ratio",
+                  definition: "Ratio des gains au-dessus d'un seuil vs pertes en dessous",
+                  utilisation: "Capture toute la distribution, pas juste moyenne/variance",
+                  formule: "Ω = E[Max(R-L, 0)] / E[Max(L-R, 0)] où L =seuil"
+                },
+                {
+                  type: "Sortino Ratio",
+                  definition: "Comme Sharpe mais pénalise seulement la volatilité baissière",
+                  utilisation: "Plus pertinent car volatilité haussière n'est pas un risque",
+                  formule: "Sortino = (R - r_f) / σ_downside"
+                }
+              ]
+            }
+          ],
+          quiz: [
+            {
+              question: "Que signifie une VaR à 95% sur 1 jour de 50 000€ ?",
+              options: [
+                "Vous perdrez exactement 50 000€ demain",
+                "Il y a 5% de chances de perdre plus de 50 000€ demain",
+                "Vous perdrez au minimum 50 000€",
+                "Votre gain moyen est de 50 000€"
+              ],
+              correct: 1,
+              explication: "VaR(95%, 1j) = 50k€ signifie : dans 95% des cas, vous perdrez moins de 50k€. Donc 5% de chances de perdre plus de 50k€. C'est une borne, pas une prédiction exacte."
+            },
+            {
+              question: "Quelle est la principale différence entre VaR et Expected Shortfall (ES) ?",
+              options: [
+                "Il n'y a aucune différence",
+                "ES mesure la perte moyenne quand la VaR est dépassée",
+                "ES est toujours plus faible que VaR",
+                "ES ne s'utilise que pour les obligations"
+              ],
+              correct: 1,
+              explication: "La VaR dit combien vous pouvez perdre dans le pire des 5% des cas. L'ES dit combien vous perdez EN MOYENNE dans ces 5% pires cas. ES ≥ VaR toujours."
+            },
+            {
+              question: "Quelle méthode de VaR assume que les rendements suivent une loi normale ?",
+              options: [
+                "Monte Carlo",
+                "Simulation historique",
+                "Méthode paramétrique (Variance-Covariance)",
+                "Aucune méthode"
+              ],
+              correct: 2,
+              explication: "La méthode paramétrique/variance-covariance calcule VaR = σ × z_α en assumant normalité. Rapide mais sous-estime les crashs (queues épaisses)."
+            },
+            {
+              question: "Pourquoi la VaR n'est-elle pas 'sub-additive' ?",
+              options: [
+                "C'est faux, elle est toujours sub-additive",
+                "VaR(A+B) peut être > VaR(A) + VaR(B), violant le principe de diversification",
+                "Parce qu'elle est trop compliquée",
+                "Parce qu'elle ignore les taux d'intérêt"
+              ],
+              correct: 1,
+              explication: "La VaR peut violer la sub-additivité : combiner deux portfolios peut augmenter la VaR ! C'est mathématiquement incohérent. L'ES, elle, est toujours sub-additive."
+            },
+            {
+              question: "Qu'est-ce que le delta hedging ?",
+              options: [
+                "Acheter uniquement des calls",
+                "Ajuster sa position en actions pour maintenir delta = 0",
+                "Vendre toutes ses options",
+                "Ne rien faire"
+              ],
+              correct: 1,
+              explication: "Delta hedging = acheter/vendre des actions pour neutraliser le delta de votre book d'options. Si delta = -500, acheter 500 actions pour être delta-neutre."
+            },
+            {
+              question: "Pourquoi faut-il aussi hedger le gamma en plus du delta ?",
+              options: [
+                "Ce n'est pas nécessaire",
+                "Parce que le delta change quand le prix bouge (gamma élevé = exposition non-linéaire)",
+                "Pour faire plaisir au régulateur",
+                "Le gamma n'existe pas"
+              ],
+              correct: 1,
+              explication: "Être delta-neutre protège seulement contre les petits mouvements. Si gamma élevé, le delta change vite avec le prix → gros mouvements créent des pertes. Il faut neutraliser le gamma avec d'autres options."
+            },
+            {
+              question: "Comment neutralise-t-on le gamma ?",
+              options: [
+                "Avec des actions (gamma = 0)",
+                "En achetant/vendant d'autres options (qui ont du gamma)",
+                "On ne peut pas le neutraliser",
+                "En attendant l'échéance"
+              ],
+              correct: 1,
+              explication: "Les actions ont gamma = 0, donc inutiles pour neutraliser gamma. Il faut utiliser d'autres options qui ont du gamma pour compenser celui du portfolio."
+            },
+            {
+              question: "Qu'est-ce qu'un stress test ?",
+              options: [
+                "Un test médical",
+                "Simuler comment le portfolio réagit à des scénarios extrêmes (krach, crise)",
+                "Un type de VaR",
+                "Un Greek"
+              ],
+              correct: 1,
+              explication: "Le stress testing simule des scénarios de crise (krach -50%, vol ×3, spreads ×10) pour voir combien on perdrait. Complète la VaR qui ne capture pas les queues extrêmes."
+            },
+            {
+              question: "Combien de fois devrait-on dépasser une VaR 95% sur 250 jours ?",
+              options: [
+                "0 fois",
+                "Environ 12-13 fois (5% de 250)",
+                "50 fois",
+                "250 fois"
+              ],
+              correct: 1,
+              explication: "VaR 95% signifie 5% de dépassements attendus. Sur 250 jours : 5% × 250 ≈ 12-13 dépassements. Si beaucoup plus → modèle sous-estime le risque. Si beaucoup moins → trop conservateur."
+            },
+            {
+              question: "Qu'est-ce que le risque de modèle ?",
+              options: [
+                "Le risque que votre modèle de pricing soit incorrect",
+                "Le risque de marché",
+                "Le risque de taux",
+                "Aucun risque"
+              ],
+              correct: 0,
+              explication: "Le risque de modèle est le risque que vos hypothèses soient fausses. Ex: 2008, modèles assumaient corrélations faibles entre défauts → faux en crise → pertes massives."
+            },
+            {
+              question: "Pourquoi Basel III préfère-t-il ES à VaR ?",
+              options: [
+                "ES est plus simple",
+                "ES est sub-additive et mesure mieux le risque de queue",
+                "VaR est interdite",
+                "Par tradition"
+              ],
+              correct: 1,
+              explication: "ES est mathématiquement cohérente (sub-additive) et capture mieux les pertes extrêmes. VaR ne dit rien sur l'ampleur des pertes au-delà du quantile."
+            },
+            {
+              question: "Qu'est-ce que le vega hedging ?",
+              options: [
+                "Hedger le prix spot",
+                "Neutraliser l'exposition à la volatilité implicite",
+                "Hedger les taux",
+                "Ignorer la volatilité"
+              ],
+              correct: 1,
+              explication: "Vega hedging = acheter/vendre des options pour neutraliser l'exposition aux changements de volatilité implicite. Si vega positif, vous gagnez si vol monte; si vega négatif, vous gagnez si vol baisse."
+            },
+            {
+              question: "Qu'est-ce que le Maximum Drawdown ?",
+              options: [
+                "La VaR maximale",
+                "La perte maximale depuis un pic historique",
+                "Le gain maximum",
+                "Un type d'option"
+              ],
+              correct: 1,
+              explication: "Le drawdown est la baisse maximale depuis le plus haut historique. Portfolio : +60% puis -40% → drawdown = 40% depuis le pic. Mesure la douleur psychologique maximale."
+            },
+            {
+              question: "Pourquoi la simulation historique ne nécessite-t-elle aucune hypothèse de distribution ?",
+              options: [
+                "Parce qu'elle est magique",
+                "Elle utilise directement les rendements passés observés",
+                "Elle utilise la loi normale",
+                "C'est faux, elle nécessite des hypothèses"
+              ],
+              correct: 1,
+              explication: "La simulation historique reprend les 250 (ou N) derniers rendements réels et les applique au portfolio actuel. Aucune hypothèse sur la distribution, mais suppose que le futur ressemble au passé."
+            },
+            {
+              question: "Qu'est-ce que le test de Kupiec ?",
+              options: [
+                "Un test médical",
+                "Un test statistique vérifiant si le nombre de dépassements de VaR est cohérent",
+                "Un type d'option",
+                "Un modèle de pricing"
+              ],
+              correct: 1,
+              explication: "Le test de Kupiec vérifie si la fréquence observée de dépassements de VaR est statistiquement cohérente avec le niveau de confiance. Si VaR 95% dépassée 30 fois sur 250 jours → modèle rejeté."
+            },
+            {
+              question: "Quelle est la fréquence typique de rééquilibrage d'un delta hedge ?",
+              options: [
+                "Une fois par an",
+                "Quotidien ou intraday selon volatilité et taille du book",
+                "Jamais",
+                "Toutes les heures obligatoirement"
+              ],
+              correct: 1,
+              explication: "Les market makers rééquilibrent quotidiennement (voire plusieurs fois par jour si forte volatilité ou gros book). Plus le gamma est élevé, plus il faut rééquilibrer fréquemment."
             }
           ]
         },
@@ -3462,54 +4072,354 @@ const startAtRecommendedLevel = () => {
             {
               section: "Le Volatility Smile",
               texte: "En théorie Black-Scholes, la volatilité devrait être constante pour tous les strikes. En pratique, on observe un 'smile' ou 'skew' : la volatilité implicite varie avec le strike.",
-              formes: [
-                "**Smile** : Volatilité plus élevée pour les options ITM et OTM (forme de U)",
-                "**Skew** : Volatilité décroissante avec le strike (marchés actions)",
-                "**Smirk** : Mix des deux"
+              points: [
+                "Smile : Volatilité plus élevée pour les options ITM et OTM (forme de U)",
+                "Skew : Volatilité décroissante avec le strike (marchés actions)",
+                "Smirk : Mix des deux",
+                "Flat : Volatilité presque constante (rare, parfois sur forex)"
+              ]
+            },
+            {
+              section: "Anatomie du smile",
+              texte: "Le smile varie selon la classe d'actif et reflète les attentes du marché.",
+              details: [
+                {
+                  type: "Actions : Skew prononcé",
+                  definition: "Vol implicite décroît quand strike augmente",
+                  utilisation: "Puts OTM (protection) sont très chers",
+                  exemple: "S&P 500 spot 4000. Put strike 3600 : vol 25%. Call strike 4400 : vol 18%. ATM : vol 20%."
+                },
+                {
+                  type: "Forex : Smile symétrique",
+                  definition: "Vol implicite élevée pour strikes très ITM et OTM",
+                  utilisation: "Incertitude bidirectionnelle",
+                  exemple: "EUR/USD : vol implicite forme un U. Options loin du spot sont chères des deux côtés."
+                },
+                {
+                  type: "Matières premières : Skew inversé parfois",
+                  definition: "Vol implicite peut monter avec le strike",
+                  utilisation: "Peur de hausse soudaine (pétrole, blé)",
+                  exemple: "Pétrole : calls OTM chers (peur de choc d'offre)"
+                }
               ]
             },
             {
               section: "Pourquoi le smile existe ?",
+              texte: "Plusieurs explications théoriques et empiriques du smile.",
               raisons: [
-                "**Peur des crashs** : Les investisseurs paient plus cher pour se protéger contre les baisses",
-                "**Queues épaisses** : Les événements extrêmes sont plus fréquents que la loi normale ne le prédit",
-                "**Offre et demande** : Forte demande pour les puts OTM (protection)",
-                "**Sauts de prix** : Les marchés ne bougent pas de façon continue"
+                "Peur des crashs : Les investisseurs paient plus cher pour se protéger contre les baisses (puts OTM)",
+                "Queues épaisses : Les événements extrêmes sont plus fréquents que la loi normale ne le prédit",
+                "Offre et demande : Forte demande institutionnelle pour les puts OTM (protection de portefeuille)",
+                "Sauts de prix : Les marchés ne bougent pas de façon continue (earnings, événements macro)",
+                "Effet de levier : Quand les prix baissent, l'endettement augmente → plus de risque → vol monte"
+              ],
+              exemple: "Krach 1987 : depuis ce jour, les puts OTM sont structurellement plus chers (mémoire du marché)."
+            },
+            {
+              section: "Mesurer le smile : le Skew Index",
+              texte: "Quantifier l'asymétrie du smile pour détecter la peur du marché.",
+              formule: "Skew = Vol_impl(Put 90%) - Vol_impl(Call 110%)",
+              exemple: "S&P 500 : Put 10% OTM à vol 28%, Call 10% OTM à vol 18%. Skew = 28% - 18% = 10 points. Skew élevé = forte peur de baisse.",
+              points: [
+                "Skew positif (>0) : Peur de baisse, typique des actions",
+                "Skew négatif (<0) : Peur de hausse, rare (parfois matières premières)",
+                "Skew croissant : Marché de plus en plus nerveux"
               ]
             },
             {
               section: "Trading la volatilité",
               texte: "Les traders sophistiqués ne tradent pas seulement la direction (hausse/baisse) mais aussi la volatilité elle-même.",
               strategies: [
-                {
-                  nom: "Long Straddle",
-                  composition: "Acheter Call + Put au même strike ATM",
-                  pari: "Grosse variation de prix (dans un sens ou l'autre)",
-                  Greeks: "Delta neutre, Vega positif, Gamma positif, Theta négatif"
-                },
-                {
-                  nom: "Iron Condor",
-                  composition: "Vendre Call + Put proches, acheter Call + Put éloignés",
-                  pari: "Prix reste dans une fourchette",
-                  Greeks: "Delta neutre, Vega négatif, Theta positif"
-                },
-                {
-                  nom: "Volatility Arbitrage",
-                  composition: "Acheter volatilité implicite sous-évaluée, vendre sur-évaluée",
-                  pari: "Retour à la moyenne de la volatilité",
-                  risque: "Nécessite hedging dynamique constant"
-                }
+                  {
+                    nom: "Long Straddle",
+                    composition: "Acheter Call ATM + Put ATM au même strike",
+                    pari: "Grosse variation de prix (dans un sens ou l'autre), peu importe la direction",
+                    Greeks: "Delta ≈ 0, Vega positif élevé, Gamma positif, Theta négatif fort",
+                    exemple: "S&P 4000, acheter call + put strike 4000. Coût 200$. Rentable si S&P sort de [3800, 4200]."
+                  },
+                  {
+                    nom: "Short Strangle",
+                    composition: "Vendre Put OTM + Call OTM",
+                    pari: "Prix reste dans une fourchette, volatilité baisse",
+                    Greeks: "Delta ≈ 0, Vega négatif, Theta positif (collecte premium)",
+                    risque: "Pertes illimitées si gros mouvement"
+                  },
+                  {
+                    nom: "Iron Condor",
+                    composition: "Vendre Call + Put proches, acheter Call + Put éloignés",
+                    pari: "Prix reste dans une fourchette définie",
+                    Greeks: "Delta ≈ 0, Vega négatif, Theta positif, risque limité",
+                    exemple: "Vendre put 3900/call 4100, acheter put 3800/call 4200. Gain max si S&P reste entre 3900-4100."
+                  },
+                  {
+                    nom: "Volatility Arbitrage",
+                    composition: "Acheter volatilité implicite sous-évaluée, vendre sur-évaluée",
+                    pari: "Retour à la moyenne de la volatilité",
+                    risque: "Nécessite hedging dynamique constant, coûts de transaction"
+                  },
+                  {
+                    nom: "Calendar Spread",
+                    composition: "Vendre option court terme, acheter même strike long terme",
+                    pari: "Vol court terme va baisser vs vol long terme",
+                    Greeks: "Vega positif sur terme structure"
+                  }
               ]
             },
             {
               section: "La surface de volatilité",
               texte: "La surface de volatilité représente la volatilité implicite en fonction du strike ET de la maturité. C'est un objet 3D que les traders observent constamment.",
               dimensions: [
-                "**Axe X** : Strike (moneyness)",
-                "**Axe Y** : Maturité",
-                "**Axe Z** : Volatilité implicite"
+                "Axe X : Strike (ou moneyness : K/S)",
+                "Axe Y : Maturité (time to expiry)",
+                "Axe Z : Volatilité implicite"
               ],
-              utilisation: "Identifier les arbitrages, pricer les exotiques, gérer le risque de volatilité"
+              utilisation: "Identifier les arbitrages, pricer les exotiques, gérer le risque de volatilité",
+              exemple: "Si vol implicite options 1 mois est anormalement basse vs 3 mois → arbitrage possible : acheter 1m, vendre 3m."
+            },
+            {
+              section: "Modèles de volatilité locale",
+              texte: "Ajuster Black-Scholes pour reproduire le smile observé.",
+              details: [
+                {
+                  type: "Modèle de Dupire (Local Volatility)",
+                  definition: "σ(S,t) : volatilité dépend du niveau de prix ET du temps",
+                  utilisation: "Reproduit parfaitement le smile observé aujourd'hui",
+                  exemple: "σ_local(4500, 30j) = 22%, σ_local(3500, 30j) = 30%. Vol plus élevée quand prix bas.",
+                  formule: "σ_local²(K,T) = [∂C/∂T + (r-q)K∂C/∂K] / [½K²∂²C/∂K²]"
+                },
+                {
+                  type: "Limites de la vol locale",
+                  definition: "Assume que smile futur est déterministe",
+                  utilisation: "Sous-estime le risque de mouvement du smile lui-même",
+                  exemple: "En crise, smile peut se déformer brutalement → vol locale ne le capture pas"
+                }
+              ]
+            },
+            {
+              section: "Term structure de la volatilité",
+              texte: "La volatilité varie aussi selon la maturité, pas seulement le strike.",
+              points: [
+              "Contango : Vol court terme < Vol long terme (normal, incertitude croît avec temps)",
+              "Backwardation : Vol court terme > Vol long terme (stress, événement imminent)",
+              "VIX term structure : Observe la structure de vol implicite sur S&P 500"
+              ],
+              exemple: "Avant earnings : vol 1 semaine = 35% (événement imminent), vol 3 mois = 22% (normal). Backwardation."
+            },
+            {
+              section: "Vega et sensibilité au smile",
+              texte: "Le vega standard mesure la sensibilité à un shift parallèle de la surface. Mais le smile peut se déformer !",
+              concepts: [
+                {
+                nom: "Vega",
+                description: "Sensibilité à un shift parallèle de toute la surface (+1% partout)"
+                },
+                {
+                nom: "Vanna",
+                description: "Sensibilité du vega au prix spot (ou sensibilité du delta à la vol)",
+                formule: "Vanna = ∂Vega/∂S = ∂Delta/∂σ"
+                },
+                {
+                nom: "Volga (Vomma)",
+                description: "Convexité par rapport à la volatilité",
+                formule: "Volga = ∂Vega/∂σ = ∂²V/∂σ²"
+                }
+              ]
+            },
+            {
+              section: "Stratégies sur le smile",
+              texte: "Trader les déformations du smile plutôt que juste le niveau de vol.",
+              strategies: [
+                {
+                nom: "Butterfly Spread",
+                composition: "Acheter 1 ATM, vendre 2 options adjacentes, acheter 1 éloignée",
+                pari: "Smile va s'aplatir (différence de vol entre strikes diminue)",
+                Greeks: "Vanna et volga jouent un rôle clé"
+                },
+                {
+                nom: "Risk Reversal",
+                composition: "Acheter call OTM, vendre put OTM (ou inverse)",
+                pari: "Skew va changer (écart de vol entre call et put)",
+                usage: "Mesure de sentiment : RR > 0 = optimisme, RR < 0 = pessimisme"
+                }
+              ]
+            }
+          ],
+          quiz: [
+            {
+              question: "Qu'est-ce que le 'volatility smile' ?",
+              options: [
+                "Une stratégie d'options",
+                "Le fait que la volatilité implicite varie avec le strike (devrait être constante selon Black-Scholes)",
+                "Un Greek",
+                "Un type d'obligation"
+              ],
+              correct: 1,
+              explication: "Le smile est l'observation empirique que la volatilité implicite varie avec le strike, violant l'hypothèse de Black-Scholes qui assume vol constante. C'est une des principales limites du modèle."
+            },
+            {
+              question: "Quelle forme de smile observe-t-on typiquement sur les marchés actions ?",
+              options: [
+                "Smile symétrique (U)",
+                "Skew : volatilité décroissante quand strike augmente",
+                "Flat (constante)",
+                "Aléatoire"
+              ],
+              correct: 1,
+              explication: "Les marchés actions montrent un skew prononcé : puts OTM (protection) ont une vol implicite beaucoup plus élevée que calls OTM. Reflète la peur des crashs depuis 1987."
+            },
+            {
+              question: "Pourquoi les puts OTM sont-ils structurellement plus chers depuis le krach 1987 ?",
+              options: [
+                "Par hasard",
+                "Mémoire du marché : forte demande pour protection contre les crashs",
+                "Parce que c'est obligatoire",
+                "Ils ne sont pas plus chers"
+              ],
+              correct: 1,
+              explication: "Depuis le krach 1987 (-22% en 1 jour), les investisseurs institutionnels achètent massivement des puts OTM pour se protéger, créant une demande structurelle qui fait monter leur prix (vol implicite)."
+            },
+            {
+              question: "Qu'est-ce qu'un Long Straddle ?",
+              options: [
+                "Acheter call + put au même strike ATM",
+                "Vendre call + put",
+                "Acheter uniquement des calls",
+                "Une obligation"
+              ],
+              correct: 0,
+              explication: "Long Straddle = acheter call ATM + put ATM. Pari sur un gros mouvement (dans un sens ou l'autre). Delta ≈ 0, vega positif élevé, theta négatif. Rentable si forte variation > coût total."
+            },
+            {
+              question: "Quel est l'objectif d'un Iron Condor ?",
+              options: [
+               "Parier sur une forte hausse",
+               "Collecter du premium en pariant que le prix reste dans une fourchette",
+               "Hedge le delta",
+               "Augmenter le gamma"
+              ],
+              correct: 1,
+              explication: "Iron Condor : vendre strangle (call + put proches), acheter strangle plus large pour limiter risque. Profit si prix reste dans la fourchette. Theta positif (collecte temps), vega négatif."
+            },
+            {
+              question: "Qu'est-ce que la 'surface de volatilité' ?",
+              options: [
+               "Un graphique 2D",
+               "Volatilité implicite en fonction du strike ET de la maturité (objet 3D)",
+               "Le prix d'une option",
+               "Un type de swap"
+              ],
+              correct: 1,
+              explication: "La surface de volatilité est un objet 3D : axes X = strike, Y = maturité, Z = vol implicite. Les traders l'observent constamment pour détecter arbitrages et gérer le risque de vol."
+            },
+            {
+              question: "Qu'est-ce que le 'Skew Index' ?",
+              options: [
+               "Le VIX",
+               "La différence de vol implicite entre puts OTM et calls OTM",
+               "Un indice boursier",
+               "Le gamma"
+              ],
+              correct: 1,
+              explication: "Skew = Vol_impl(Put OTM) - Vol_impl(Call OTM). Mesure l'asymétrie du smile. Skew élevé = forte peur de baisse. Typiquement 5-15 points pour actions, parfois 20+ en crise."
+            },
+            {
+              question: "Que signifie 'backwardation' dans la term structure de volatilité ?",
+              options: [
+               "Vol court terme < Vol long terme",
+               "Vol court terme > Vol long terme (stress, événement imminent)",
+               "Vol constante",
+               "Aucune volatilité"
+              ],
+              correct: 1,
+              explication: "Backwardation : vol CT > vol LT. Typique avant événement majeur (earnings, élection). Contango (normal) : vol CT < vol LT car incertitude croît avec le temps."
+            },
+            {
+              question: "Qu'est-ce que le modèle de Dupire (Local Volatility) ?",
+              options: [
+               "Vol constante comme Black-Scholes",
+               "Vol dépend du niveau de prix et du temps : σ(S,t)",
+               "Vol stochastique",
+               "Un modèle à sauts"
+              ],
+              correct: 1,
+              explication: "Dupire : vol locale σ(S,t) ajuste Black-Scholes pour reproduire parfaitement le smile observé. Vol plus élevée quand prix bas (options OTM). Limite : assume smile futur déterministe."
+            },
+            {
+              question: "Qu'est-ce que Vanna ?",
+              options: [
+               "Un type d'option",
+               "Sensibilité du vega au spot (ou du delta à la vol)",
+               "La volatilité",
+               "Le gamma"
+              ],
+              correct: 1,
+              explication: "Vanna = ∂Vega/∂S = ∂Delta/∂σ. Mesure comment le vega change quand le prix bouge, ou comment le delta change quand la vol change. Important pour gérer les déformations du smile."
+            },
+            {
+              question: "Qu'est-ce qu'un Volatility Arbitrage ?",
+              options: [
+               "Acheter vol implicite cheap, vendre vol réalisée via delta-hedging",
+               "Acheter uniquement des calls",
+               "Un type d'obligation",
+               "Ignorer la volatilité"
+              ],
+              correct: 0,
+              explication: "Vol arb : acheter options quand vol implicite < vol réalisée attendue, puis delta-hedge quotidiennement pour capturer la différence. Nécessite discipline de hedging et coûts de transaction bas."
+            },
+            {
+              question: "Pourquoi le smile des options forex est-il souvent symétrique ?",
+              options: [
+               "Par erreur",
+               "Incertitude bidirectionnelle : la devise peut monter ou baisser de façon similaire",
+               "Parce que c'est obligatoire",
+               "Il ne l'est jamais"
+              ],
+              correct: 1,
+              explication: "Forex : pas de biais directionnel clair comme les actions (qui montent tendanciellement). EUR/USD peut monter ou baisser avec probabilités similaires → smile symétrique (forme de U)."
+            },
+            {
+              question: "Qu'est-ce qu'un Calendar Spread ?",
+              options: [
+               "Acheter et vendre le même strike mais maturités différentes",
+               "Acheter uniquement court terme",
+               "Un swap",
+               "Une obligation"
+              ],
+              correct: 0,
+              explication: "Calendar spread : vendre option court terme, acheter même strike long terme. Pari : vol court terme va baisser vs vol long terme. Profite de la différence de theta et vega entre maturités."
+            },
+            {
+              question: "Qu'est-ce que Volga (Vomma) ?",
+              options: [
+               "Le vega",
+               "La convexité par rapport à la volatilité : ∂²V/∂σ²",
+               "Le delta",
+               "Un indice boursier"
+              ],
+              correct: 1,
+              explication: "Volga = ∂Vega/∂σ. Mesure combien le vega change quand la volatilité change. Important pour les grandes variations de vol. Positif pour acheteurs d'options."
+            },
+            {
+              question: "Pourquoi les traders observent-ils constamment la surface de volatilité ?",
+              options: [
+               "Par ennui",
+               "Pour détecter des arbitrages et gérer l'exposition au risque de vol sur tous les strikes/maturités",
+               "Ce n'est pas nécessaire",
+               "Pour le régulateur"
+              ],
+              correct: 1,
+              explication: "La surface de vol est le 'prix' de la volatilité sur tous les strikes et maturités. Des déformations inhabituelles indiquent des opportunités d'arbitrage ou des risques à gérer."
+            },
+            {
+              question: "Qu'est-ce qu'un Risk Reversal ?",
+              options: [
+               "Acheter call OTM et vendre put OTM (ou inverse)",
+               "Acheter uniquement des puts",
+               "Un type d'obligation",
+               "Une stratégie sans risque"
+              ],
+              correct: 0,
+              explication: "Risk Reversal : long call OTM + short put OTM (ou inverse). Mesure le skew : écart de vol entre call et put. RR > 0 = market optimiste (calls chers), RR < 0 = pessimiste (puts chers)."
             }
           ]
         },
