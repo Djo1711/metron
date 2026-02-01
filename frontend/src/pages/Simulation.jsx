@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer, Area, AreaChart } from 'recharts'
-import { priceProduct, saveSimulation, getQuickPricingData, getUserSimulations, deleteSimulation, getLeaderboard } from '../services/api'
+import { priceProduct, saveSimulation, getQuickPricingData, getUserSimulations, deleteSimulation, getLeaderboard, buildProducts } from '../services/api'
 import { supabase } from '../services/supabase'
 import Tooltip, { InfoIcon } from '../components/Tooltip'
 
@@ -52,6 +52,23 @@ export default function Simulation({ isGuest }) {
     product: null,
     metric: 'max_gain'
   })
+
+  // États pour Product Builder
+  const [builderObjectives, setBuilderObjectives] = useState({
+    ticker: 'AAPL',
+    principal: 10000,
+    min_gain_pct: 15,
+    max_loss_pct: 10,
+    risk_tolerance: 50,
+    time_horizon_years: 1,
+    spot_price: 150,
+    volatility: 0.25,
+    risk_free_rate: 0.04,
+    prefer_income: false
+  })
+  const [builderResults, setBuilderResults] = useState(null)
+  const [loadingBuilder, setLoadingBuilder] = useState(false)
+  const [loadingBuilderMarketData, setLoadingBuilderMarketData] = useState(false)
 
   const products = {
     autocall: {
@@ -222,6 +239,72 @@ export default function Simulation({ isGuest }) {
     }
   }
 
+  // Product Builder handlers
+  const handleBuilderChange = (e) => {
+    const { name, value, type, checked } = e.target
+    setBuilderObjectives({
+      ...builderObjectives,
+      [name]: type === 'checkbox' ? checked : parseFloat(value) || value
+    })
+  }
+
+  const handleFetchBuilderMarketData = async () => {
+    setLoadingBuilderMarketData(true)
+    setError(null)
+    
+    try {
+      const data = await getQuickPricingData(builderObjectives.ticker)
+      setBuilderObjectives({
+        ...builderObjectives,
+        spot_price: data.current_price,
+        volatility: data.volatility
+      })
+      alert(`✅ Données récupérées pour ${data.name}`)
+    } catch (err) {
+      setError('Impossible de récupérer les données du marché')
+    } finally {
+      setLoadingBuilderMarketData(false)
+    }
+  }
+
+  const handleBuilderSubmit = async (e) => {
+    e.preventDefault()
+    setLoadingBuilder(true)
+    setError(null)
+    
+    try {
+      const response = await buildProducts(builderObjectives)
+      setBuilderResults(response.data)
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Erreur lors de la construction')
+    } finally {
+      setLoadingBuilder(false)
+    }
+  }
+
+  const handleSelectBuiltProduct = (product) => {
+    // Remplir le formulaire avec les paramètres du produit
+    setFormData({
+      ...formData,
+      ...product.parameters
+    })
+    setSelectedProduct(product.product_type)
+    setActiveTab('simulator')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const getRiskColor = (risk) => {
+    if (risk < 30) return 'text-green-400'
+    if (risk < 60) return 'text-yellow-400'
+    return 'text-red-400'
+  }
+
+  const getRiskLabel = (risk) => {
+    if (risk < 30) return 'Faible'
+    if (risk < 60) return 'Modéré'
+    return 'Élevé'
+  }
+
   const generatePayoffData = () => {
     if (!result) return []
     
@@ -333,6 +416,16 @@ export default function Simulation({ isGuest }) {
             ⚡ Simulateur
           </button>
           <button
+            onClick={() => setActiveTab('builder')}
+            className={`px-8 py-3 rounded-xl font-semibold transition-all ${
+              activeTab === 'builder'
+                ? 'bg-gradient-metron shadow-neon-purple text-white'
+                : 'glass-card text-gray-400 hover:text-white border border-white/10'
+            }`}
+          >
+            🏗️ Product Builder
+          </button>
+          <button
             onClick={() => setActiveTab('simulations')}
             className={`px-8 py-3 rounded-xl font-semibold transition-all ${
               activeTab === 'simulations'
@@ -353,6 +446,323 @@ export default function Simulation({ isGuest }) {
             🏆 Classement
           </button>
         </div>
+
+        {/* Onglet Product Builder */}
+        {activeTab === 'builder' && (
+          <div className="grid lg:grid-cols-2 gap-8">
+            {/* Formulaire Objectifs */}
+            <div className="glass-card p-8 border border-metron-purple/30">
+              <h2 className="text-2xl font-bold text-white mb-6">🎯 Vos Objectifs</h2>
+              
+              <form onSubmit={handleBuilderSubmit} className="space-y-5">
+                {/* Données de marché */}
+                <div className="bg-white/5 p-4 rounded-lg">
+                  <h3 className="font-semibold text-white mb-3 text-sm">📊 Action sous-jacente</h3>
+                  
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                        <Tooltip content="Symbole boursier de l'action (ex: AAPL pour Apple, MSFT pour Microsoft)">
+                          Ticker
+                        </Tooltip>
+                      </label>
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          name="ticker"
+                          value={builderObjectives.ticker}
+                          onChange={handleBuilderChange}
+                          className="input-futuristic flex-1"
+                        />
+                        <button
+                          type="button"
+                          onClick={handleFetchBuilderMarketData}
+                          disabled={loadingBuilderMarketData}
+                          className="btn-neon px-4 py-2 text-sm"
+                        >
+                          {loadingBuilderMarketData ? '...' : '🔄'}
+                        </button>
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                        <Tooltip content="Prix actuel de l'action sur le marché">
+                          Prix Spot ($)
+                        </Tooltip>
+                      </label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        name="spot_price"
+                        value={builderObjectives.spot_price}
+                        onChange={handleBuilderChange}
+                        className="input-futuristic w-full"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                        <Tooltip content="Mesure de l'amplitude des variations du prix. Valeur typique: 0.15 à 0.40">
+                          Volatilité (σ)
+                        </Tooltip>
+                      </label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        name="volatility"
+                        value={builderObjectives.volatility}
+                        onChange={handleBuilderChange}
+                        className="input-futuristic w-full"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Objectifs financiers */}
+                <div className="bg-metron-purple/10 p-4 rounded-lg border border-metron-purple/30">
+                  <h3 className="font-semibold text-white mb-3 text-sm">💰 Objectifs Financiers</h3>
+                  
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                        <Tooltip content="Montant que vous souhaitez investir">
+                          Capital à investir ($)
+                        </Tooltip>
+                      </label>
+                      <input
+                        type="number"
+                        name="principal"
+                        value={builderObjectives.principal}
+                        onChange={handleBuilderChange}
+                        className="input-futuristic w-full"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                        <Tooltip content="Gain minimum que vous souhaitez réaliser">
+                          Gain minimum souhaité (%)
+                        </Tooltip>
+                      </label>
+                      <input
+                        type="number"
+                        step="0.1"
+                        name="min_gain_pct"
+                        value={builderObjectives.min_gain_pct}
+                        onChange={handleBuilderChange}
+                        className="input-futuristic w-full"
+                      />
+                      <p className="text-xs text-green-400 mt-1">
+                        Cible: +${(builderObjectives.principal * builderObjectives.min_gain_pct / 100).toFixed(2)}
+                      </p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                        <Tooltip content="Perte maximum que vous êtes prêt à accepter">
+                          Perte maximum acceptable (%)
+                        </Tooltip>
+                      </label>
+                      <input
+                        type="number"
+                        step="0.1"
+                        name="max_loss_pct"
+                        value={builderObjectives.max_loss_pct}
+                        onChange={handleBuilderChange}
+                        className="input-futuristic w-full"
+                      />
+                      <p className="text-xs text-red-400 mt-1">
+                        Max: -${(builderObjectives.principal * builderObjectives.max_loss_pct / 100).toFixed(2)}
+                      </p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                        <Tooltip content="Durée pendant laquelle vous souhaitez investir">
+                          Horizon d'investissement (années)
+                        </Tooltip>
+                      </label>
+                      <input
+                        type="number"
+                        step="0.1"
+                        name="time_horizon_years"
+                        value={builderObjectives.time_horizon_years}
+                        onChange={handleBuilderChange}
+                        className="input-futuristic w-full"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Profil de risque */}
+                <div className="bg-metron-blue/10 p-4 rounded-lg border border-metron-blue/30">
+                  <h3 className="font-semibold text-white mb-3 text-sm">⚖️ Profil de Risque</h3>
+                  
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                        <Tooltip content="De 0 (très conservateur) à 100 (très agressif)">
+                          Tolérance au risque: {builderObjectives.risk_tolerance}/100
+                        </Tooltip>
+                      </label>
+                      <input
+                        type="range"
+                        name="risk_tolerance"
+                        min="0"
+                        max="100"
+                        value={builderObjectives.risk_tolerance}
+                        onChange={handleBuilderChange}
+                        className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-metron-purple"
+                      />
+                      <div className="flex justify-between text-xs text-gray-400 mt-1">
+                        <span>Conservateur</span>
+                        <span className={getRiskColor(builderObjectives.risk_tolerance)}>
+                          {getRiskLabel(builderObjectives.risk_tolerance)}
+                        </span>
+                        <span>Agressif</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="checkbox"
+                        id="prefer_income"
+                        name="prefer_income"
+                        checked={builderObjectives.prefer_income}
+                        onChange={handleBuilderChange}
+                        className="w-5 h-5 rounded bg-gray-700 border-gray-600 text-metron-purple focus:ring-metron-purple"
+                      />
+                      <label htmlFor="prefer_income" className="text-sm text-gray-300 cursor-pointer">
+                        <Tooltip content="Privilégier les produits avec coupons réguliers">
+                          Je préfère des revenus réguliers (coupons)
+                        </Tooltip>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <button type="submit" disabled={loadingBuilder} className="btn-neon w-full">
+                  {loadingBuilder ? '⏳ Construction en cours...' : '🏗️ Construire mes produits'}
+                </button>
+              </form>
+            </div>
+
+            {/* Résultats */}
+            {builderResults ? (
+              <div className="space-y-6">
+                {/* Résumé */}
+                <div className="glass-card p-6 border border-metron-blue/30">
+                  <h2 className="text-xl font-bold text-white mb-4">📋 Récapitulatif de vos critères</h2>
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div>
+                      <p className="text-gray-400">Capital</p>
+                      <p className="text-white font-semibold">{builderResults.objectives_summary.capital}$</p>
+                    </div>
+                    <div>
+                      <p className="text-gray-400">Horizon</p>
+                      <p className="text-white font-semibold">{builderResults.objectives_summary.horizon}</p>
+                    </div>
+                    <div>
+                      <p className="text-gray-400">Gain min</p>
+                      <p className="text-green-400 font-semibold">{builderResults.objectives_summary.gain_minimum}</p>
+                    </div>
+                    <div>
+                      <p className="text-gray-400">Perte max</p>
+                      <p className="text-red-400 font-semibold">{builderResults.objectives_summary.perte_maximum}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Produits proposés */}
+                <div className="space-y-4">
+                  <h2 className="text-2xl font-bold text-white">🎁 Produits proposés ({builderResults.proposed_products.length})</h2>
+                  
+                  {builderResults.proposed_products.map((product, index) => (
+                    <div key={index} className="glass-card p-6 border border-metron-purple/30 card-hover">
+                      {/* Header */}
+                      <div className="flex justify-between items-start mb-4">
+                        <div className="flex items-center gap-3">
+                          <div className="text-4xl">{product.icon}</div>
+                          <div>
+                            <h3 className="text-xl font-bold text-white">{product.product_name}</h3>
+                            <p className="text-sm text-gray-400">{product.description}</p>
+                          </div>
+                        </div>
+                        <div className="text-center bg-metron-purple/20 px-4 py-2 rounded-lg border border-metron-purple/50">
+                          <div className="text-3xl font-bold text-metron-purple">{product.match_score}</div>
+                          <div className="text-xs text-gray-400">Score de match</div>
+                        </div>
+                      </div>
+
+                      {/* Résultats attendus */}
+                      <div className="grid grid-cols-4 gap-3 mb-4">
+                        <div className="bg-white/5 p-3 rounded-lg text-center border border-white/10">
+                          <p className="text-xs text-gray-400 mb-1">Gain Max</p>
+                          <p className="text-sm font-bold text-green-400">
+                            +${product.expected_results.max_gain?.toFixed(2)}
+                          </p>
+                        </div>
+                        <div className="bg-white/5 p-3 rounded-lg text-center border border-white/10">
+                          <p className="text-xs text-gray-400 mb-1">Perte Max</p>
+                          <p className="text-sm font-bold text-red-400">
+                            -${product.expected_results.max_loss?.toFixed(2)}
+                          </p>
+                        </div>
+                        <div className="bg-white/5 p-3 rounded-lg text-center border border-white/10">
+                          <p className="text-xs text-gray-400 mb-1">Risque</p>
+                          <p className={`text-sm font-bold ${getRiskColor(product.expected_results.risk_level)}`}>
+                            {product.expected_results.risk_level}%
+                          </p>
+                        </div>
+                        <div className="bg-white/5 p-3 rounded-lg text-center border border-white/10">
+                          <p className="text-xs text-gray-400 mb-1">Prob. Profit</p>
+                          <p className="text-sm font-bold text-blue-400">
+                            {product.expected_results.probability_profit?.toFixed(1)}%
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Avantages & Inconvénients */}
+                      <div className="grid md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                          <p className="text-xs font-semibold text-green-400 mb-2">✅ Avantages</p>
+                          <ul className="space-y-1">
+                            {product.pros.map((pro, i) => (
+                              <li key={i} className="text-xs text-gray-300">• {pro}</li>
+                            ))}
+                          </ul>
+                        </div>
+                        <div>
+                          <p className="text-xs font-semibold text-red-400 mb-2">⚠️ Inconvénients</p>
+                          <ul className="space-y-1">
+                            {product.cons.map((con, i) => (
+                              <li key={i} className="text-xs text-gray-300">• {con}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+
+                      {/* Action */}
+                      <button
+                        onClick={() => handleSelectBuiltProduct(product)}
+                        className="w-full btn-neon py-3"
+                      >
+                        📊 Simuler ce produit →
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="glass-card p-8 border border-white/10 flex items-center justify-center">
+                <div className="text-center">
+                  <div className="text-6xl mb-4">🏗️</div>
+                  <p className="text-gray-400 text-lg">
+                    Définissez vos objectifs et cliquez sur "Construire"
+                  </p>
+                  <p className="text-gray-500 text-sm mt-2">
+                    L'algorithme vous proposera les produits les plus adaptés
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Onglet Simulateur */}
         {activeTab === 'simulator' && (

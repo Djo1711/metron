@@ -229,4 +229,9 @@ export const incrementQuizAttempts = async (userId, level, moduleIndex) => {
   return existing ? existing.attempts + 1 : 1
 }
 
+// ===== PRODUCT BUILDER =====
+
+export const buildProducts = async (objectives) => {
+  return await api.post('/api/product-builder/build', objectives)
+}
 export default api
