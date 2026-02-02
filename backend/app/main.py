@@ -24,6 +24,7 @@ app.include_router(market_data.router, prefix="/api/market", tags=["market"])
 app.include_router(simulations.router, prefix="/api/simulations", tags=["simulations"])
 app.include_router(search.router, prefix="/api/search", tags=["search"])
 app.include_router(users.router, prefix="/api/users", tags=["users"])  # 🆕 Ajoute cette ligne
+app.include_router(product_builder.router, prefix="/api/product-builder", tags=["Product Builder"])
 
 @app.get("/")
 async def root():
