@@ -91,7 +91,6 @@ class WarrantInput(BaseModel):
     warrant_type: str = "call"  # "call" or "put"
     leverage: float = 5
     maturity_years: float
-    principal: Optional[float] = None  # 🆕 AJOUT
     spot_price: Optional[float] = None
     volatility: Optional[float] = None
     risk_free_rate: float = 0.04
@@ -415,7 +414,7 @@ async def price_capital_protected(input_data: CapitalProtectedInput):
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
 
-# ===== WARRANT ===== 🆕 CORRECTION COMPLÈTE
+# ===== WARRANT =====
 @router.post("/warrant", response_model=WarrantOutput)
 async def price_warrant(input_data: WarrantInput):
     """Price Warrant / Turbo with leverage"""
@@ -428,7 +427,7 @@ async def price_warrant(input_data: WarrantInput):
         if sigma is None:
             raise HTTPException(status_code=400, detail="volatility required")
         
-        # Option price (pour 1 warrant)
+        # Option price
         if input_data.warrant_type.lower() == "call":
             option_price = black_scholes_call(spot, input_data.strike_price, 
                                              input_data.maturity_years, 
@@ -442,17 +441,8 @@ async def price_warrant(input_data: WarrantInput):
             option_type = "put"
             intrinsic = max(input_data.strike_price - spot, 0)
         
-        # Prix unitaire du warrant (avec levier)
-        warrant_unit_price = option_price * input_data.leverage
-        
-        # 🆕 Si un principal est fourni, calculer combien de warrants on peut acheter
-        if input_data.principal and input_data.principal > 0:
-            n_warrants = input_data.principal / warrant_unit_price if warrant_unit_price > 0 else 0
-            total_investment = input_data.principal
-        else:
-            # Sinon, on price 100 warrants par défaut
-            n_warrants = 100
-            total_investment = warrant_unit_price * 100
+        # Warrant price with leverage
+        warrant_price = option_price * input_data.leverage
         
         # Greeks
         greeks = calculate_greeks(spot, input_data.strike_price, input_data.maturity_years, 
@@ -461,19 +451,16 @@ async def price_warrant(input_data: WarrantInput):
         # Time value
         time_value = option_price - intrinsic
         
-        # 🆕 Max gain basé sur le nombre de warrants
+        # Max gain: théoriquement illimité pour call, strike pour put
         if input_data.warrant_type.lower() == "call":
-            # Gain si l'action monte de 50%
-            upside_price = spot * 1.5
-            gain_per_warrant = max(upside_price - input_data.strike_price, 0) * input_data.leverage
-            max_gain = gain_per_warrant * n_warrants
+            # Assume 50% upside
+            max_gain = (spot * 0.5) * input_data.leverage
         else:
-            # Put: max gain si l'action tombe à 0
-            gain_per_warrant = input_data.strike_price * input_data.leverage
-            max_gain = gain_per_warrant * n_warrants
+            # Put: max gain = strike price
+            max_gain = input_data.strike_price * input_data.leverage
         
-        # 🆕 Max loss = montant total investi (tous les warrants expirent sans valeur)
-        max_loss = total_investment
+        # Max loss: prime payée × leverage
+        max_loss = warrant_price
         
         # Risk level: très élevé (leverage)
         risk_level = min(100, int(50 + input_data.leverage * 8))
@@ -498,20 +485,20 @@ async def price_warrant(input_data: WarrantInput):
         
         return WarrantOutput(
             product=f"Warrant {input_data.warrant_type.upper()}",
-            fair_value=round(total_investment, 2),  # 🆕 Montant total investi
+            fair_value=round(warrant_price, 2),
             option_value=round(option_price, 2),
             leverage=input_data.leverage,
             strike_price=round(input_data.strike_price, 2),
-            intrinsic_value=round(intrinsic * input_data.leverage * n_warrants, 2),  # 🆕
-            time_value=round(time_value * input_data.leverage * n_warrants, 2),  # 🆕
-            max_gain=round(max_gain, 2),  # 🆕 Basé sur n_warrants
-            max_loss=round(max_loss, 2),  # 🆕 = montant investi
+            intrinsic_value=round(intrinsic * input_data.leverage, 2),
+            time_value=round(time_value * input_data.leverage, 2),
+            max_gain=round(max_gain, 2),
+            max_loss=round(max_loss, 2),
             risk_level=risk_level,
             probability_profit=round(probability_profit, 2),
-            delta=round(greeks["delta"] * input_data.leverage * n_warrants, 4),  # 🆕
-            gamma=round(greeks["gamma"] * input_data.leverage * n_warrants, 6),  # 🆕
-            vega=round(greeks["vega"] * input_data.leverage * n_warrants, 2),  # 🆕
-            theta=round(greeks["theta"] * input_data.leverage * n_warrants, 2),  # 🆕
+            delta=round(greeks["delta"] * input_data.leverage, 4),
+            gamma=round(greeks["gamma"] * input_data.leverage, 6),
+            vega=round(greeks["vega"] * input_data.leverage, 2),
+            theta=round(greeks["theta"] * input_data.leverage, 2),
             break_even_price=round(break_even, 2)
         )
         
