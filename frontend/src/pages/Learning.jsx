@@ -4423,166 +4423,1005 @@ const startAtRecommendedLevel = () => {
             }
           ]
         },
+
         {
           titre: "Module 4 : Produits exotiques",
           contenu: [
             {
+              section: "Introduction aux exotiques",
+              texte: "Les options exotiques sont des dérivés plus complexes que les vanilles (calls/puts standards). Elles offrent des payoffs personnalisés mais sont plus difficiles à pricer et à hedger.",
+              points: [
+                "Moins liquides que les vanilles → spreads bid-ask plus larges",
+                "Path-dependent : le payoff peut dépendre de toute la trajectoire du prix, pas juste du prix final",
+                "Souvent moins chères car elles transfèrent certains risques à l'acheteur",
+                "Utilisées pour des besoins très spécifiques de couverture ou de spéculation"
+              ],
+              exemple: "Un exportateur veut se protéger contre une baisse de l'euro, mais seulement si l'euro reste sous 1.10$ pendant au moins 30 jours → option exotique sur mesure."
+            },
+            {
               section: "Options à barrière",
-              texte: "Les options à barrière s'activent ou se désactivent si le sous-jacent touche un certain niveau. Elles sont moins chères que les vanilles.",
+              texte: "Les options à barrière s'activent ou se désactivent si le sous-jacent touche un certain niveau. Elles sont moins chères que les vanilles car le payoff est conditionnel.",
               types: [
                 {
-                  nom: "Knock-Out",
-                  description: "Option qui disparaît si la barrière est touchée",
-                  exemple: "Call knock-out barrière 200$ sur Apple à 150$. Si Apple touche 200$, l'option meurt immédiatement (même si c'est rentable)"
+                  nom: "Knock-Out (KO)",
+                  description: "Option qui disparaît si la barrière est touchée. Ex: Call KO 200$ sur Apple. Si Apple touche 200$, l'option meurt.",
+                  pour: "Réduire la prime (Moins chère car risque de disparition)"
                 },
                 {
-                  nom: "Knock-In",
-                  description: "Option qui s'active seulement si la barrière est touchée",
-                  exemple: "Put knock-in barrière 100$. L'option n'existe que si Apple tombe sous 100$"
-                },
-                {
-                  nom: "Down-and-Out Put",
-                  description: "Put qui disparaît si on touche une barrière basse",
-                  utilisation: "Protection partielle moins chère"
+                  nom: "Knock-In (KI)",
+                  description: "Option qui s'active seulement si la barrière est touchée. Ex: Put KI 100$. L'option n'existe que si Apple chute sous 100$.",
+                  pour: "Parier sur un scénario précis à très bas coût"
                 }
-              ]
+              ],
+              points: [
+                "<strong>Down-and-Out Put :</strong> Disparaît si on touche une barrière basse. Protection partielle (ex: entre 120 et 140).",
+                "<strong>Up-and-Out Call :</strong> Disparaît si on touche une barrière haute. Pari sur une hausse modérée uniquement."
+              ],
+              formule: "Pricing : Nécessite des méthodes numériques (Monte Carlo, arbres, PDE).",
+              analogie: "Delta et gamma explosent près de la barrière à l'approche de la maturité. Le hedging est extrêmement délicat."
             },
             {
               section: "Options digitales (Binary)",
-              texte: "Payoff tout-ou-rien. Si la condition est remplie → paiement fixe, sinon → 0.",
+              texte: "Payoff tout-ou-rien. Si la condition est remplie → paiement fixe, sinon → 0. Très populaires sur les marchés forex et les paris sportifs.",
+              types: [
+                {
+                  nom: "Cash-or-Nothing",
+                  description: "Paiement fixe (ex: 100$) si condition remplie (ex: S&P > 4500)",
+                  pour: "Spéculation pure"
+                },
+                {
+                  nom: "Asset-or-Nothing",
+                  description: "Reçoit l'actif sous-jacent (ex: 1 action Apple) si Apple > 160$",
+                  pour: "Acquisition d'actifs sous condition"
+                }
+              ],
               exemple: "Digitale 'Apple > 160$ à maturité' qui paie 1000$. Si Apple = 161$, vous gagnez 1000$. Si Apple = 159$, vous gagnez 0$.",
-              risque: "Gamma explosif près de la barrière à l'échéance"
+              citation: "Risque : Gamma explosif près de la barrière à l'échéance. Delta passe de 0 à 1 instantanément. Impossible à hedger proprement près de l'expiry."
             },
             {
               section: "Options asiatiques",
-              texte: "Le payoff dépend du prix MOYEN sur la période, pas seulement du prix final. Moins volatiles donc moins chères.",
+              texte: "Le payoff dépend du prix MOYEN sur la période, pas seulement du prix final. Moins volatiles donc moins chères que les vanilles.",
               formule: "Payoff = Max(0, Prix_Moyen - Strike)",
-              avantage: "Moins sensible aux manipulations de prix à l'échéance"
+              methodes: [
+                {
+                  nom: "Average Price Option",
+                  description: "Payoff basé sur le prix moyen vs strike fixe.",
+                  exemple: "Moyenne 103.33$ vs Strike 100$ → Payoff = 3.33$"
+                },
+                {
+                  nom: "Average Strike Option",
+                  description: "Le Strike est le prix moyen, le payoff est comparé au prix final.",
+                  exemple: "Prix final 110$ vs Moyenne 103.33$ → Payoff = 6.67$"
+                }
+              ],
+              points: [
+                "Moins sensible aux manipulations de prix à l'échéance (moins de 'pinning')",
+                "Réduit l'impact de la volatilité extrême ponctuelle",
+                "20-30% moins chères que vanilles équivalentes",
+                "Utilisation : Hedging industriel (import/export continu, commodities)."
+              ]
             },
             {
               section: "Options lookback",
-              texte: "Le payoff dépend du prix maximum ou minimum atteint pendant la vie de l'option.",
-              exemple: "Lookback Call : Payoff = Prix_Max - Strike. Vous êtes sûr d'avoir le meilleur prix !",
-              cout: "Très chères car elles offrent le timing parfait"
+              texte: "Le payoff dépend du prix maximum ou minimum atteint pendant la vie de l'option. C'est comme avoir une machine à remonter le temps !",
+              methodes: [
+                {
+                  nom: "Fixed Strike Lookback Call",
+                  description: "Payoff = Max(0, Prix_Max - Strike). Vous encaissez le plus haut sommet.",
+                },
+                {
+                  nom: "Floating Strike Lookback Call",
+                  description: "Payoff = Prix_Final - Prix_Min. Vous achetez au plus bas historique.",
+                }
+              ],
+              points: [
+                "Très chères (30-50% de plus) car elles offrent le timing parfait.",
+                "Greeks non standards car l'option est path-dependent.",
+                "Usage : Principalement dans des produits structurés pour clients fortunés."
+              ]
             },
             {
               section: "Rainbow Options",
-              texte: "Options sur plusieurs sous-jacents. Le payoff dépend du meilleur (best-of) ou du pire (worst-of).",
-              utilisation: "Diversification, corrélation entre actifs"
+              texte: "Options sur plusieurs sous-jacents (multi-asset). Le payoff dépend du meilleur (best-of) ou du pire (worst-of) performeur.",
+              strategies: [
+                {
+                  nom: "Best-of Call",
+                  composition: "Panier d'actifs (ex: Apple, Google, Microsoft)",
+                  pari: "Hausse du meilleur performeur du panier",
+                  risque: "Plus cher si la corrélation entre les actifs est faible."
+                },
+                {
+                  nom: "Worst-of Put",
+                  composition: "Protection sur un panier",
+                  pari: "Protection contre la chute du pire actif",
+                  risque: "Probabilité de baisse d'au moins un actif plus élevée."
+                }
+              ],
+              exemple: "Autocall sur worst-of (Euro Stoxx 50, S&P 500, Nikkei). Si les 3 indices sont au-dessus du strike → déclenchement."
+            },
+            {
+              section: "Options à cliquet (Ratchet)",
+              texte: "Verrouillage des gains périodiquement. À chaque date d'observation, le gain est fixé et ne peut plus être perdu.",
+              points: [
+                "Mecanisme : Chaque mois, si le prix a monté, vous verrouillez le gain.",
+                "Avantage : Protection contre la volatilité (on garde les gains même si ça chute après).",
+                "Coût : Très cher (prime 2-3x supérieure à une vanille)."
+              ],
+              exemple: "Mois 1: +10% (verrouillé). Mois 2: -5% (le gain de 10% reste acquis). Mois 3: +9.5%. Total = 19.5%."
+            },
+            {
+              section: "Variance Swaps",
+              texte: "Produit permettant de trader directement la volatilité réalisée. Payoff = variance réalisée - variance strike.",
+              formule: "Payoff = Notionnel × (σ²_réalisée - σ²_strike)",
+              points: [
+                "Exposition pure à la variance, pas de gamma à gérer ni de delta-hedge quotidien.",
+                "Utilisé pour arbitrer entre volatilité implicite et réalisée.",
+                "Risque de queue : Pertes énormes pour le vendeur en cas de krach éclair."
+              ]
+            },
+            {
+              section: "Chooser Options",
+              texte: "L'acheteur peut choisir à une date future si l'option sera un call ou un put. Flexibilité maximale.",
+              points: [
+                "Mécanisme : À la date de choix (ex: à 3 mois), vous décidez du type d'option pour la suite.",
+                "Pricing : Basé sur la put-call parity. Moins cher qu'un straddle.",
+                "Usage : Quand on sait qu'un événement arrive mais qu'on ignore la direction (ex: décision de justice)."
+              ]
+            },
+            {
+              section: "Pricing & Hedging des exotiques",
+              texte: "Black-Scholes ne suffit plus. Les exotiques nécessitent des méthodes numériques avancées et un hedging qui relève de l'art.",
+              methodes: [
+                {
+                  nom: "Monte Carlo",
+                  description: "Simulation de milliers de trajectoires de prix. Très flexible.",
+                },
+                {
+                  nom: "Arbres / PDE",
+                  description: "Discrétisation du temps ou résolution d'équations complexes.",
+                }
+              ],
+              points: [
+                "Défi : Path-dependency (le delta dépend de l'histoire passée).",
+                "Discontinuités : Les barrières créent des sauts brutaux de payoff.",
+                "Greeks : Vanna et Volga deviennent des paramètres critiques."
+              ]
+            },
+            {
+              section: "Produits structurés",
+              texte: "Les exotiques sont les briques de base des produits vendus en banque.",
+              points: [
+                "Autocall : Combinaison de digitales + barrières knock-out.",
+                "Phoenix : Autocall + cliquet + mémoire de coupons.",
+                "Reverse Convertible : Obligation + short put.",
+                "Capital protégé : Zero-coupon + call."
+              ],
+              citation: "Les banques prennent typiquement 5-15% de marge sur la complexité et le manque de transparence."
+            }
+          ],
+          quiz: [
+            {
+              question: "Quelle est la principale différence entre une option vanille et une option exotique ?",
+              options: [
+                "Les exotiques sont toujours plus chères",
+                "Les exotiques ont des payoffs plus complexes et souvent path-dependent",
+                "Les exotiques n'ont pas de Greeks",
+                "Il n'y a pas de différence"
+              ],
+              correct: 1,
+              explication: "Les exotiques ont des structures de payoff plus complexes que les vanilles (call/put simples). Beaucoup sont path-dependent (asiatiques, lookback, barrières) et nécessitent des méthodes de pricing avancées."
+            },
+            {
+              question: "Qu'est-ce qu'une option Knock-Out ?",
+              options: [
+                "Une option qui s'active si la barrière est touchée",
+                "Une option qui disparaît si la barrière est touchée",
+                "Une option sans barrière",
+                "Une option qui paie double"
+              ],
+              correct: 1,
+              explication: "Knock-Out: l'option meurt si le prix touche la barrière. Ex: Call KO barrière 200$ sur Apple à 150$. Si Apple touche 200$, l'option disparaît immédiatement, même si elle est ITM. Moins chère qu'une vanille."
+            },
+            {
+              question: "Pourquoi une option digitale est-elle difficile à hedger près de la maturité ?",
+              options: [
+                "Elle n'a pas de delta",
+                "Son gamma explose près de la barrière (delta passe de 0 à 1 instantanément)",
+                "Elle est trop liquide",
+                "Elle n'a pas de prix"
+              ],
+              correct: 1,
+              explication: "Digitale: payoff discontinu (tout ou rien). Près de l'échéance et près de la barrière, le gamma devient infini. Le delta passe de 0 à 1 instantanément. Impossible à hedger proprement → très risqué."
+            },
+            {
+              question: "Qu'est-ce qu'une option asiatique ?",
+              options: [
+                "Une option vendue en Asie",
+                "Une option dont le payoff dépend du prix moyen sur la période",
+                "Une option sur le Nikkei",
+                "Une option sans strike"
+              ],
+              correct: 1,
+              explication: "Asiatique: payoff basé sur le prix MOYEN sur la période, pas le prix final. Ex: Payoff = Max(0, Prix_Moyen - Strike). Moins volatile que vanille → 20-30% moins chère. Utilisée pour hedging sur longue période."
+            },
+            {
+              question: "Pourquoi les options lookback sont-elles très chères ?",
+              options: [
+                "Elles sont rares",
+                "Elles offrent le timing parfait (payoff basé sur prix max/min atteint)",
+                "Elles sont illégales",
+                "Elles n'ont pas de Greeks"
+              ],
+              correct: 1,
+              explication: "Lookback: vous êtes sûr d'avoir le meilleur prix. Ex: Lookback call payoff = Prix_Max - Strike. Comme avoir une machine à remonter le temps. 30-50% plus chères que vanilles car optimalité garantie."
+            },
+            {
+              question: "Qu'est-ce qu'une option Rainbow 'Best-of' ?",
+              options: [
+                "Une option colorée",
+                "Une option multi-actifs dont le payoff dépend du meilleur performeur",
+                "Une option sur l'or",
+                "Une option gratuite"
+              ],
+              correct: 1,
+              explication: "Best-of: payoff = Max(0, Max(S1, S2, ..., Sn) - Strike). Vous gagnez sur le meilleur actif du panier. Ex: best-of sur Apple/Google/Microsoft → si Apple +50%, vous gagnez 50%. Plus chère car diversification."
+            },
+            {
+              question: "Comment fonctionne une option à cliquet (Ratchet) ?",
+              options: [
+                "Elle paie un coupon fixe",
+                "Elle verrouille les gains périodiquement, qui ne peuvent plus être perdus",
+                "Elle n'a pas de maturité",
+                "C'est une obligation"
+              ],
+              correct: 1,
+              explication: "Cliquet: à chaque période, si gain → verrouillé. À maturité, somme de tous les gains. Ex: Mois 1: +10% → acquis. Mois 2: -5% → pas de perte, les 10% restent. Très chère (2-3x vanille) mais protection forte."
+            },
+            {
+              question: "Qu'est-ce qu'un Variance Swap ?",
+              options: [
+                "Un swap de taux",
+                "Un produit qui paie la différence entre variance réalisée et variance strike",
+                "Une option vanille",
+                "Un produit sans risque"
+              ],
+              correct: 1,
+              explication: "Variance Swap: Payoff = Notionnel × (σ²_réalisée - σ²_strike). Exposition pure à la volatilité réalisée, pas besoin de delta-hedge. Ex: strike 20% (400), réalisé 25% (625) → gain 225 points de variance."
+            },
+            {
+              question: "Quelle méthode de pricing est la plus flexible pour les exotiques ?",
+              options: [
+                "Black-Scholes fermé",
+                "Monte Carlo (simulation de trajectoires)",
+                "Calcul mental",
+                "Aucune méthode n'existe"
+              ],
+              correct: 1,
+              explication: "Monte Carlo: simuler des milliers de trajectoires, calculer payoff moyen actualisé. Très flexible, marche pour quasi toutes les exotiques (barrières, asiatiques, path-dependent). Inconvénient: lent, variance élevée."
+            },
+            {
+              question: "Pourquoi une option Knock-In est-elle moins chère qu'une vanille ?",
+              options: [
+                "Elle est interdite",
+                "Elle ne s'active que si la barrière est touchée (probabilité < 100%)",
+                "Elle paie moins",
+                "Elle n'a pas de maturité"
+              ],
+              correct: 1,
+              explication: "Knock-In: l'option n'existe que si barrière touchée. Ex: Put KI barrière 100$ sur Apple spot 150$. Si Apple ne tombe jamais sous 100$, vous n'avez rien. Probabilité d'activation < 100% → moins chère."
+            },
+            {
+              question: "Qu'est-ce qu'une Chooser Option ?",
+              options: [
+                "Une option sans strike",
+                "L'acheteur peut choisir à une date future si ce sera un call ou un put",
+                "Une option sur plusieurs actifs",
+                "Une option gratuite"
+              ],
+              correct: 1,
+              explication: "Chooser: à une date intermédiaire, vous décidez call ou put pour le reste de la maturité. Ex: 6 mois total, choix à 3 mois. Flexibilité maximale. Moins cher que straddle, plus cher que vanille. Rare en pratique."
+            },
+            {
+              question: "Pourquoi les options digitales sont-elles populaires sur le forex retail mais évitées par les institutionnels ?",
+              options: [
+                "Elles sont illégales pour les institutionnels",
+                "Gamma explosif près de la barrière → impossible à hedger proprement",
+                "Elle ne rapportent rien",
+                "Elles sont trop compliquées"
+              ],
+              correct: 1,
+              explication: "Digitales: payoff discontinu (tout ou rien). Gamma infini près de la barrière à maturité → risque de hedging énorme pour l'émetteur. Retail aime la simplicité (1000$ ou 0$), institutionnels évitent car trop risqué à gérer."
+            },
+            {
+              question: "Comment hedger un Down-and-Out Put en pratique ?",
+              options: [
+                "Acheter un put vanille + gérer l'exposition à la barrière séparément",
+                "Ne rien faire",
+                "Acheter uniquement des calls",
+                "C'est impossible"
+              ],
+              correct: 0,
+              explication: "Down-and-Out Put: put qui meurt si barrière basse touchée. Hedge: acheter put vanille pour delta/gamma, mais garde exposition barrière (risque que option disparaisse). Parfois, hedger avec un down-and-in (complémentaire)."
+            },
+            {
+              question: "Quelle est la relation de parité entre Knock-In et Knock-Out ?",
+              options: [
+                "Il n'y en a pas",
+                "KI + KO (même barrière/strike) = Option Vanille",
+                "KI = KO",
+                "KI - KO = 0"
+              ],
+              correct: 1,
+              explication: "Parité barrière: Down-and-In Put + Down-and-Out Put (mêmes paramètres) = Put Vanille. Soit la barrière est touchée (KI actif, KO mort), soit pas (KI mort, KO actif). Toujours l'un ou l'autre → somme = vanille."
+            },
+            {
+              question: "Pourquoi les Rainbow Options sont-elles sensibles à la corrélation entre actifs ?",
+              options: [
+                "Elles ne le sont pas",
+                "Plus la corrélation est faible, plus le best-of est cher (diversification)",
+                "La corrélation n'existe pas",
+                "Elles n'ont qu'un seul actif"
+              ],
+              correct: 1,
+              explication: "Rainbow best-of: paie sur le meilleur actif. Si corrélation faible → forte chance qu'au moins un actif performe bien (diversification) → option plus chère. Si corrélation = 1 → tous actifs identiques → prix = vanille simple."
+            },
+            {
+              question: "Quel est le principal avantage d'une option asiatique pour une entreprise qui importe en continu ?",
+              options: [
+                "Elle est gratuite",
+                "Elle hedge le prix moyen payé, pas juste le prix final (moins de manipulation possible)",
+                "Elle n'a pas de maturité",
+                "Elle rapporte toujours"
+              ],
+              correct: 1,
+              explication: "Asiatique: payoff basé sur prix moyen. Entreprise qui importe chaque mois veut hedger le coût moyen, pas le prix d'un jour spécifique. Asiatique = hedge naturel. Bonus: moins chère (20-30%) et réduit risque de manipulation à maturité."
             }
           ]
-        },
+        },  
+        
         {
           titre: "Module 5 : Structuration avancée de produits",
           contenu: [
             {
-              section: "Ingénierie financière",
-              texte: "L'ingénierie financière consiste à décomposer et recombiner des produits financiers pour créer de nouveaux payoffs. C'est comme des LEGOs financiers.",
-              principes: [
-                "**Put-Call Parity** : Call - Put = Spot - PV(Strike)",
-                "**Réplication statique** : Reproduire un payoff avec un portefeuille fixe",
-                "**Réplication dynamique** : Ajuster continuellement pour reproduire un payoff"
-              ]
+              section: "Philosophie de l'ingénierie financière",
+              texte: "L'ingénierie financière consiste à décomposer et recombiner des produits financiers pour créer de nouveaux payoffs. C'est comme des LEGOs financiers : chaque brique (dérivé) a des propriétés, et on les assemble pour créer exactement le profil risque/rendement désiré.",
+              points: [
+                "Put-Call Parity : Call - Put = Spot - PV(Strike). Relation fondamentale pour la réplication.",
+                "Réplication statique : Reproduire un payoff avec un portefeuille fixe (ex: call = put + spot + bond).",
+                "Réplication dynamique : Ajuster continuellement le delta-hedge pour reproduire un payoff.",
+                "No-arbitrage : Le prix du produit doit égaler la valeur du portefeuille répliquant."
+              ],
+              exemple: "Créer une obligation convertible synthétique : acheter une obligation classique + un call ATM sur l'action. On obtient la protection du capital et la participation à la hausse."
+            },
+            {
+              section: "Décomposition d'un produit structuré",
+              texte: "Tout produit structuré peut se décomposer en briques élémentaires. Comprendre cette décomposition permet de pricer, hedger, et identifier la marge de la banque.",
+              types: [
+                {
+                  nom: "Reverse Convertible",
+                  pour: "Générer un coupon élevé dans un marché stable ou légèrement haussier.",
+                  description: "Combinaison d'une obligation classique (taux sans risque) et de la vente d'un put (prime qui booste le coupon). Risque de perte en capital si le put finit In-The-Money."
+                },
+                {
+                  nom: "Capital Protégé + Participation",
+                  pour: "Investisseurs prudents voulant profiter de la hausse sans risque de perte nominale.",
+                  description: "Achat d'un Zero-coupon bond (garantit 100% du capital à maturité) + achat de calls avec le reliquat du budget."
+                }
+              ],
+              
             },
             {
               section: "Structuration d'un Phoenix/Autocall complexe",
-              caracteristiques: [
-                "**Observation trimestrielle** : Vérification tous les 3 mois",
-                "**Barrière autocall descendante** : 100%, 95%, 90%, 85%... (plus facile à déclencher avec le temps)",
-                "**Coupon mémoire** : Si le coupon n'est pas payé, il s'accumule",
-                "**Barrière de protection conditionnelle** : Protection uniquement à certaines dates"
+              texte: "Les Phoenix/Autocall sont les produits phares du marché retail. Voici la décomposition technique d'une structure réelle.",
+              points: [
+                "<strong>Observation :</strong> Vérification périodique (ex: trimestrielle) du niveau du sous-jacent.",
+                "<strong>Barrière descendante :</strong> La condition de rappel devient plus facile à atteindre avec le temps.",
+                "<strong>Coupon mémoire :</strong> Les coupons manqués sont stockés et versés si la condition est remplie plus tard.",
+                "<strong>Protection conditionnelle :</strong> Le capital n'est à risque que si une barrière basse (ex: 60%) est franchie à l'échéance."
               ],
-              construction: [
-                "1. Obligation zero-coupon pour garantir une partie du capital",
-                "2. Digitales pour les coupons conditionnels",
-                "3. Options barrière pour l'autocall",
-                "4. Put down-and-in pour le risque de perte"
-              ]
+              types: [
+                { nom: "Composante Taux", pour: "Zero-coupon assurant le remboursement du capital hors scénario de défaut." },
+                { nom: "Composante Revenu", pour: "Série d'options digitales conditionnelles pour le paiement des coupons." },
+                { nom: "Composante Rappel", pour: "Digitales Knock-Out déclenchant le remboursement anticipé." },
+                { nom: "Risque Final", pour: "Vente d'un Put Down-and-In qui finance la structure mais expose à la baisse." }
+              ],
+              exemple: "Phoenix sur Euro Stoxx 50. Si l'indice est à 102% à T1 -> Remboursement 100% + coupon. Si à 90% -> Le produit continue."
             },
             {
-              section: "Optimisation de produits",
-              texte: "Comment créer le meilleur produit pour un profil client donné ?",
-              etapes: [
-                "**1. Définir les objectifs** : Rendement cible, risque maximum acceptable",
-                "**2. Contraintes** : Budget, horizon, fiscalité",
-                "**3. Optimisation** : Utiliser des modèles pour maximiser rendement/risque",
-                "**4. Backtesting** : Tester sur données historiques",
-                "**5. Stress testing** : Vérifier la robustesse"
-              ]
+              section: "Optimisation de produits structurés",
+              texte: "La création d'un produit est une optimisation sous contraintes pour répondre à un besoin client spécifique.",
+              points: [
+                "<strong>1. Objectifs :</strong> Définir le rendement cible vs le risque maximum acceptable.",
+                "<strong>2. Modélisation :</strong> Simulations Monte Carlo pour tester des milliers de trajectoires de prix.",
+                "<strong>3. Backtesting :</strong> Vérification de la performance sur les données historiques (2008, 2020).",
+                "<strong>4. Stress Testing :</strong> Analyse de la sensibilité aux chocs de volatilité et de corrélation.",
+                "<strong>5. Compliance :</strong> Test d'appropriateness MiFID II pour s'assurer que le client comprend le risque."
+              ],
+              citation: "L'optimisation cherche le 'Sweet Spot' : maximiser le coupon tout en gardant une probabilité de perte en capital acceptable pour le profil du client."
             },
             {
-              section: "Pricing et couverture en pratique",
-              texte: "Dans le monde réel, pricer et couvrir un produit structuré est complexe.",
-              defis: [
-                "**Spreads bid-ask** : Coûts de transaction importants",
-                "**Illiquidité** : Certains strikes/maturités peu liquides",
-                "**Risque de modèle** : Votre modèle est-il correct ?",
-                "**Risque de contrepartie** : Et si l'émetteur fait faillite ?",
-                "**Coûts de financement** : Le coût d'emprunter pour hedger"
-              ]
+              section: "Greeks et risques des structurés",
+              texte: "Les Greeks d'un structuré sont dynamiques et souvent instables à l'approche des barrières.",
+              types: [
+                {
+                  nom: "Delta",
+                  description: "Sensibilité au prix. Proche de 0 au départ, il peut sauter de 0 à 100% brutalement près d'une barrière.",
+                  pour: "Piloter l'exposition directionnelle au marché."
+                },
+                {
+                  nom: "Gamma",
+                  description: "Accélération du Delta. Explosif près des barrières, rendant le hedging très coûteux.",
+                  pour: "Mesurer le risque de saut de prix (Gap Risk)."
+                },
+                {
+                  nom: "Vega",
+                  description: "Sensibilité à la volatilité. Un Autocall est généralement 'Short Vega' (la hausse de vol baisse sa valeur).",
+                  pour: "Anticiper l'impact d'une crise sur le Mark-to-Market."
+                }
+              ],
+              
+              citation: "Le risque de modèle est majeur : si la volatilité réelle dépasse la vol prédite, la marge de la banque s'évapore en frais de re-hedging."
             },
             {
               section: "Réglementation et compliance",
-              texte: "Les produits structurés sont fortement régulés pour protéger les investisseurs.",
-              regulations: [
-                "**MiFID II** (Europe) : Transparence, appropriateness, best execution",
-                "**PRIIPs** : Document d'information clé obligatoire",
-                "**Dodd-Frank** (USA) : Réglementation des dérivés OTC",
-                "**EMIR** : Reporting des transactions"
+              texte: "Le cadre réglementaire s'est durci pour protéger les investisseurs non-professionnels.",
+              types: [
+                {
+                  nom: "MiFID II",
+                  description: "Exige une transparence totale sur les coûts et une preuve de l'adéquation du produit au client.",
+                },
+                {
+                  nom: "PRIIPs / KID",
+                  description: "Document standardisé de 3 pages présentant les scénarios de performance et les frais totaux.",
+                },
+                {
+                  nom: "EMIR",
+                  description: "Régulation des dérivés OTC imposant le reporting des transactions et la collatéralisation.",
+                }
               ],
-              obligations: [
-                "Tester l'adéquation du produit au profil client",
-                "Fournir des informations claires sur les risques",
-                "Calculer et afficher les coûts",
-                "Monitorer les risques en continu"
+              points: [
+                "Obligation de 'Best Execution' pour les briques optionnelles.",
+                "Surveillance des marges : les frais cachés sont de plus en plus scrutés par les régulateurs.",
+                "Responsabilité de l'émetteur en cas de défaut de conseil."
               ]
+            },
+            {
+              section: "Cas pratique : Création sur-mesure",
+              texte: "Analyse d'un besoin pour un client fortuné (HNW) avec 500k€ d'investissement.",
+              points: [
+                "<strong>Profil :</strong> 55 ans, prudent mais cherche 5%+. Perte tolérée : -20%.",
+                "<strong>Sous-jacent :</strong> Euro Stoxx 50 pour sa liquidité et ses dividendes stables.",
+                "<strong>Structure :</strong> Autocall 3 ans, coupon 6% annuel avec mémoire, protection à -30%.",
+                "<strong>Pricing :</strong> La banque prélève 2.5% de marge à la conception.",
+                "<strong>Scénarios :</strong> 75% de probabilité de rappel anticipé, 2% de probabilité de perte en capital selon Monte Carlo."
+              ],
+              exemple: "Si le marché chute de 25% à maturité, le client récupère 100% de son capital (grâce à la barrière à -30%) mais sans coupons."
+            }
+          ],
+          quiz: [
+            {
+              question: "Qu'est-ce que la Put-Call Parity ?",
+              options: [
+                "Call = Put",
+                "Call - Put = Spot - PV(Strike)",
+                "Call + Put = 0",
+                "Aucune relation"
+              ],
+              correct: 1,
+              explication: "Put-Call Parity : Call - Put = Spot - PV(Strike). Relation fondamentale qui relie call, put, spot et taux. Permet de répliquer un call avec put + spot + obligation, ou vice-versa. Base de l'arbitrage."
+            },
+            {
+              question: "Comment décomposer un Reverse Convertible ?",
+              options: [
+                "Obligation + Short Put",
+                "Obligation + Long Call",
+                "Short Call + Short Put",
+                "Rien"
+              ],
+              correct: 0,
+              explication: "Reverse Convertible = Obligation (coupon de base) + Short Put (génère le coupon supplémentaire). Si action baisse sous barrière, vous recevez les actions dépréciées. Risque = vendre un put."
+            },
+            {
+              question: "Dans un produit capital protégé à 100%, comment est allouée l'investissement initial ?",
+              options: [
+                "100% en actions",
+                "Majorité en zero-coupon bond (pour garantir capital), reste en calls pour participation",
+                "100% en options",
+                "Rien"
+              ],
+              correct: 1,
+              explication: "Capital protégé : ex 100k€ → 92k€ en zero-coupon (donne 100k€ à maturité) + 8k€ en calls ATM pour participation. Protection capitale + upside. Taux de participation dépend des taux et de la vol."
+            },
+            {
+              question: "Qu'est-ce qu'un 'coupon mémoire' dans un Autocall ?",
+              options: [
+                "Le coupon est payé immédiatement",
+                "Si coupon non payé, il s'accumule et est versé rétroactivement si condition remplie plus tard",
+                "Il n'y a pas de coupon",
+                "Le coupon est perdu"
+              ],
+              correct: 1,
+              explication: "Coupon mémoire : si coupon non payé (condition non remplie), il s'accumule. Si condition remplie plus tard ou si autocall → tous coupons accumulés versés d'un coup. Très attractif pour le client."
+            },
+            {
+              question: "Pourquoi les banques prennent-elles une marge de 3-8% sur les produits structurés ?",
+              options: [
+                "Pour voler les clients",
+                "Pour couvrir complexité pricing/hedging, coûts transaction, risques résiduels, et profit",
+                "Par hasard",
+                "Il n'y a pas de marge"
+              ],
+              correct: 1,
+              explication: "Marge 3-8% = (1) coûts de hedging et transactions, (2) rémunération du risque (modèle, gap, liquidité), (3) coûts structurels banque, (4) profit. Plus le produit est complexe, plus la marge est élevée."
+            },
+            {
+              question: "Qu'est-ce que MiFID II impose aux banques ?",
+              options: [
+                "Rien",
+                "Test d'appropriateness (produit adapté au client ?), transparence des coûts, best execution",
+                "Interdiction de vendre des produits structurés",
+                "Garantie de rendement"
+              ],
+              correct: 1,
+              explication: "MiFID II (2018, Europe) : (1) tester si produit approprié au profil client, (2) afficher tous les coûts clairement, (3) obtenir best execution, (4) enregistrer communications. Protection investisseur retail."
+            },
+            {
+              question: "Comment évolue le gamma d'un Autocall près de la maturité ?",
+              options: [
+                "Il reste constant",
+                "Il explose près des barrières (autocall ou protection)",
+                "Il devient nul",
+                "Il n'y a pas de gamma"
+              ],
+              correct: 1,
+              explication: "Gamma explose près barrières et près maturité. Delta saute brutalement si spot franchit barrière. Pour la banque : rehedging coûteux, risque de pertes si marché volatile. Période la plus risquée du produit."
+            },
+            {
+              question: "Quel est le principal risque d'un produit structuré Worst-of sur 3 indices ?",
+              options: [
+                "Il n'y a pas de risque",
+                "Corrélation tend vers 1 en crise → tous les indices baissent ensemble → perte sur le pire",
+                "Les indices montent toujours",
+                "Le produit est garanti"
+              ],
+              correct: 1,
+              explication: "Worst-of : payoff basé sur le pire performeur. En crise (2008, 2020), corrélations → 1 : tous baissent ensemble. Prob que au moins un soit très bas = élevée. Risque sous-estimé en temps normal."
+            },
+            {
+              question: "Qu'est-ce qu'un PRIIPs KID ?",
+              options: [
+                "Un type d'option",
+                "Document d'information clé (1-3 pages) obligatoire pour produits retail : scénarios, coûts, risque",
+                "Un indice boursier",
+                "Rien"
+              ],
+              correct: 1,
+              explication: "PRIIPs KID (Key Information Document) : document standardisé 1-3 pages. Contient : (1) scénarios performance (favorable/neutre/défavorable), (2) coûts totaux (TER), (3) indicateur risque 1-7. Obligatoire UE depuis 2018."
+            },
+            {
+              question: "Pourquoi backtester un produit structuré sur données historiques ?",
+              options: [
+                "Pour rien",
+                "Pour vérifier robustesse de la structure sur 10-20 ans et identifier scénarios de perte",
+                "C'est interdit",
+                "Pour garantir le rendement"
+              ],
+              correct: 1,
+              explication: "Backtesting : tester produit sur 2008 (crise), 2020 (Covid), 2000 (bulle tech), etc. Identifier : dans combien % de cas le client gagne ? Perd ? Perte max ? Si perte -50% en 2008 → warning au client."
+            },
+            {
+              question: "Qu'est-ce que le 'gap risk' pour une banque qui hedge un Autocall ?",
+              options: [
+                "Il n'y a pas de gap risk",
+                "Le marché saute (gap) du jour au lendemain → impossible de rehedger au bon prix → pertes",
+                "Le risque de gagner trop",
+                "Rien"
+              ],
+              correct: 1,
+              explication: "Gap risk : marché ouvre avec un saut vs veille (ex: Brexit -8% overnight, Covid -12%). Banque ne peut pas rehedger delta pendant la nuit → delta exposure non hedgée → perte si gap défavorable."
+            },
+            {
+              question: "Comment une barrière autocall descendante aide-t-elle le client ?",
+              options: [
+                "Elle ne l'aide pas",
+                "Plus facile à déclencher avec le temps (ex: T1: 100%, T4: 90%) → prob remboursement anticipé augmente",
+                "Elle garantit le rendement",
+                "Elle n'existe pas"
+              ],
+              correct: 1,
+              explication: "Barrière descendante : T1: 100%, T2: 95%, T3: 90%, etc. Avec le temps, plus facile de déclencher autocall (même si marché baisse un peu). Augmente prob sortie anticipée avec gains → favorable client."
+            },
+            {
+              question: "Quel est le coût typique des spreads bid-ask sur options exotiques ?",
+              options: [
+                "0%",
+                "0.5-2% par trade (impact sur marge banque)",
+                "50%",
+                "Il n'y a pas de spread"
+              ],
+              correct: 1,
+              explication: "Spreads bid-ask exotiques : 0.5-2% du notionnel par trade (vs 0.01-0.05% pour actions liquides). Banque paye ce coût à chaque rehedging. Sur vie du produit : 5-15% du notionnel → mange une partie de la marge."
+            },
+            {
+              question: "Pourquoi les produits structurés sur cryptos (BTC) ont-ils des coupons potentiels très élevés ?",
+              options: [
+                "Par charité",
+                "Vol très élevée (80-150%) → options très chères → coupon élevé possible en vendant cette vol",
+                "Parce que BTC monte toujours",
+                "Il n'y a pas de coupons"
+              ],
+              correct: 1,
+              explication: "BTC : vol 80-150% annuelle (vs 20% actions). Options très chères. Reverse Convertible sur BTC : vendre put génère prime énorme → coupon 15-25% possible. Mais risque : si BTC -70%, perte énorme."
+            },
+            {
+              question: "Qu'est-ce qu'un stress test pour un produit structuré ?",
+              options: [
+                "Tester le produit en situation de marché normale",
+                "Tester en scénarios extrêmes (krach -40%, vol ×3, corrélations → 1) pour mesurer perte max",
+                "Ne rien tester",
+                "Garantir le rendement"
+              ],
+              correct: 1,
+              explication: "Stress test : appliquer scénarios extrêmes. Ex: -40% en 1 mois, vol passe de 20% à 80%, corrélations → 1. Mesurer : perte max client, perte max banque, Greeks extrêmes. Obligatoire réglementairement."
+            },
+            {
+              question: "Quelle innovation récente combine ESG et produits structurés ?",
+              options: [
+                "Aucune",
+                "Autocalls sur indices ESG avec coupons conditionnels à des KPIs environnementaux",
+                "Interdiction des produits structurés",
+                "Obligation sans coupon"
+              ],
+              correct: 1,
+              explication: "Autocalls ESG : sous-jacent = indice ESG (MSCI World ESG, Euronext ESG 50). Coupon conditionnel si indice > barrière ET si émissions CO2 baissent de X%. Combine rendement et impact ESG. Tendance forte 2023-2025."
             }
           ]
-        },
+       },
+
         {
           titre: "Module 6 : Stratégies de trading avancées",
           contenu: [
             {
+              section: "Introduction au trading professionnel",
+              texte: "Le trading professionnel d'options n'est pas un pari directionnel, mais un métier de gestion de risques et d'identification d'inefficiences de prix. Les pros gagnent sur la volatilité, pas sur la direction.",
+              points: [
+                "<strong>Market neutral :</strong> Rester delta-neutre pour isoler les gains sur la vol, le gamma et le theta.",
+                "<strong>Gestion de risque :</strong> Application de limites strictes sur la VaR et les Greeks totaux.",
+                "<strong>Discipline :</strong> Exécution d'un plan de trading algorithmique ou systématique sans émotion.",
+                "<strong>Edge :</strong> N'entrer en position que si un avantage statistique ou un mispricing est identifié."
+              ],
+              exemple: "Un market-maker sur Apple ne parie pas sur la hausse du titre. Il collecte le spread bid-ask et hedge son delta en continu pour rester neutre."
+            },
+            {
               section: "Market Making",
-              texte: "Les market makers fournissent de la liquidité en cotant en permanence des prix bid et ask. Ils gagnent sur le spread mais prennent un risque d'inventaire.",
-              principes: [
-                "Rester delta-neutre via hedging dynamique",
-                "Gérer l'inventaire pour éviter une exposition directionnelle",
-                "Ajuster les spreads selon la volatilité et le risque",
-                "Utiliser des algorithmes pour automatiser"
+              texte: "Les market makers fournissent de la liquidité en cotant en permanence. Ils sont les 'grossistes' du marché financier.",
+              types: [
+                {
+                  nom: "Liquidité",
+                  pour: "Assurer que les acheteurs et vendeurs trouvent toujours une contrepartie.",
+                  description: "Le gain provient du spread bid-ask (ex: bid 5.20$ / ask 5.30$ -> gain 0.10$)."
+                },
+                {
+                  nom: "Risque d'inventaire",
+                  pour: "Gérer l'accumulation de positions non désirées.",
+                  description: "Si le broker accumule trop de longs calls, il ajuste ses prix pour inciter les clients à lui acheter ces calls."
+                },
+                {
+                  nom: "Sélection adverse",
+                  pour: "Se protéger contre les traders informés (insiders ou institutionnels).",
+                  description: "Risque de traiter contre quelqu'un qui détient une information imminente (ex: juste avant les earnings)."
+                }
+              ],
+              points: [
+                "Hedging dynamique : re-calcul du delta en temps réel pour neutraliser l'inventaire.",
+                "Ajustement algorithmique des spreads selon la volatilité du marché."
               ]
             },
             {
-              section: "Arbitrage statistique",
-              texte: "Exploiter les déviations temporaires de relations statistiques entre actifs.",
-              exemples: [
+              section: "Gestion des Greeks en portefeuille",
+              texte: "Un trader pro gère un 'book' de milliers d'options. Il doit monitorer ses Greeks agrégés.",
+              
+              types: [
                 {
-                  nom: "Pairs Trading",
-                  principe: "Acheter l'actif sous-évalué, vendre le sur-évalué dans une paire corrélée",
-                  exemple: "Coca vs Pepsi, Air France vs Lufthansa"
+                  nom: "Delta net",
+                  pour: "Rester insensible aux petits mouvements du cours du sous-jacent.",
+                  description: "Cible : proche de 0. Action : achat/vente de l'actif spot pour compenser l'exposition."
                 },
                 {
-                  nom: "Volatility Arbitrage",
-                  principe: "Acheter volatilité implicite cheap, vendre volatilité réalisée",
-                  execution: "Delta-hedge daily pour isoler la volatilité"
+                  nom: "Gamma net",
+                  pour: "Contrôler la vitesse de variation du Delta.",
+                  description: "Cible : limitée (ex: max 100k$). Action : achat d'options OTM pour lisser le risque."
                 },
                 {
-                  nom: "Convertible Arbitrage",
-                  principe: "Acheter obligation convertible sous-évaluée, shorter l'action",
-                  profit: "Sur la convexité et la volatilité"
+                  nom: "Vega net",
+                  pour: "Gérer l'exposition aux changements de volatilité implicite.",
+                  description: "Action : utilisation de straddles pour ajuster la sensibilité à la vol."
                 }
               ]
             },
             {
-              section: "Utilisation de Machine Learning",
-              texte: "Le ML est de plus en plus utilisé en finance quantitative pour prédire les prix, optimiser les stratégies, détecter des patterns.",
-              applications: [
-                "**Prédiction de volatilité** : LSTM, GRU pour séries temporelles",
-                "**Pricing d'options** : Neural networks pour approximer Black-Scholes",
-                "**Détection d'arbitrage** : Reinforcement learning",
-                "**Risk management** : Classification des scénarios de crise"
+              section: "Arbitrage statistique (Stat Arb)",
+              texte: "Exploitation des déviations temporaires de relations statistiques historiques entre actifs corrélés.",
+              types: [
+                {
+                  nom: "Pairs Trading",
+                  pour: "Parier sur le retour à la moyenne de deux actifs liés (ex: Coca vs Pepsi).",
+                  description: "Acheter le sous-évalué et vendre le sur-évalué lorsque l'écart sort de 2 écarts-types."
+                },
+                {
+                  nom: "Volatility Arbitrage",
+                  pour: "Exploiter l'écart entre vol implicite et vol réalisée.",
+                  description: "Acheter un straddle si la vol implicite est à 18% mais que vous prévoyez une vol réalisée de 22%."
+                },
+                {
+                  nom: "Index Arbitrage",
+                  pour: "Arbitrer l'écart entre un Future sur indice et son panier d'actions réel.",
+                  description: "Nécessite une exécution ultra-rapide (HFT) pour capturer des centimes sur des volumes massifs."
+                }
               ],
-              attention: "Overfitting, regime change, non-stationnarité des marchés"
+              citation: "Contrairement à l'arbitrage pur, le Stat Arb comporte un risque : la corrélation historique peut se briser définitivement."
+            },
+            {
+              section: "Trading de volatilité pure",
+              texte: "Stratégies focalisées sur le prix de la peur (volatilité) plutôt que sur la direction du marché.",
+              types: [
+                {
+                  nom: "Long Volatility",
+                  pour: "Profiter d'une explosion de vol ou d'un mouvement violent (peu importe le sens).",
+                  description: "Achat de straddles. Risque : Theta (érosion temporelle) très élevé."
+                },
+                {
+                  nom: "Short Volatility",
+                  pour: "Encaisser les primes (Theta) dans des marchés calmes.",
+                  description: "Vente de straddles. Risque : 'Ramasser des centimes devant un rouleau compresseur' (risque de perte illimitée)."
+                },
+                {
+                  nom: "Dispersion Trading",
+                  pour: "Parier sur la baisse de corrélation entre les indices et leurs composants.",
+                  description: "Vendre la vol de l'indice (S&P 500) et acheter la vol des actions individuelles (Apple, Tesla...)."
+                }
+              ]
+            },
+            {
+              section: "Gestion de risque avancée",
+              texte: "Les outils de mesure du risque au-delà de la simple perte maximale.",
+              
+              points: [
+                "<strong>VaR (Value at Risk) :</strong> Perte maximale attendue avec 99% de confiance.",
+                "<strong>CVaR (Conditional VaR) :</strong> Moyenne des pertes dans le pire 1% des cas (mesure du Tail Risk).",
+                "<strong>Stress VaR :</strong> Simulation du portefeuille face aux crises de 2008 ou 2020.",
+                "<strong>Greeks Limits :</strong> Plafonds stricts sur l'exposition Delta, Gamma et Vega."
+              ],
+              exemple: "Si votre VaR est de 50k$ mais votre CVaR est de 150k$, cela signifie que si vous perdez, vous risquez de perdre très gros. Il faut acheter des puts OTM pour se protéger."
+            },
+            {
+              section: "Machine Learning et Algorithmique",
+              texte: "L'utilisation de l'IA pour prédire la volatilité et automatiser l'exécution.",
+              types: [
+                {
+                  nom: "Prédiction de Volatilité",
+                  pour: "Anticiper les mouvements futurs via des réseaux de neurones (LSTM).",
+                  description: "Analyse de 10 ans de données pour détecter des patterns de vol impossibles à voir à l'oeil nu."
+                },
+                {
+                  nom: "Sentiment Analysis",
+                  pour: "Analyser les news et réseaux sociaux (NLP) pour prédire des chocs de prix.",
+                  description: "Traitement massif de flux Twitter/News pour ajuster l'exposition avant le consensus."
+                }
+              ],
+              points: [
+                "<strong>Overfitting :</strong> Le piège majeur où le modèle apprend le bruit historique au lieu du signal réel.",
+                "<strong>Latency Arbitrage :</strong> Course technologique pour gagner quelques millisecondes sur l'exécution."
+              ]
+            },
+            {
+              section: "Évaluation de stratégie (Backtesting)",
+              texte: "Règles d'or pour valider une stratégie avant d'engager du capital réel.",
+              points: [
+                "<strong>Sharpe Ratio :</strong> Rendement ajusté du risque. Doit être > 1 pour être viable.",
+                "<strong>Max Drawdown :</strong> La pire perte historique (du sommet au creux).",
+                "<strong>Out-of-sample :</strong> Tester la stratégie sur des données que le modèle n'a jamais vues.",
+                "<strong>Coûts réels :</strong> Inclure impérativement les commissions, le slippage et le spread bid-ask."
+              ],
+              citation: "Un backtest sans frais de transaction est une fiction dangereuse."
+            },
+            {
+              section: "Psychologie et Biais",
+              texte: "Le trading est une discipline mentale autant que technique.",
+              types: [
+                {
+                  nom: "Loss Aversion",
+                  pour: "Éviter de garder ses pertes trop longtemps.",
+                  description: "La douleur d'une perte est 2x plus forte que le plaisir d'un gain. Cela pousse au déni."
+                },
+                {
+                  nom: "FOMO",
+                  pour: "Garder sa discipline face à l'euphorie.",
+                  description: "La peur de rater une opportunité (ex: GameStop) pousse à acheter au plus haut."
+                }
+              ],
+              points: [
+                "<strong>Règle d'or :</strong> Ne jamais risquer plus de 2% de son capital sur un seul trade.",
+                "<strong>Journal de trading :</strong> Noter ses émotions pour identifier ses propres biais cognitifs."
+              ]
+            }
+          ],
+          quiz: [
+            {
+              question: "Qu'est-ce que le rôle principal d'un market-maker ?",
+              options: [
+                "Parier sur la direction du marché",
+                "Fournir de la liquidité en cotant en permanence bid et ask, gagner sur le spread",
+                "Acheter uniquement",
+                "Rien"
+              ],
+              correct: 1,
+              explication: "Le market-maker fournit la liquidité et gère son inventaire pour rester neutre, son profit venant principalement de l'écart (spread) entre l'achat et la vente."
+            },
+            {
+              question: "Quelle métrique mesure la perte moyenne dans le pire 1% des cas ?",
+              options: [
+                "La VaR",
+                "Le Sharpe Ratio",
+                "La CVaR (Conditional VaR)",
+                "Le Delta"
+              ],
+              correct: 2,
+              explication: "La CVaR (ou Expected Shortfall) permet de mesurer ce qui se passe 'au-delà de la VaR', capturant ainsi le risque de queue (Tail Risk)."
+            },
+            {
+              question: "Pourquoi le Short Volatility est-il comparé à ramasser des centimes devant un rouleau compresseur ?",
+              options: [
+                "Car c'est sans risque",
+                "Car les gains sont petits et fréquents mais une seule perte peut être catastrophique",
+                "Car c'est une stratégie lente",
+                "Car c'est interdit"
+              ],
+              correct: 1,
+              explication: "En vendant de la vol, on encaisse des petites primes régulièrement, mais un mouvement extrême de marché peut causer des pertes dépassant largement les gains accumulés."
+            },
+            {
+              question: "Dans un backtest, qu'est-ce que le 'Max Drawdown' ?",
+              options: [
+                "Le profit maximum",
+                "La perte maximale historique entre un sommet et un creux",
+                "Le nombre de trades gagnants",
+                "Le coût des commissions"
+              ],
+              correct: 1,
+              explication: "Le Max Drawdown mesure la pire chute de capital subie par la stratégie, indicateur crucial de la tolérance au risque psychologique."
+            },
+            {
+              question: "Qu'est-ce que le 'Pairs Trading' ?",
+              options: [
+                "Acheter deux actions au hasard",
+                "Exploiter l'écart statistique entre deux actifs corrélés qui s'éloignent de leur moyenne",
+                "Trader uniquement en couple",
+                "Vendre des options par deux"
+              ],
+              correct: 1,
+              explication: "C'est une stratégie d'arbitrage statistique où l'on parie sur le retour à la normale de la relation entre deux titres (ex: Coca et Pepsi)."
+            },
+            {
+              question: "Qu'est-ce que la CVaR (Conditional VaR) ?",
+              options: [
+                "La VaR normale",
+                "Perte moyenne dans le X% pire des cas (au-delà de la VaR), capture tail risk",
+                "Aucune perte possible",
+                "Un type d'option"
+              ],
+              correct: 1,
+              explication: "CVaR (Expected Shortfall) : perte MOYENNE au-delà de la VaR. Ex: VaR 99% = 50k$ (perte max probable), CVaR 99% = 120k$ (si vous tombez dans le 1% pire, perte moyenne = 120k$). Capture queues épaisses."
+            },
+            {
+              question: "Pourquoi le Machine Learning présente-t-il des risques en trading ?",
+              options: [
+                "Il n'y a pas de risques",
+                "Overfitting, regime change, non-stationnarité, data snooping → modèle qui marche en backtest échoue en réel",
+                "C'est parfait",
+                "C'est interdit"
+              ],
+              correct: 1,
+              explication: "ML risques : (1) overfitting (apprend bruit, pas signal), (2) regime change (marché 2025 ≠ 2010), (3) non-stationnaire (distribution change), (4) data snooping (tester 1000 stratégies, publier celle qui marche par hasard). Combiner ML + gestion risque stricte."
+            },
+            {
+              question: "Qu'est-ce que le Sharpe Ratio mesure ?",
+              options: [
+                "Le prix d'une option",
+                "Rendement ajusté du risque : (Rendement - Taux sans risque) / Volatilité",
+                "La volatilité seulement",
+                "Rien"
+              ],
+              correct: 1,
+              explication: "Sharpe Ratio = (Rdt - Rf) / Vol. Mesure combien de rendement excédentaire par unité de risque. Sharpe > 1 = bon, > 2 = excellent, > 3 = exceptionnel. Ex: rdt 12%, vol 15%, Rf 3% → Sharpe = 0.6."
+            },
+            {
+              question: "Qu'est-ce que le Maximum Drawdown ?",
+              options: [
+                "Le gain maximum",
+                "Perte maximale du pic au creux (pire scénario vécu)",
+                "La volatilité",
+                "Le rendement"
+              ],
+              correct: 1,
+              explication: "Max Drawdown : perte max du pic au creux. Ex: compte 100k$ → 70k$ (creux) → 90k$ → Max DD = -30%. Mesure le pire moment psychologiquement. Max DD < 20% = acceptable, < 10% = excellent."
+            },
+            {
+              question: "Pourquoi le HFT (High-Frequency Trading) est-il controversé ?",
+              options: [
+                "Il n'est pas controversé",
+                "Avantage inéquitable via vitesse, flash crashes possibles, mais réduit spreads bid-ask pour tous",
+                "Il est parfait",
+                "Il n'existe pas"
+              ],
+              correct: 1,
+              explication: "HFT controversé : (1) avantage vitesse (co-location, FPGA), (2) flash crashes (2010 : -9% en 5 min), (3) liquidité fantôme (disparaît en crise). Mais : (4) spreads très serrés (0.01$ vs 0.10$ avant), (5) liquidité abondante temps normal."
+            },
+            {
+              question: "Qu'est-ce que le Loss Aversion bias en trading ?",
+              options: [
+                "Amour des pertes",
+                "Douleur d'une perte > plaisir gain équivalent → garder positions perdantes trop longtemps",
+                "Aucun biais",
+                "Toujours gagner"
+              ],
+              correct: 1,
+              explication: "Loss Aversion : perdre 100$ fait plus mal que gagner 100$ fait plaisir. Conséquence : on garde positions perdantes en espérant (déni), on coupe gagnantes trop tôt (peur de perdre). Solution : stop-loss stricts, accepter pertes comme coût du business."
+            },
+            {
+              question: "Pourquoi doit-on inclure les coûts de transaction dans un backtest ?",
+              options: [
+                "Ce n'est pas nécessaire",
+                "Stratégie profitable en backtest sans coûts peut être perdante en réel avec commissions/slippage",
+                "Les coûts n'existent pas",
+                "Pour rien"
+              ],
+              correct: 1,
+              explication: "Coûts (commissions, slippage, spread bid-ask) peuvent tuer une stratégie. Ex: stratégie qui trade 100x/jour, gain moyen 5$ par trade → 500$/jour brut. Mais coût 3$/trade → 300$/jour de coûts → 200$/jour net (60% de perdu). Critique en HFT/stat arb."
+            },
+            {
+              question: "Qu'est-ce que le Dispersion Trading ?",
+              options: [
+                "Acheter un seul actif",
+                "Vendre vol sur l'indice, acheter vol sur composants individuels (pari sur baisse corrélation)",
+                "Rien",
+                "Un type d'obligation"
+              ],
+              correct: 1,
+              explication: "Dispersion : vendre straddle S&P 500 (vol indice 18%), acheter straddles sur 10 actions (vol moy 22%). Pari : corrélation baisse → actions bougent indépendamment → vol indiv > vol indice → gain. Complexe : hedger 10+ positions simultanément."
+            },
+            {
+              question: "Quelle est la différence entre réplication statique et dynamique ?",
+              options: [
+                "Il n'y a pas de différence",
+                "Statique = portefeuille fixe (buy and hold), Dynamique = ajuster en continu (delta-hedging)",
+                "Statique est interdite",
+                "Rien"
+              ],
+              correct: 1,
+              explication: "Réplication statique : créer portefeuille une fois, ne plus toucher (ex: call = put + spot + obligation, put-call parity). Dynamique : ajuster quotidiennement/en continu pour reproduire payoff (ex: delta-hedge pour répliquer option, base de Black-Scholes)."
+            },
+            {
+              question: "Pourquoi un market-maker doit-il gérer son inventaire ?",
+              options: [
+                "Il n'a pas besoin",
+                "Accumulation positions → exposition directionnelle non désirée → ajuster spreads pour rééquilibrer",
+                "Pour rien",
+                "C'est automatique"
+              ],
+              correct: 1,
+              explication: "Market-maker : si trop long calls → exposition haussière non désirée. Action : élargir spread côté bid (moins attractif vendre calls), resserrer ask (plus attractif acheter calls) → incite clients à acheter calls → rééquilibre inventaire vers 0."
+            },
+            {
+              question: "Qu'est-ce que le FOMO (Fear of Missing Out) et pourquoi est-il dangereux en trading ?",
+              options: [
+                "Il n'est pas dangereux",
+                "Entrer en position sans analyse (peur de rater) → souvent au pire moment (top) → pertes",
+                "C'est bénéfique",
+                "Ça n'existe pas"
+              ],
+              correct: 1,
+              explication: "FOMO : GameStop +400% en 1 semaine → tout le monde achète → vous achetez au top par peur de rater → -80% ensuite. Achat émotionnel, pas analytique. Solution : patience, attendre VOTRE setup, il y aura toujours d'autres opportunités."
             }
           ]
         }
