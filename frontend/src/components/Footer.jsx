@@ -9,7 +9,7 @@ export default function Footer() {
           <div>
             <h3 className="text-xl font-bold gradient-text mb-4">Metron</h3>
             <p className="text-gray-400 text-sm">
-              Plateforme de pricing et de simulation de produits financiers structurés. Conçue pour les étudiants, les professionnels ou les personnes simplement curieuses. Nous ne sommes pas une platefomre de conseil, ni de trading.
+              Plateforme de pricing et de simulation de produits financiers structurés. Conçue pour les étudiants, les professionnels ou les simples curieux. Nous ne sommes pas une platefomre de conseil, ni de trading.
             </p>
             <div className="flex gap-4 mt-4">
               <a href="#" className="text-gray-400 hover:text-white transition-colors">
