@@ -30,10 +30,10 @@ npm run dev
 
 ## 📅 Roadmap
 
-- [x] Week 1: Architecture setup
-- [ ] Week 2: Reverse Convertible pricing
-- [ ] Week 3: Autocall + Educational content
-- [ ] Week 4: Polish + Demo
+- [x] Week 1: Architecture setup - Frontend, Accounts infrastructure, Database implementation
+- [x] Week 2: Pricing Engine - Reverse Convertible, Autocall, Warrant/Turbo, Capital Guaranteed
+- [x] Week 3: Educational content - Courses, Tutorials, Glossary, Quiz
+- [x] Week 4: Polish + Demo
 
 ## 👥 Team
 
